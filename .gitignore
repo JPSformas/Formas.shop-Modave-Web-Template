@@ -44,6 +44,13 @@ bower_components/
 
 # dotenv environment variables file
 .env
+.env.local
+.env.production
+
+# API keys and sensitive configuration
+**/mail/subscribe-mailchimp.php
+**/config/api-keys.php
+**/config/secrets.php
 
 # Build directories
 dist/
