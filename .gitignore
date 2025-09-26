@@ -48,7 +48,6 @@ bower_components/
 .env.production
 
 # API keys and sensitive configuration
-**/mail/subscribe-mailchimp.php
 **/config/api-keys.php
 **/config/secrets.php
 
