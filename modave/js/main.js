@@ -516,6 +516,11 @@
     /* Header Full Bar (Pill to Bar Transformation - Sticky)
   -------------------------------------------------------------------------*/
     var headerFullBar = function () {
+        // Only run if header has the enable-full-bar class
+        if (!$("header").hasClass("enable-full-bar")) {
+            return;
+        }
+
         let lastScrollTop = 0;
         let delta = 5;
         let navbarHeight = $("header").outerHeight();

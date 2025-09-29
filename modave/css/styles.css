@@ -2810,30 +2810,6 @@ header.header-bg {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Full Bar Styles - Transforms pill to full bar on scroll */
-header.header-full-bar .wrapper-header {
-  border-radius: 0 !important;
-  margin-top: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
-}
-
-/* Smooth transition for the transformation */
-header .wrapper-header {
-  transition: all 0.3s ease-out;
-}
-
-/* Ensure the header takes full width and has consistent background in bar mode */
-header.header-full-bar {
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  background-color: var(--black) !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-}
 
 /* Prevent header from disappearing - ensure it's always visible */
 header {
@@ -16271,6 +16247,31 @@ ul.list-text.type-number {
     overflow: auto;
     max-height: 100px;
   }
+  
+  /* Header Full Bar Styles - Transforms pill to full bar on scroll - Only when .enable-full-bar is present */
+  header.enable-full-bar.header-full-bar .wrapper-header {
+    border-radius: 0 !important;
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  /* Smooth transition for the transformation - Only when .enable-full-bar is present */
+  header.enable-full-bar .wrapper-header {
+    transition: all 0.3s ease-out;
+  }
+
+  /* Ensure the header takes full width and has consistent background in bar mode - Only when .enable-full-bar is present */
+  header.enable-full-bar.header-full-bar {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background-color: var(--black) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  }
 }
 @media (min-width: 1400px) {
   .slider-parallax .wrap-slider {
@@ -16692,6 +16693,9 @@ ul.list-text.type-number {
   }
 }
 @media only screen and (max-width: 991px) {
+  .form-search button {
+    padding: 0;
+  }
   .tf-sticky-btn-atc {
     bottom: 67px;
   }
