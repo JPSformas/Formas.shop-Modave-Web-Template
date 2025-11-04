@@ -10,71 +10,143 @@
 (function ($) {
   "use strict";
 
-  /* Range Two Price
+  /* Parse Price from HTML format
   -------------------------------------------------------------------------------------*/
-  var rangeTwoPrice = function () {
-    if ($("#price-value-range").length > 0) {
-      var skipSlider = document.getElementById("price-value-range");
-      var skipValues = [
-        document.getElementById("price-min-value"),
-        document.getElementById("price-max-value"),
-      ];
-
-      var min = parseInt(skipSlider.getAttribute("data-min"));
-      var max = parseInt(skipSlider.getAttribute("data-max"));
-
-      noUiSlider.create(skipSlider, {
-        start: [min, max],
-        connect: true,
-        step: 1,
-        range: {
-          min: min,
-          max: max,
-        },
-        format: {
-          from: function (value) {
-            return parseInt(value);
-          },
-          to: function (value) {
-            return parseInt(value);
-          },
-        },
-      });
-
-      skipSlider.noUiSlider.on("update", function (val, e) {
-        skipValues[e].innerText = val[e];
-      });
+  var parsePriceFromHTML = function (priceElement) {
+    // Try to find price-text first (format: desde<span class="price"> $116.062<sup class="cents">33</sup> </span> - <span class="price"> $129.557<sup class="cents">95</sup></span>)
+    var priceText = priceElement.find(".price-text, .price-text-discount");
+    if (priceText.length > 0) {
+      // Get all prices in the price-text
+      var prices = priceText.find(".price");
+      if (prices.length > 0) {
+        // Get both min and max prices from the range
+        var priceArray = [];
+        prices.each(function() {
+          // Clone the price element and remove the cents sup tag to get just the main price
+          var priceClone = $(this).clone();
+          priceClone.find(".cents").remove();
+          var mainPrice = priceClone.text().trim();
+          var cents = $(this).find(".cents").text().trim();
+          
+          // Remove $ sign and dots (thousand separators)
+          mainPrice = mainPrice.replace("$", "").replace(/\./g, "");
+          
+          // Combine main price and cents with dot as decimal separator
+          var fullPrice = parseFloat(mainPrice + "." + cents);
+          priceArray.push(fullPrice);
+        });
+        
+        // Return min and max prices from the range
+        var minPrice = Math.min.apply(null, priceArray);
+        var maxPrice = Math.max.apply(null, priceArray);
+        return { min: minPrice, max: maxPrice };
+      }
     }
+    
+    // Fallback to current-price if available (format: $199.25)
+    var currentPrice = priceElement.find(".current-price");
+    if (currentPrice.length > 0) {
+      var price = currentPrice.text().replace("$", "");
+      var numericPrice;
+      // Handle prices with decimal points already
+      if (price.indexOf('.') !== -1) {
+        numericPrice = parseFloat(price);
+      } else {
+        // No decimal, remove dots as thousand separators
+        numericPrice = parseFloat(price.replace(/\./g, ""));
+      }
+      // For single price, min and max are the same
+      return { min: numericPrice, max: numericPrice };
+    }
+    
+    return { min: 0, max: 0 };
+  };
+
+  /* Parse Minimum Order Quantity from HTML format
+  -------------------------------------------------------------------------------------*/
+  var parseMinOrderQuantity = function (priceElement) {
+    // Look for the stock-status section with "Min.:" label
+    var stockStatus = priceElement.find(".stock-status");
+    if (stockStatus.length > 0) {
+      // Find all stock-items
+      var stockItems = stockStatus.find(".stock-item");
+      var result = 0;
+      
+      stockItems.each(function() {
+        var label = $(this).find(".stock-label").text().trim();
+        // Check if this is the Min order quantity
+        if (label.indexOf("Min.") !== -1 || label.indexOf("Min:") !== -1) {
+          var valueText = $(this).find(".stock-value").text().trim();
+          // Extract just the number (remove " u." if present)
+          result = parseInt(valueText.replace(" u.", "").trim()) || 0;
+          return false; // break the loop
+        }
+      });
+      return result;
+    }
+    return 0;
   };
 
   /* Filter Products
   -------------------------------------------------------------------------------------*/
   var filterProducts = function () {
-    const priceSlider = document.getElementById("price-value-range");
-
-    const minPrice = parseInt(priceSlider.dataset.min);
-    const maxPrice = parseInt(priceSlider.dataset.max);
+    const priceMinInput = document.getElementById("price-min-input");
+    const priceMaxInput = document.getElementById("price-max-input");
+    const priceFilterElement = $(".widget-facet.facet-price");
+    
+    // Read min and max values from HTML data attributes
+    const minPrice = parseInt(priceFilterElement.attr("data-price-min")) || 0;
+    const maxPrice = parseInt(priceFilterElement.attr("data-price-max")) || 999999;
+    
+    const minOrderInput = document.getElementById("min-order-quantity-input");
+    const minOrderFilterElement = $(".widget-facet.facet-min-order-quantity");
+    const maxMinOrder = parseInt(minOrderFilterElement.attr("data-min-order-max")) || 9999;
 
     const filters = {
       minPrice: minPrice,
       maxPrice: maxPrice,
+      maxMinOrderQuantity: maxMinOrder,
       size: null,
       color: null,
       availability: null,
       brands: [],
+      categories: [],
       sale: false,
     };
 
-    priceSlider.noUiSlider.on("update", function (values) {
-      filters.minPrice = parseInt(values[0]);
-      filters.maxPrice = parseInt(values[1]);
+    // Handle price input changes
+    if (priceMinInput && priceMaxInput) {
+      // Set placeholder values from data attributes
+      priceMinInput.placeholder = minPrice.toString();
+      priceMaxInput.placeholder = maxPrice.toString();
+      
+      const updatePriceFilters = function() {
+        const inputMin = parseFloat(priceMinInput.value) || minPrice;
+        const inputMax = parseFloat(priceMaxInput.value) || maxPrice;
+        
+        filters.minPrice = inputMin;
+        filters.maxPrice = inputMax;
+        
+        applyFilters();
+        updateMetaFilter();
+      };
 
-      $("#price-min-value").text(filters.minPrice);
-      $("#price-max-value").text(filters.maxPrice);
+      priceMinInput.addEventListener("input", updatePriceFilters);
+      priceMaxInput.addEventListener("input", updatePriceFilters);
+    }
 
-      applyFilters();
-      updateMetaFilter();
-    });
+    // Handle minimum order quantity input changes
+    if (minOrderInput) {
+      // Set placeholder value from data attribute
+      minOrderInput.placeholder = maxMinOrder.toString();
+      
+      minOrderInput.addEventListener("input", function() {
+        const inputValue = parseInt(minOrderInput.value) || maxMinOrder;
+        filters.maxMinOrderQuantity = inputValue;
+        applyFilters();
+        updateMetaFilter();
+      });
+    }
 
     $(".size-check").click(function () {
       filters.size = $(this).hasClass("free-size")
@@ -85,7 +157,15 @@
     });
 
     $(".color-check").click(function () {
+      // Remove active class from all color items
+      $(".color-check").removeClass("active");
+      
+      // Add active class to clicked item
+      $(this).addClass("active");
+      
+      // Store the color text
       filters.color = $(this).text().trim();
+      
       applyFilters();
       updateMetaFilter();
     });
@@ -106,6 +186,20 @@
         filters.brands.push({ id: brandId, label: brandLabel });
       } else {
         filters.brands = filters.brands.filter((brand) => brand.id !== brandId);
+      }
+      applyFilters();
+      updateMetaFilter();
+    });
+
+    $('input[name="category"]').change(function () {
+      const categoryId = $(this).attr("id");
+      let categoryLabel = $(this).next("label").text().trim();
+      categoryLabel = categoryLabel.replace(/\s*\(\d+\)$/, "");
+
+      if ($(this).is(":checked")) {
+        filters.categories.push({ id: categoryId, label: categoryLabel });
+      } else {
+        filters.categories = filters.categories.filter((category) => category.id !== categoryId);
       }
       applyFilters();
       updateMetaFilter();
@@ -139,7 +233,8 @@
         );
       }
       if (filters.color) {
-        const colorElement = $(`.color-check:contains('${filters.color}')`);
+        // Find the exact color element that was clicked (has 'active' class)
+        const colorElement = $(`.color-check.active:contains('${filters.color}')`);
         const backgroundClass = colorElement
           .find(".color")
           .attr("class")
@@ -155,10 +250,24 @@
         );
       }
 
+      if (filters.maxMinOrderQuantity < maxMinOrder) {
+        appliedFilters.append(
+          `<span class="filter-tag">Min. compra: ≤${filters.maxMinOrderQuantity} u. <span class="remove-tag icon-close" data-filter="minOrderQuantity"></span></span>`
+        );
+      }
+
       if (filters.brands.length > 0) {
         filters.brands.forEach((brand) => {
           appliedFilters.append(
             `<span class="filter-tag">${brand.label} <span class="remove-tag icon-close" data-filter="brand" data-value="${brand.id}"></span></span>`
+          );
+        });
+      }
+
+      if (filters.categories.length > 0) {
+        filters.categories.forEach((category) => {
+          appliedFilters.append(
+            `<span class="filter-tag">${category.label} <span class="remove-tag icon-close" data-filter="category" data-value="${category.id}"></span></span>`
           );
         });
       }
@@ -197,10 +306,22 @@
         );
         $(`input[name="brand"][id="${filterValue}"]`).prop("checked", false);
       }
+      if (filterType === "category") {
+        filters.categories = filters.categories.filter(
+          (category) => category.id !== filterValue
+        );
+        $(`input[name="category"][id="${filterValue}"]`).prop("checked", false);
+      }
       if (filterType === "price") {
         filters.minPrice = minPrice;
         filters.maxPrice = maxPrice;
-        priceSlider.noUiSlider.set([minPrice, maxPrice]);
+        if (priceMinInput) priceMinInput.value = "";
+        if (priceMaxInput) priceMaxInput.value = "";
+      }
+
+      if (filterType === "minOrderQuantity") {
+        filters.maxMinOrderQuantity = maxMinOrder;
+        if (minOrderInput) minOrderInput.value = "";
       }
 
       if (filterType === "sale") {
@@ -217,15 +338,20 @@
       filters.color = null;
       filters.availability = null;
       filters.brands = [];
+      filters.categories = [];
       filters.minPrice = minPrice;
       filters.maxPrice = maxPrice;
+      filters.maxMinOrderQuantity = maxMinOrder;
       filters.sale = false;
 
       $(".shop-sale-text").removeClass("active");
       $('input[name="brand"]').prop("checked", false);
+      $('input[name="category"]').prop("checked", false);
       $('input[name="availability"]').prop("checked", false);
       $(".size-check, .color-check").removeClass("active");
-      priceSlider.noUiSlider.set([minPrice, maxPrice]);
+      if (priceMinInput) priceMinInput.value = "";
+      if (priceMaxInput) priceMaxInput.value = "";
+      if (minOrderInput) minOrderInput.value = "";
 
       applyFilters();
       updateMetaFilter();
@@ -239,12 +365,12 @@
         const product = $(this);
         let showProduct = true;
 
-        const priceText = product
-          .find(".current-price")
-          .text()
-          .replace("$", "");
-        const price = parseFloat(priceText);
-        if (price < filters.minPrice || price > filters.maxPrice) {
+        // Parse the price range using the custom function
+        const priceRange = parsePriceFromHTML(product);
+        
+        // Check if there's overlap between product's price range and filter range
+        // Show product if any part of its price range falls within the filter range
+        if (priceRange.max < filters.minPrice || priceRange.min > filters.maxPrice) {
           showProduct = false;
         }
 
@@ -270,7 +396,16 @@
         }
 
         if (filters.sale) {
-          if (!product.find(".on-sale-wrap").length) {
+          // Check if product has sale indicator (either on-sale-wrap or price-text-discount)
+          if (!product.find(".on-sale-wrap, .price-text-discount").length) {
+            showProduct = false;
+          }
+        }
+
+        // Filter by minimum order quantity
+        if (filters.maxMinOrderQuantity < maxMinOrder) {
+          const productMinOrder = parseMinOrderQuantity(product);
+          if (productMinOrder > filters.maxMinOrderQuantity) {
             showProduct = false;
           }
         }
@@ -278,6 +413,13 @@
         if (filters.brands.length > 0) {
           const brandId = product.attr("data-brand");
           if (!filters.brands.some((brand) => brand.id === brandId)) {
+            showProduct = false;
+          }
+        }
+
+        if (filters.categories.length > 0) {
+          const categoryId = product.attr("data-category");
+          if (!filters.categories.some((category) => category.id === categoryId)) {
             showProduct = false;
           }
         }
@@ -628,7 +770,6 @@
   };
 
   $(function () {
-    rangeTwoPrice();
     filterProducts();
     filterSort();
     swLayoutShop();
