@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<!--[if IE 8 ]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <title>Button Styles Demo - Formas.shop</title>
+
+    <meta name="author" content="Formas.shop">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Button Styles Demo - All available button types in the project">
+
+   <!-- font -->
+   <link rel="stylesheet" href="fonts/fonts.css">
+   <link rel="stylesheet" href="fonts/font-icons.css">
+   <link rel="stylesheet" href="css/bootstrap.min.css">
+   <link rel="stylesheet" href="css/swiper-bundle.min.css">
+   <link rel="stylesheet" href="css/animate.css">
+   <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+        }
+        .demo-section {
+            background: white;
+            padding: 40px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .demo-section h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            color: #333;
+        }
+        .demo-section h3 {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 30px 0 15px 0;
+            color: #666;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .button-item {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .button-item code {
+            font-size: 12px;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #666;
+        }
+        .dark-bg {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 8px;
+        }
+        .container-demo {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-demo">
+        <h1 class="page-title">Button Styles Demo</h1>
+        <p style="text-align: center; margin-bottom: 50px; color: #666; font-size: 18px;">All available button types in the project</p>
+
+        <!-- TF-BTN Section -->
+        <div class="demo-section">
+            <h2>TF-BTN (Main Button Style)</h2>
+            
+            <h3>Default Sizes</h3>
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="tf-btn"><span>Default Button</span></a>
+                    <code>.tf-btn</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-lg"><span>Large Button</span></a>
+                    <code>.tf-btn.btn-lg</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-md"><span>Medium Button</span></a>
+                    <code>.tf-btn.btn-md</code>
+                </div>
+            </div>
+
+            <h3>Color Variants</h3>
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="tf-btn"><span>Main Color</span></a>
+                    <code>.tf-btn</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-white"><span>White Button</span></a>
+                    <code>.tf-btn.btn-white</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-white has-border"><span>White with Border</span></a>
+                    <code>.tf-btn.btn-white.has-border</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-black"><span>Black Button</span></a>
+                    <code>.tf-btn.btn-black</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-black has-border"><span>Black with Border</span></a>
+                    <code>.tf-btn.btn-black.has-border</code>
+                </div>
+            </div>
+
+            <h3>Shape Variants</h3>
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="tf-btn"><span>Rounded (Default)</span></a>
+                    <code>.tf-btn</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-square"><span>Square Button</span></a>
+                    <code>.tf-btn.btn-square</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn radius-4"><span>Radius 4px</span></a>
+                    <code>.tf-btn.radius-4</code>
+                </div>
+            </div>
+
+            <h3>With Icons</h3>
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="tf-btn"><span class="text">Button with Icon</span><i class="icon icon-arrowUpRight"></i></a>
+                    <code>.tf-btn + icon</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-white"><span class="text">White with Icon</span><i class="icon icon-arrowUpRight"></i></a>
+                    <code>.tf-btn.btn-white + icon</code>
+                </div>
+            </div>
+
+            <h3>Special Variants</h3>
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-reset"><span>Reset Button</span></a>
+                    <code>.tf-btn.btn-reset</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- BTN-LINE Section -->
+        <div class="demo-section">
+            <h2>BTN-LINE (Underline Button Style)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="btn-line">Default Line Button</a>
+                    <code>.btn-line</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="btn-line has-icon">Line with Icon <i class="icon icon-arrow-right"></i></a>
+                    <code>.btn-line.has-icon</code>
+                </div>
+            </div>
+
+            <h3>On Dark Background</h3>
+            <div class="dark-bg">
+                <div class="button-group">
+                    <div class="button-item">
+                        <a href="#" class="btn-line style-white">White Line Button</a>
+                        <code>.btn-line.style-white</code>
+                    </div>
+                    <div class="button-item">
+                        <a href="#" class="btn-line style-white has-icon">White with Icon <i class="icon icon-arrow-right"></i></a>
+                        <code>.btn-line.style-white.has-icon</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TF-BTN-DEFAULT Section -->
+        <div class="demo-section">
+            <h2>TF-BTN-DEFAULT (Small Default Button)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="tf-btn-default">Default Small Button <i class="icon icon-arrow-right"></i></a>
+                    <code>.tf-btn-default</code>
+                </div>
+            </div>
+
+            <h3>On Dark Background</h3>
+            <div class="dark-bg">
+                <div class="button-group">
+                    <div class="button-item">
+                        <a href="#" class="tf-btn-default style-white">White Small Button <i class="icon icon-arrow-right"></i></a>
+                        <code>.tf-btn-default.style-white</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BTN-STYLE-1 Section -->
+        <div class="demo-section">
+            <h2>BTN-STYLE-1 (Small Rounded Border Button)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="btn-style-1">Style 1 Button</a>
+                    <code>.btn-style-1</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- BTN-STYLE-2 Section -->
+        <div class="demo-section">
+            <h2>BTN-STYLE-2 (Rounded Filled Button)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="btn-style-2"><span>Style 2 Default</span></a>
+                    <code>.btn-style-2</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="btn-style-2 btn-lg"><span>Style 2 Large</span></a>
+                    <code>.btn-style-2.btn-lg</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="btn-style-2 btn-lg-2"><span>Style 2 Large 2</span></a>
+                    <code>.btn-style-2.btn-lg-2</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- BTN-STYLE-3 Section -->
+        <div class="demo-section">
+            <h2>BTN-STYLE-3 (Primary Color Rounded Button)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="btn-style-3"><span>Style 3 Button</span></a>
+                    <code>.btn-style-3</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- BTN-STYLE-4 Section -->
+        <div class="demo-section">
+            <h2>BTN-STYLE-4 (Square Border Button)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="btn-style-4">Style 4 Button</a>
+                    <code>.btn-style-4</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- BTN-STYLE-5 Section -->
+        <div class="demo-section">
+            <h2>BTN-STYLE-5 (Orange/Yellow Filled Button)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="btn-style-5">Style 5 Button <i class="icon icon-arrow-right"></i></a>
+                    <code>.btn-style-5</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- BTN-STYLE-6 Section -->
+        <div class="demo-section">
+            <h2>BTN-STYLE-6 (White Rounded Button with Icon)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="btn-style-6"><span>Style 6 Button</span><i class="icon icon-arrow-right"></i></a>
+                    <code>.btn-style-6</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- BTN-OUT-LINE Section -->
+        <div class="demo-section">
+            <h2>BTN-OUT-LINE (Outlined Button)</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="btn-out-line">Outlined Button</a>
+                    <code>.btn-out-line</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disabled States -->
+        <div class="demo-section">
+            <h2>Disabled States</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="tf-btn btn-sold-out"><span>Sold Out</span></a>
+                    <code>.tf-btn.btn-sold-out</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="btn-style-2 btn-sold-out"><span>Sold Out Style 2</span></a>
+                    <code>.btn-style-2.btn-sold-out</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading States -->
+        <div class="demo-section">
+            <h2>Loading States</h2>
+            
+            <div class="button-group">
+                <div class="button-item">
+                    <a href="#" class="tf-btn tf-loading"><span class="text-btn">Loading Button</span></a>
+                    <code>.tf-btn.tf-loading</code>
+                </div>
+                <div class="button-item">
+                    <a href="#" class="tf-btn tf-loading loading"><span class="text-btn">Loading Active</span></a>
+                    <code>.tf-btn.tf-loading.loading</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Buttons Side by Side -->
+        <div class="demo-section">
+            <h2>Quick Comparison - All Styles</h2>
+            
+            <div class="button-group" style="gap: 15px;">
+                <a href="#" class="tf-btn"><span>TF-BTN</span></a>
+                <a href="#" class="tf-btn btn-white"><span>TF-BTN White</span></a>
+                <a href="#" class="btn-line">BTN-LINE</a>
+                <a href="#" class="tf-btn-default">TF-DEFAULT <i class="icon icon-arrow-right"></i></a>
+                <a href="#" class="btn-style-1">STYLE-1</a>
+                <a href="#" class="btn-style-2"><span>STYLE-2</span></a>
+                <a href="#" class="btn-style-3"><span>STYLE-3</span></a>
+                <a href="#" class="btn-style-4">STYLE-4</a>
+                <a href="#" class="btn-style-5">STYLE-5 <i class="icon icon-arrow-right"></i></a>
+                <a href="#" class="btn-style-6"><span>STYLE-6</span><i class="icon icon-arrow-right"></i></a>
+                <a href="#" class="btn-out-line">OUT-LINE</a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/swiper-bundle.min.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>
+
+
+
