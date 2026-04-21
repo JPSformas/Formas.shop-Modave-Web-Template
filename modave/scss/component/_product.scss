@@ -733,6 +733,10 @@
     .swiper-slide {
         height: max-content;
         width: auto;
+        margin-bottom: 10px !important;
+        &:last-child {
+            margin-bottom: 0 !important;
+        }
         .item {
             position: relative;
             height: 100%;

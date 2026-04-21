@@ -209,6 +209,72 @@ if ($(".tf-sw-tiktok").length > 0) {
   });
 }
 
+// Generic carousel: use tf-sw-generic + sw-pagination-generic.
+// Pagination can be next sibling of swiper OR inside the swiper. Optional nav: .nav-prev-generic / .nav-next-generic in same parent.
+if ($(".tf-sw-generic").length > 0) {
+  $(".tf-sw-generic").each(function() {
+    var $swiper = $(this);
+    var $parent = $swiper.parent();
+    var paginationEl = $swiper.next(".sw-pagination-generic")[0] || $swiper.find(".sw-pagination-generic")[0];
+    if (!paginationEl) return;
+    var prevEl = $parent.find(".nav-prev-generic")[0] || null;
+    var nextEl = $parent.find(".nav-next-generic")[0] || null;
+    var preview = $swiper.data("preview");
+    var tablet = $swiper.data("tablet");
+    var mobile = $swiper.data("mobile");
+    var mobileSm = $swiper.data("mobile-sm") !== undefined ? $swiper.data("mobile-sm") : mobile;
+    var spacingLg = $swiper.data("space-lg");
+    var spacingMd = $swiper.data("space-md");
+    var spacing = $swiper.data("space");
+    var perGroup = $swiper.data("pagination") || 1;
+    var perGroupMd = $swiper.data("pagination-md") || 1;
+    var perGroupLg = $swiper.data("pagination-lg") || 1;
+    var config = {
+      slidesPerView: mobile,
+      spaceBetween: spacing,
+      speed: 1000,
+      pagination: {
+        el: paginationEl,
+        clickable: true,
+      },
+      observer: true,
+      observeParents: true,
+      slidesPerGroup: perGroup,
+      breakpoints: {
+        575: {
+          slidesPerView: mobileSm,
+          spaceBetween: spacing,
+          slidesPerGroup: perGroup,
+        },
+        768: {
+          slidesPerView: tablet,
+          spaceBetween: spacingMd,
+          slidesPerGroup: perGroupMd,
+        },
+        1200: {
+          slidesPerView: preview,
+          spaceBetween: spacingLg,
+          slidesPerGroup: perGroupLg,
+        },
+      },
+    };
+    if (prevEl && nextEl) {
+      config.navigation = { clickable: true, nextEl: nextEl, prevEl: prevEl };
+    }
+    var swiperInstance = new Swiper($swiper[0], config);
+    // Hide arrows when all slides fit (no overflow); show when carousel needs scrolling
+    if (prevEl && nextEl) {
+      var $arrows = $parent.find(".nav-prev-generic, .nav-next-generic");
+      function updateGenericNavVisibility() {
+        var needArrows = swiperInstance.slides.length > swiperInstance.params.slidesPerView;
+        $arrows.toggleClass("nav-generic-unnecessary", !needArrows);
+      }
+      updateGenericNavVisibility();
+      swiperInstance.on("resize breakpointChange", updateGenericNavVisibility);
+    }
+  });
+}
+
 if ($(".tf-sw-categories").length > 0) {
   var tfSwCategories = $(".tf-sw-categories");
   var preview = tfSwCategories.data("preview");
@@ -262,49 +328,54 @@ if ($(".tf-sw-categories").length > 0) {
 }
 
 if ($(".tf-sw-recent").length > 0) {
-  var preview = $(".tf-sw-recent").data("preview");
-  var tablet = $(".tf-sw-recent").data("tablet");
-  var mobile = $(".tf-sw-recent").data("mobile");
-  var spacingLg = $(".tf-sw-recent").data("space-lg");
-  var spacingMd = $(".tf-sw-recent").data("space-md");
-  var spacing = $(".tf-sw-recent").data("space");
-  var perGroup = $(".tf-sw-recent").data("pagination");
-  var perGroupMd = $(".tf-sw-recent").data("pagination-md");
-  var perGroupLg = $(".tf-sw-recent").data("pagination-lg");
-  var swiper = new Swiper(".tf-sw-recent", {
-    slidesPerView: mobile,
-    spaceBetween: spacing,
-    pagination: {
-      el: ".sw-pagination-recent",
-      clickable: true,
-    },
-    slidesPerGroup: perGroup,
-    observer: true,
-    observeParents: true,
-    speed: 1000,
-    navigation: {
-      clickable: true,
-      nextEl: ".nav-prev-recent",
-      prevEl: ".nav-next-recent",
-    },
-    breakpoints: {
-      768: {
-        slidesPerView: tablet,
-        spaceBetween: spacingMd,
-        slidesPerGroup: perGroupMd,
+  $(".tf-sw-recent").each(function() {
+    var $swiper = $(this);
+    var $parent = $swiper.parent();
+    var paginationEl = $swiper.next(".sw-pagination-recent")[0] || $swiper.find(".sw-pagination-recent")[0];
+    if (!paginationEl) return;
+    var prevEl = $parent.find(".nav-prev-recent")[0] || null;
+    var nextEl = $parent.find(".nav-next-recent")[0] || null;
+    var preview = $swiper.data("preview");
+    var tablet = $swiper.data("tablet");
+    var mobile = $swiper.data("mobile");
+    var spacingLg = $swiper.data("space-lg");
+    var spacingMd = $swiper.data("space-md");
+    var spacing = $swiper.data("space");
+    var perGroup = $swiper.data("pagination");
+    var perGroupMd = $swiper.data("pagination-md");
+    var perGroupLg = $swiper.data("pagination-lg");
+    var config = {
+      slidesPerView: mobile,
+      spaceBetween: spacing,
+      pagination: { el: paginationEl, clickable: true },
+      slidesPerGroup: perGroup,
+      observer: true,
+      observeParents: true,
+      speed: 1000,
+      breakpoints: {
+        768: { slidesPerView: tablet, spaceBetween: spacingMd, slidesPerGroup: perGroupMd },
+        1200: { slidesPerView: preview, spaceBetween: spacingLg, slidesPerGroup: perGroupLg },
       },
-      1200: {
-        slidesPerView: preview,
-        spaceBetween: spacingLg,
-        slidesPerGroup: perGroupLg,
-      },
-    },
+    };
+    if (prevEl && nextEl) {
+      config.navigation = { clickable: true, nextEl: nextEl, prevEl: prevEl };
+    }
+    var swiperInstance = new Swiper($swiper[0], config);
+    if (prevEl && nextEl) {
+      var $arrows = $parent.find(".nav-prev-recent, .nav-next-recent");
+      function update() {
+        $arrows.toggleClass("nav-generic-unnecessary", swiperInstance.slides.length <= swiperInstance.params.slidesPerView);
+      }
+      update();
+      swiperInstance.on("resize breakpointChange", update);
+    }
   });
 }
 
 if ($(".tf-sw-latest").length > 0) {
   $(".tf-sw-latest").each(function() {
     var $swiper = $(this);
+    var $parent = $swiper.parent();
     var preview = $swiper.data("preview");
     var tablet = $swiper.data("tablet");
     var mobile = $swiper.data("mobile");
@@ -315,55 +386,43 @@ if ($(".tf-sw-latest").length > 0) {
     var perGroupMd = $swiper.data("pagination-md");
     var perGroupLg = $swiper.data("pagination-lg");
     var navigation = $swiper.data("navigation");
-    
-    // Check if this is a full-width swiper
     var isFullWidth = $swiper.hasClass('full-width-swiper');
-    var paginationEl = isFullWidth ? $swiper.find('.sw-pagination-iconbox')[0] : '.sw-pagination-latest';
-    
+    var paginationEl = isFullWidth ? $swiper.find('.sw-pagination-iconbox')[0] : $swiper.next(".sw-pagination-latest")[0] || $swiper.find(".sw-pagination-latest")[0];
+    var prevEl = $parent.find(".nav-prev-latest")[0] || $swiper.find(".nav-prev-latest")[0] || null;
+    var nextEl = $parent.find(".nav-next-latest")[0] || $swiper.find(".nav-next-latest")[0] || null;
+    if (!paginationEl) return;
+
     var swiperConfig = {
       slidesPerView: mobile,
       spaceBetween: spacing,
       observer: true,
       observeParents: true,
       speed: 1000,
-      pagination: {
-        el: paginationEl,
-        clickable: true,
-      },
+      pagination: { el: paginationEl, clickable: true },
       slidesPerGroup: perGroup,
       breakpoints: {
-        768: {
-          slidesPerView: tablet,
-          spaceBetween: spacingMd,
-          slidesPerGroup: perGroupMd,
-        },
-        1200: {
-          slidesPerView: preview,
-          spaceBetween: spacingLg,
-          slidesPerGroup: perGroupLg,
-        },
+        768: { slidesPerView: tablet, spaceBetween: spacingMd, slidesPerGroup: perGroupMd },
+        1200: { slidesPerView: preview, spaceBetween: spacingLg, slidesPerGroup: perGroupLg },
       },
     };
-    
-    // Add navigation if enabled
-    if (navigation) {
+    if ((prevEl && nextEl) || navigation) {
       swiperConfig.navigation = {
         clickable: true,
-        nextEl: $swiper.find('.nav-next-latest')[0] || null,
-        prevEl: $swiper.find('.nav-prev-latest')[0] || null,
-      };
-    } else {
-      // Default navigation for non-full-width swipers
-      swiperConfig.navigation = {
-        clickable: true,
-        nextEl: ".nav-prev-latest",
-        prevEl: ".nav-next-latest",
+        nextEl: nextEl || ".nav-next-latest",
+        prevEl: prevEl || ".nav-prev-latest",
       };
     }
-    
     var swiper = new Swiper($swiper[0], swiperConfig);
-    
-    // For full-width swipers, handle pagination visibility
+
+    if (prevEl && nextEl) {
+      var $arrows = $parent.find(".nav-prev-latest, .nav-next-latest");
+      function update() {
+        $arrows.toggleClass("nav-generic-unnecessary", swiper.slides.length <= swiper.params.slidesPerView);
+      }
+      update();
+      swiper.on("resize breakpointChange", update);
+    }
+
     if (isFullWidth) {
       setTimeout(function() {
         if (swiper.slides.length > swiper.params.slidesPerView) {
@@ -628,8 +687,8 @@ if ($(".tf-sw-lookbook").length > 0) {
     slidesPerGroup: perGroup,
     navigation: {
       clickable: true,
-      nextEl: ".nav-prev-lookbook",
-      prevEl: ".nav-next-lookbook",
+      nextEl: ".nav-next-lookbook",
+      prevEl: ".nav-prev-lookbook",
     },
     breakpoints: {
       575: {
@@ -768,5 +827,42 @@ if ($(".tf-product-header").length > 0) {
       nextEl: ".nav-prev-product-header",
       prevEl: ".nav-next-product-header",
     },
+  });
+}
+
+if ($(".tf-sw-product-colors").length > 0) {
+  $(".tf-sw-product-colors").each(function () {
+    var $swiper = $(this);
+    var $wrap = $swiper.closest(".wrap-product-colors");
+    var prevEl = $wrap.find(".nav-prev-product-colors")[0];
+    var nextEl = $wrap.find(".nav-next-product-colors")[0];
+    var spacing =
+      $swiper.data("space") !== undefined ? Number($swiper.data("space")) : 8;
+    var swiperInstance = new Swiper($swiper[0], {
+      slidesPerView: "auto",
+      spaceBetween: spacing,
+      freeMode: true,
+      watchOverflow: true,
+      observer: true,
+      observeParents: true,
+      navigation: {
+        clickable: true,
+        prevEl: prevEl,
+        nextEl: nextEl,
+      },
+    });
+    if (prevEl && nextEl) {
+      var $arrows = $wrap.find(
+        ".nav-prev-product-colors, .nav-next-product-colors"
+      );
+      function updateColorSwatchNav() {
+        $arrows.toggleClass(
+          "nav-generic-unnecessary",
+          Boolean(swiperInstance.isLocked)
+        );
+      }
+      updateColorSwatchNav();
+      swiperInstance.on("resize breakpointChange update", updateColorSwatchNav);
+    }
   });
 }

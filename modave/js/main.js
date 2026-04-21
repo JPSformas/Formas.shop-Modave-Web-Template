@@ -161,7 +161,8 @@
   -------------------------------------------------------------------------*/
     var swatchColor = function () {
         if ($(".card-product").length > 0) {
-            $(".color-swatch").on("click, mouseover", function () {
+            //$(".color-swatch").on("click, mouseover", function () {//
+            $(".color-swatch").on("click", function () {
                 var swatchColor = $(this).find("img").attr("src");
                 var imgProduct = $(this)
                     .closest(".card-product")
@@ -316,22 +317,28 @@
     /* Infinite Scroll
   -------------------------------------------------------------------------*/
     var loadItem = function () {
-        const gridInitialItems = 8;
-        const listInitialItems = 4;
-        const gridItemsPerPage = 4;
-        const listItemsPerPage = 2;
+        const gridInitialItems = 10;
+        const listInitialItems = 10;
+        const gridItemsPerPage = 10;
+        const listItemsPerPage = 5;
 
         let listItemsDisplayed = listInitialItems;
         let gridItemsDisplayed = gridInitialItems;
         let scrollTimeout;
 
+        /** Hide items by position among *filter-visible* items so infinite scroll works with filters. */
         function hideExtraItems(layout, itemsDisplayed) {
-            layout.find(".loadItem").each(function (index) {
+            var $layout = layout;
+            $layout.find(".loadItem").removeClass("hidden");
+            var visibleItems = $layout.find(".loadItem").filter(function () {
+                return $(this).css("display") !== "none";
+            });
+            visibleItems.each(function (index) {
                 if (index >= itemsDisplayed) {
                     $(this).addClass("hidden");
                 }
             });
-            if (layout.is("#listLayout")) updateLastVisible(layout);
+            if ($layout.is("#listLayout")) updateLastVisible($layout);
         }
 
         function showMoreItems(layout, itemsPerPage, itemsDisplayed) {
@@ -355,11 +362,20 @@
                 .addClass("last-visible");
         }
         function checkLoadMoreButton(layout) {
-            if (layout.find(".loadItem.hidden").length === 0) {
-                if (layout.is("#listLayout")) {
+            var hasHidden = layout.find(".loadItem.hidden").length > 0;
+            if (layout.is("#listLayout")) {
+                if (hasHidden) {
+                    $("#loadMoreListBtn").show();
+                    $("#infiniteScrollList").show();
+                } else {
                     $("#loadMoreListBtn").hide();
                     $("#infiniteScrollList").hide();
-                } else if (layout.is("#gridLayout")) {
+                }
+            } else if (layout.is("#gridLayout")) {
+                if (hasHidden) {
+                    $("#loadMoreGridBtn").show();
+                    $("#infiniteScrollGrid").show();
+                } else {
                     $("#loadMoreGridBtn").hide();
                     $("#infiniteScrollGrid").hide();
                 }
@@ -428,6 +444,18 @@
             );
         }
         $(window).on("scroll", onScroll);
+
+        // Re-apply pagination when shop filters change so infinite scroll works on filtered results
+        $(document).on("shopFiltersApplied", function () {
+            listItemsDisplayed = listInitialItems;
+            gridItemsDisplayed = gridInitialItems;
+            hideExtraItems($("#listLayout"), listItemsDisplayed);
+            hideExtraItems($("#gridLayout"), gridItemsDisplayed);
+            checkLoadMoreButton($("#listLayout"));
+            checkLoadMoreButton($("#gridLayout"));
+            if ($("#listLayout").length) updateLastVisible($("#listLayout"));
+            if ($("#gridLayout").length) updateLastVisible($("#gridLayout"));
+        });
     };
 
     /* Stagger Wrap
@@ -435,7 +463,8 @@
     var staggerWrap = function () {
         if ($(".stagger-wrap").length) {
             var count = $(".stagger-item").length;
-            for (var i = 1, time = 0.2; i <= count; i++) {
+            // Reduced delay from 0.2s to 0.05s for faster animation
+            for (var i = 1, time = 0.05; i <= count; i++) {
                 $(".stagger-item:nth-child(" + i + ")")
                     .css("transition-delay", time * i + "s")
                     .addClass("stagger-finished");
@@ -476,6 +505,638 @@
         });
         $(".tf-mini-cart-tool-close").click(function () {
             $(".tf-mini-cart-tool-openable").removeClass("open");
+        });
+    };
+
+    /* Personalization Tabs
+  -------------------------------------------------------------------------*/
+    var personalizationTabs = function () {
+        // Personalization type tabs
+        $(".personalization-tab").on("click", function () {
+            var $tab = $(this);
+            var tabId = $tab.data("tab");
+            
+            // Remove active class from all tabs and content
+            $(".personalization-tab").removeClass("active");
+            $(".personalization-tab-content").removeClass("active");
+            
+            // Add active class to clicked tab and corresponding content
+            $tab.addClass("active");
+            $("#" + tabId).addClass("active");
+        });
+
+        // Print method tabs
+        $(".print-method-tab").on("click", function () {
+            var $tab = $(this);
+            
+            // Remove active class from all print method tabs
+            $(".print-method-tab").removeClass("active");
+            
+            // Add active class to clicked tab
+            $tab.addClass("active");
+        });
+
+        // Initialize file storage for each upload input
+        $(".tf-product-personalization .tf-product-image-upload input[type='file']").each(function() {
+            if (!$(this).data('files-storage')) {
+                $(this).data('files-storage', []);
+            }
+        });
+
+        // File upload handler with validation
+        $(document).on("change", ".tf-product-personalization .tf-product-image-upload input[type='file']", function () {
+            var $input = $(this);
+            var files = this.files;
+            var $attachedFiles = $input.closest(".personalization-tab-content").find(".attached-files");
+            var storedFiles = $input.data('files-storage') || [];
+            
+            // Valid file extensions
+            var validExtensions = ['.jpg', '.jpeg', '.png', '.pdf', '.ai', '.eps'];
+            var maxFileSize = 10 * 1024 * 1024; // 10MB
+            
+            if (files.length > 0) {
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    var fileName = file.name;
+                    var fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase();
+                    var fileSize = file.size;
+                    
+                    // Check if file already exists
+                    var fileExists = storedFiles.some(function(f) {
+                        return f.name === fileName && f.size === fileSize && f.lastModified === file.lastModified;
+                    });
+                    
+                    if (fileExists) {
+                        continue; // Skip duplicate files
+                    }
+                    
+                    // Validate file extension
+                    if (validExtensions.indexOf(fileExtension) === -1) {
+                        alert('El archivo "' + fileName + '" no tiene un formato válido. Formatos aceptados: JPG, PNG, PDF, AI, EPS');
+                        continue;
+                    }
+                    
+                    // Validate file size
+                    if (fileSize > maxFileSize) {
+                        alert('El archivo "' + fileName + '" es demasiado grande. Tamaño máximo: 10MB');
+                        continue;
+                    }
+                    
+                    // Store file data
+                    var fileData = {
+                        file: file,
+                        name: fileName,
+                        size: fileSize,
+                        lastModified: file.lastModified,
+                        id: Date.now() + '_' + i // Unique ID for tracking
+                    };
+                    storedFiles.push(fileData);
+                    
+                    // Format file size for display
+                    var fileSizeFormatted = formatFileSize(fileSize);
+                    
+                    // Create file item with unique ID
+                    var fileItem = $('<div class="attached-file-item d-flex align-items-center justify-content-between mb_4" data-file-id="' + fileData.id + '">' +
+                        '<span class="text-caption-1">' + fileName + ' <span class="text-secondary-2">(' + fileSizeFormatted + ')</span></span>' +
+                        '<button type="button" class="btn-remove-file" title="Eliminar archivo"><i class="fa-solid fa-trash"></i></button>' +
+                        '</div>');
+                    
+                    $attachedFiles.append(fileItem);
+                }
+                
+                // Update stored files
+                $input.data('files-storage', storedFiles);
+                
+                // Update the input with stored files using DataTransfer
+                updateFileInput($input, storedFiles);
+                
+                // Reset input to allow selecting the same file again
+                $input.val('');
+            }
+        });
+
+        // File removal handler (using event delegation)
+        $(document).on("click", ".btn-remove-file", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var $removeBtn = $(this);
+            var $fileItem = $removeBtn.closest(".attached-file-item");
+            var fileId = $fileItem.data('file-id');
+            var $input = $fileItem.closest(".personalization-tab-content").find(".tf-product-image-upload input[type='file']");
+            var storedFiles = $input.data('files-storage') || [];
+            
+            // Remove file from storage
+            var updatedFiles = storedFiles.filter(function(f) {
+                return f.id !== fileId;
+            });
+            
+            // Update stored files
+            $input.data('files-storage', updatedFiles);
+            
+            // Update the input
+            updateFileInput($input, updatedFiles);
+            
+            // Remove from DOM with animation
+            $fileItem.fadeOut(300, function () {
+                $(this).remove();
+            });
+        });
+
+        // Function to update file input with stored files
+        function updateFileInput($input, files) {
+            if (files.length === 0) {
+                $input.val('');
+                return;
+            }
+            
+            // Create a new DataTransfer object
+            var dataTransfer = new DataTransfer();
+            
+            // Add all stored files to DataTransfer
+            files.forEach(function(fileData) {
+                dataTransfer.items.add(fileData.file);
+            });
+            
+            // Update the input's files
+            $input[0].files = dataTransfer.files;
+        }
+
+        // Helper function to format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            var k = 1024;
+            var sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            var i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+    };
+
+    /* Quantity with Bonified Logo Message
+  -------------------------------------------------------------------------*/
+    var quantityBonifiedLogo = function () {
+        var $quantitySection = $(".tf-product-info-quantity");
+        
+        if ($quantitySection.length === 0) return;
+        
+        var minOrder = parseInt($quantitySection.data("min-order")) || 1;
+        var minBonified = parseInt($quantitySection.data("min-bonified")) || 100;
+        var logoPricePerUnit = parseFloat($quantitySection.data("logo-price-per-unit")) || 0;
+        
+        var $quantityInput = $quantitySection.find(".quantity-product");
+        var $quantityDisplay = $quantitySection.find(".quantity-display");
+        var $minOrderDisplay = $quantitySection.find(".min-order-display");
+        var $bonifiedMessage = $quantitySection.closest(".tf-product-info-list").find("#bonified-logo-message").first();
+        if ($bonifiedMessage.length === 0) {
+            $bonifiedMessage = $("#bonified-logo-message").first();
+        }
+        var $btnDecrease = $quantitySection.find(".btn-decrease");
+        var $btnIncrease = $quantitySection.find(".btn-increase");
+        
+        // Initialize global flag to prevent circular updates when updating from sizes
+        if (typeof window.isUpdatingFromSizes === 'undefined') {
+            window.isUpdatingFromSizes = false;
+        }
+        
+        // Ensure input is editable
+        $quantityInput.prop('readonly', false);
+        $quantityInput.prop('disabled', false);
+        
+        // Initialize
+        updateQuantityDisplay();
+        updateBonifiedMessage();
+        
+        // Update min order display
+        $minOrderDisplay.text(minOrder);
+        
+        // Initialize size distribution
+        distributeQuantityToSizes();
+        
+        // Remove any existing handlers to prevent double-firing
+        $btnIncrease.off("click.quantityBonified");
+        $btnDecrease.off("click.quantityBonified");
+        
+        // Quantity increase/decrease handlers with namespaced events
+        $btnIncrease.on("click.quantityBonified", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            var currentValue = parseInt($quantityInput.val()) || minOrder;
+            $quantityInput.val(currentValue + 1);
+            updateQuantityDisplay();
+            updateBonifiedMessage();
+            distributeQuantityToSizes();
+        });
+        
+        $btnDecrease.on("click.quantityBonified", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            var currentValue = parseInt($quantityInput.val()) || minOrder;
+            if (currentValue > minOrder) {
+                $quantityInput.val(currentValue - 1);
+                updateQuantityDisplay();
+                updateBonifiedMessage();
+                distributeQuantityToSizes();
+            }
+        });
+        
+        // Direct input handler - allow typing and erasing
+        $quantityInput.on("keydown", function (e) {
+            // Allow: backspace, delete, tab, escape, enter, home, end, and arrow keys
+            if ([46, 8, 9, 27, 13, 35, 36, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 ||
+                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z
+                (e.ctrlKey === true && [65, 67, 86, 88, 90].indexOf(e.keyCode) !== -1) ||
+                // Allow Meta key combinations (Mac)
+                (e.metaKey === true && [65, 67, 86, 88, 90].indexOf(e.keyCode) !== -1)) {
+                return;
+            }
+            // Allow numbers: 0-9 on main keyboard and numpad
+            if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) {
+                return;
+            }
+            // Block everything else
+            e.preventDefault();
+        });
+        
+        // Handle paste - clean non-numeric characters
+        $quantityInput.on("paste", function (e) {
+            var $input = $(this);
+            setTimeout(function() {
+                var originalValue = $input.val();
+                var numericValue = originalValue.replace(/[^0-9]/g, '');
+                if (numericValue !== originalValue) {
+                    $input.val(numericValue);
+                }
+            }, 10);
+        });
+        
+        // Real-time update while typing (with debounce) - allow empty input while typing
+        var typingTimeout;
+        $quantityInput.on("input", function () {
+            clearTimeout(typingTimeout);
+            var $input = $(this);
+            var inputValue = $input.val().trim();
+            
+            // Remove non-numeric characters
+            var numericValue = inputValue.replace(/[^0-9]/g, '');
+            if (numericValue !== inputValue) {
+                $input.val(numericValue);
+                inputValue = numericValue;
+            }
+            
+            // Update display only if there's a valid number >= minimum
+            if (inputValue !== '' && !isNaN(inputValue)) {
+                var value = parseInt(inputValue);
+                if (value >= minOrder) {
+                    typingTimeout = setTimeout(function() {
+                        updateQuantityDisplay();
+                        updateBonifiedMessage();
+                        distributeQuantityToSizes();
+                    }, 300);
+                }
+            }
+        });
+        
+        // Validate and enforce minimum on blur or Enter key
+        function validateAndSetMinimum() {
+            var inputValue = $quantityInput.val().trim();
+            var value;
+            
+            // If empty or invalid, set to minimum
+            if (inputValue === '' || isNaN(inputValue)) {
+                value = minOrder;
+            } else {
+                value = parseInt(inputValue);
+                // If below minimum, set to minimum
+                if (value < minOrder) {
+                    value = minOrder;
+                }
+            }
+            
+            // Update input value
+            $quantityInput.val(value);
+            updateQuantityDisplay();
+            updateBonifiedMessage();
+            // Distribute to sizes after validation
+            distributeQuantityToSizes();
+        }
+        
+        $quantityInput.on("blur", function () {
+            validateAndSetMinimum();
+        });
+        
+        // Handle Enter key to confirm input
+        $quantityInput.on("keypress", function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                validateAndSetMinimum();
+                $(this).blur();
+            }
+        });
+        
+        function updateQuantityDisplay() {
+            var currentQuantity = parseInt($quantityInput.val()) || minOrder;
+            $quantityDisplay.text(currentQuantity);
+            
+            // Disable decrease button if at minimum
+            if (currentQuantity <= minOrder) {
+                $btnDecrease.prop('disabled', true);
+            } else {
+                $btnDecrease.prop('disabled', false);
+            }
+        }
+        
+        function updateBonifiedMessage() {
+            var currentQuantity = parseInt($quantityInput.val()) || minOrder;
+            var $message = $bonifiedMessage;
+            
+            if (currentQuantity >= minBonified) {
+                // Bonified minimum reached - show success message
+                $message.removeClass("not-reached").addClass("reached");
+                $message.html(
+                    '<div class="message-icon"><i class="fa-solid fa-gift"></i></div>' +
+                    '<div class="message-content">' +
+                        '<div class="message-text">Tenés el <strong>logo gratis</strong>!</div>' +
+                    '</div>' +
+                    '<div class="info-icon"><i class="fa-solid fa-circle-question"></i></div>'
+                );
+            } else {
+                // Bonified minimum not reached - show encouragement message
+                var unitsNeeded = minBonified - currentQuantity;
+                var logoPriceFormatted = logoPricePerUnit.toLocaleString('es-AR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                
+                $message.removeClass("reached").addClass("not-reached");
+                $message.html(
+                    '<div class="message-content">' +
+                        '<div class="message-text">Sumá <strong>' + unitsNeeded + ' u. más</strong> y llevate el <strong>logo gratis</strong> <i class="fa-solid fa-circle-question"></i></div>' +
+                        '<div class="message-subtext">Llevando la cantidad actual, aplicar el logo tiene un valor de <strong>$' + logoPriceFormatted + ' +iva</strong> por unidad</div>' +
+                    '</div>'
+                    
+                );
+            }
+        }
+        
+        // Distribute quantity equally across all sizes
+        function distributeQuantityToSizes() {
+            // Don't distribute if update is coming from size changes
+            if (window.isUpdatingFromSizes) return;
+            
+            var totalQuantity = parseInt($quantityInput.val()) || minOrder;
+            var $sizeInputs = $(".size-quantity-input");
+            
+            if ($sizeInputs.length === 0) return;
+            
+            // Calculate quantity per size (equal distribution)
+            var quantityPerSize = Math.floor(totalQuantity / $sizeInputs.length);
+            var remainder = totalQuantity % $sizeInputs.length;
+            
+            // Distribute quantity respecting stock limits
+            var distributedTotal = 0;
+            var $sizeCards = $(".size-card");
+            
+            $sizeCards.each(function(index) {
+                var $card = $(this);
+                var $input = $card.find(".size-quantity-input");
+                var stock = parseInt($card.data("stock")) || 0;
+                
+                // Calculate quantity for this size
+                var sizeQuantity = quantityPerSize;
+                // Add remainder to first sizes
+                if (index < remainder) {
+                    sizeQuantity += 1;
+                }
+                
+                // Respect stock limit
+                if (sizeQuantity > stock) {
+                    sizeQuantity = stock;
+                }
+                
+                // Update input value
+                $input.val(sizeQuantity);
+                distributedTotal += sizeQuantity;
+            });
+            
+            // If total distributed is less than requested (due to stock limits),
+            // distribute remaining quantity to sizes with available stock
+            if (distributedTotal < totalQuantity) {
+                var remaining = totalQuantity - distributedTotal;
+                distributeRemainingQuantity(remaining);
+            }
+        }
+        
+        // Distribute remaining quantity to sizes with available stock
+        function distributeRemainingQuantity(remaining) {
+            var $sizeCards = $(".size-card");
+            var attempts = 0;
+            var maxAttempts = $sizeCards.length * 2;
+            
+            while (remaining > 0 && attempts < maxAttempts) {
+                $sizeCards.each(function() {
+                    if (remaining <= 0) return false;
+                    
+                    var $card = $(this);
+                    var $input = $card.find(".size-quantity-input");
+                    var stock = parseInt($card.data("stock")) || 0;
+                    var currentValue = parseInt($input.val()) || 0;
+                    
+                    if (currentValue < stock) {
+                        var available = stock - currentValue;
+                        var toAdd = Math.min(remaining, available);
+                        $input.val(currentValue + toAdd);
+                        remaining -= toAdd;
+                    }
+                });
+                attempts++;
+            }
+        }
+        
+    };
+
+    /* Size Quantity Inputs with Stock Restrictions
+  -------------------------------------------------------------------------*/
+    var sizeQuantityInputs = function () {
+        var $sizeInputs = $(".size-quantity-input");
+        
+        if ($sizeInputs.length === 0) return;
+        
+        // Handle keydown - only allow numbers
+        $sizeInputs.on("keydown", function (e) {
+            var $input = $(this);
+            // Allow: backspace, delete, tab, escape, enter, home, end, and arrow keys
+            if ([46, 8, 9, 27, 13, 35, 36, 37, 38, 39, 40].indexOf(e.keyCode) !== -1 ||
+                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+Z
+                (e.ctrlKey === true && [65, 67, 86, 88, 90].indexOf(e.keyCode) !== -1) ||
+                // Allow Meta key combinations (Mac)
+                (e.metaKey === true && [65, 67, 86, 88, 90].indexOf(e.keyCode) !== -1)) {
+                return;
+            }
+            // Allow numbers: 0-9 on main keyboard and numpad
+            if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) {
+                return;
+            }
+            // Block everything else
+            e.preventDefault();
+        });
+        
+        // Handle paste - clean non-numeric characters
+        $sizeInputs.on("paste", function (e) {
+            var $input = $(this);
+            setTimeout(function() {
+                var originalValue = $input.val();
+                var numericValue = originalValue.replace(/[^0-9]/g, '');
+                if (numericValue !== originalValue) {
+                    $input.val(numericValue);
+                }
+                validateSizeInput($input);
+            }, 10);
+        });
+        
+        // Real-time update while typing in size inputs
+        var sizeTypingTimeout;
+        $sizeInputs.on("input", function () {
+            var $input = $(this);
+            var originalValue = $input.val();
+            var numericValue = originalValue.replace(/[^0-9]/g, '');
+            
+            if (numericValue !== originalValue) {
+                $input.val(numericValue);
+            }
+            
+            // Remove error class while typing
+            $input.removeClass("error");
+            
+            // Update main quantity with debounce
+            clearTimeout(sizeTypingTimeout);
+            sizeTypingTimeout = setTimeout(function() {
+                updateMainQuantityFromSizes();
+            }, 300);
+        });
+        
+        // Validate on blur or Enter
+        function validateSizeInput($input) {
+            var $sizeCard = $input.closest(".size-card");
+            var stock = parseInt($sizeCard.data("stock")) || 0;
+            var inputValue = $input.val().trim();
+            var value;
+            
+            // If empty, set to 0
+            if (inputValue === '' || isNaN(inputValue)) {
+                value = 0;
+            } else {
+                value = parseInt(inputValue);
+            }
+            
+            // Check if exceeds stock
+            if (value > stock) {
+                value = stock;
+                $input.addClass("error");
+            } else {
+                $input.removeClass("error");
+            }
+            
+            // Update input value
+            $input.val(value);
+            
+            // Update main quantity field based on sum of all sizes
+            updateMainQuantityFromSizes();
+        }
+        
+        // Calculate sum of all size quantities and update main quantity field
+        function updateMainQuantityFromSizes() {
+            var $quantitySection = $(".tf-product-info-quantity");
+            if ($quantitySection.length === 0) return;
+            
+            var $quantityInput = $quantitySection.find(".quantity-product");
+            var $quantityDisplay = $quantitySection.find(".quantity-display");
+            var $minOrderDisplay = $quantitySection.find(".min-order-display");
+            var $bonifiedMessage = $quantitySection.closest(".tf-product-info-list").find("#bonified-logo-message").first();
+            if ($bonifiedMessage.length === 0) {
+                $bonifiedMessage = $("#bonified-logo-message").first();
+            }
+            var $btnDecrease = $quantitySection.find(".btn-decrease");
+            var minOrder = parseInt($quantitySection.data("min-order")) || 1;
+            var minBonified = parseInt($quantitySection.data("min-bonified")) || 100;
+            var logoPricePerUnit = parseFloat($quantitySection.data("logo-price-per-unit")) || 0;
+            
+            // Calculate total from all size inputs
+            var total = 0;
+            $(".size-quantity-input").each(function() {
+                var value = parseInt($(this).val()) || 0;
+                total += value;
+            });
+            
+            // Ensure minimum order quantity
+            if (total < minOrder) {
+                total = minOrder;
+            }
+            
+            // Set flag to prevent circular update
+            if (typeof window.isUpdatingFromSizes === 'undefined') {
+                window.isUpdatingFromSizes = false;
+            }
+            window.isUpdatingFromSizes = true;
+            
+            // Update main quantity input
+            $quantityInput.val(total);
+            
+            // Update display
+            $quantityDisplay.text(total);
+            
+            // Update decrease button state
+            if (total <= minOrder) {
+                $btnDecrease.prop('disabled', true);
+            } else {
+                $btnDecrease.prop('disabled', false);
+            }
+            
+            // Update bonified message
+            if (total >= minBonified) {
+                $bonifiedMessage.removeClass("not-reached").addClass("reached");
+                $bonifiedMessage.html(
+                    '<div class="message-icon"><i class="fa-solid fa-gift"></i></div>' +
+                    '<div class="message-content">' +
+                        '<div class="message-text">Tenés el <strong>logo gratis</strong>!</div>' +
+                    '</div>' +
+                    '<div class="info-icon"><i class="fa-solid fa-circle-question"></i></div>'
+                );
+            } else {
+                var unitsNeeded = minBonified - total;
+                var logoPriceFormatted = logoPricePerUnit.toLocaleString('es-AR', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                
+                $bonifiedMessage.removeClass("reached").addClass("not-reached");
+                $bonifiedMessage.html(
+                    '<div class="message-icon"><i class="fa-solid fa-circle-info"></i></div>' +
+                    '<div class="message-content">' +
+                        '<div class="message-text">Sumá <strong>' + unitsNeeded + ' u. más</strong> y llevate el <strong>logo gratis</strong> <i class="fa-solid fa-circle-question"></i></div>' +
+                        '<div class="message-subtext">Llevando la cantidad actual, aplicar el logo tiene un valor de <strong>$' + logoPriceFormatted + ' +iva</strong> por unidad</div>' +
+                    '</div>' +
+                    '<div class="info-icon"><i class="fa-solid fa-circle-question"></i></div>'
+                );
+            }
+            
+            // Reset flag after a short delay
+            setTimeout(function() {
+                window.isUpdatingFromSizes = false;
+            }, 100);
+        }
+        
+        $sizeInputs.on("blur", function () {
+            validateSizeInput($(this));
+        });
+        
+        $sizeInputs.on("keypress", function (e) {
+            if (e.keyCode === 13) {
+                e.preventDefault();
+                validateSizeInput($(this));
+                $(this).blur();
+            }
         });
     };
 
@@ -665,7 +1326,16 @@
 
             productItem.find(".color-btn, .size-btn").on("click", function () {
                 var newPrice = parseFloat($(this).data("price")) || basePrice;
-                quantityInput.val(1);
+                // Use minimum order quantity if product has tf-product-info-quantity with data-min-order
+                var $quantitySection = productItem.find(".tf-product-info-quantity");
+                var minOrder = $quantitySection.length
+                    ? parseInt($quantitySection.data("min-order")) || 1
+                    : 1;
+                quantityInput.val(minOrder);
+                // Trigger blur so quantity display and size distribution update (quantityBonifiedLogo)
+                if ($quantitySection.length) {
+                    quantityInput.trigger("blur");
+                }
                 productItem
                     .find(".price-on-sale")
                     .text(
@@ -677,13 +1347,21 @@
                 updateTotalPrice(newPrice, productItem);
             });
 
-            productItem.find(".btn-increase").on("click", function () {
+            productItem.find(".btn-increase").on("click", function (e) {
+                // Skip if this button is inside tf-product-info-quantity (handled by quantityBonifiedLogo)
+                if ($(this).closest(".tf-product-info-quantity").length > 0) {
+                    return;
+                }
                 var currentQuantity = parseInt(quantityInput.val());
                 quantityInput.val(currentQuantity + 1);
                 updateTotalPrice(null, productItem);
             });
 
-            productItem.find(".btn-decrease").on("click", function () {
+            productItem.find(".btn-decrease").on("click", function (e) {
+                // Skip if this button is inside tf-product-info-quantity (handled by quantityBonifiedLogo)
+                if ($(this).closest(".tf-product-info-quantity").length > 0) {
+                    return;
+                }
                 var currentQuantity = parseInt(quantityInput.val());
                 if (currentQuantity > 1) {
                     quantityInput.val(currentQuantity - 1);
@@ -1308,23 +1986,95 @@
         });
     };
 
-    /* bottom sticky
+    /* Sticky bar — sync summary with variant steps
+    -------------------------------------------------------------------------*/
+    var updateStickyBarSummary = function () {
+        var $stickyImage = $("#sticky-bar-image");
+        var $stickyTitle = $("#sticky-bar-title");
+        var $stickySummary = $("#sticky-bar-summary");
+        var $stickyQuantity = $("#sticky-bar-quantity");
+
+        if (!$stickySummary.length) return;
+
+        function refresh() {
+            var $activeColor = $(".color-btn.active");
+            var colorName = $activeColor.length
+                ? $activeColor.data("value")
+                : $(".value-currentColor").text().trim();
+
+            var colorImg = $activeColor.find("img").attr("src");
+            if (colorImg) {
+                $stickyImage.attr("src", colorImg);
+            }
+
+            var personalization = $(".personalization-tab.active .text").text().trim();
+            var quantity = $(".quantity-product").val() || "";
+
+            var parts = [];
+            if (colorName) parts.push(colorName);
+            if (quantity) parts.push(quantity + " u.");
+            if (personalization) parts.push(personalization);
+            $stickySummary.text(parts.join(" · "));
+
+            if (quantity && $stickyQuantity.length) {
+                $stickyQuantity.text(quantity + " u.");
+            }
+
+            var productName = $("h3.name").first().text().trim();
+            if (productName) $stickyTitle.text(productName);
+        }
+
+        $(document).on("click", ".color-btn", function () { setTimeout(refresh, 50); });
+        $(document).on("click", ".personalization-tab", function () { setTimeout(refresh, 50); });
+        $(document).on("change input", ".quantity-product", function () { setTimeout(refresh, 50); });
+        $(document).on("change input", ".size-quantity-input", function () { setTimeout(refresh, 50); });
+        $(document).on("click", ".btn-decrease, .btn-increase", function () { setTimeout(refresh, 250); });
+
+        var lastQty = $(".quantity-product").val();
+        setInterval(function () {
+            var cur = $(".quantity-product").val();
+            if (cur !== lastQty) { lastQty = cur; refresh(); }
+        }, 300);
+
+        refresh();
+    };
+
+    /* bottom sticky — dock into page when anchor scrolls into viewport; on mobile show only after scrolling past product heading
     -------------------------------------------------------------------------*/
     var scrollBottomSticky = function () {
-        $(window).on("scroll", function () {
-            var scrollPosition = $(this).scrollTop();
-            var myElement = $(".tf-sticky-btn-atc");
+        var stickyBar = $(".tf-sticky-btn-atc");
+        var anchor = $(".tf-sticky-bar-anchor");
+        var heading = $(".tf-product-info-heading").first();
+        if (!stickyBar.length || !anchor.length) return;
 
-            // .tf-product-info-by-btn.offset().top
-            var height = $(".tf-product-info-by-btn").offset().top + 50;
-            // console.log(height);
+        function update() {
+            var scrollTop = $(window).scrollTop();
+            var barHeight = stickyBar.outerHeight();
+            var anchorTop = anchor.offset().top;
+            var viewportBottom = scrollTop + $(window).height();
+            var isMobile = window.matchMedia("(max-width: 991px)").matches;
 
-            if (scrollPosition >= height) {
-                myElement.addClass("show");
+            if (viewportBottom >= anchorTop + barHeight) {
+                stickyBar.addClass("docked");
             } else {
-                myElement.removeClass("show");
+                stickyBar.removeClass("docked");
             }
-        });
+
+            if (isMobile && heading.length) {
+                var viewportCenter = scrollTop + $(window).height() / 2;
+                var headingTop = heading.offset().top;
+                if (headingTop <= viewportCenter) {
+                    stickyBar.addClass("sticky-bar-show");
+                } else {
+                    stickyBar.removeClass("sticky-bar-show");
+                }
+            } else {
+                stickyBar.addClass("sticky-bar-show");
+            }
+        }
+
+        $(window).on("scroll resize", update);
+        update();
     };
 
     /* Preloader
@@ -1412,7 +2162,11 @@
         new WOW().init();
         RTL();
         scrollBottomSticky();
+        updateStickyBarSummary();
         preloader();
         productVariantSwatches();
+        personalizationTabs();
+        quantityBonifiedLogo();
+        sizeQuantityInputs();
     });
 })(jQuery);
