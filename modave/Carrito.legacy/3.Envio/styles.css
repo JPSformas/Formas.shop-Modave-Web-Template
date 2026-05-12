@@ -1,0 +1,504 @@
+/* // SHIPPING FORM STYLES // */
+.checkout-form {
+  order: 1;
+  background: var(--background-color);
+  border-radius: 4px;
+  padding: 0px 20px;
+}
+
+.checkout-form h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.form-notice {
+  color: #686868;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* Shipping Options Styles */
+.shipping-options {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.shipping-option-section {
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.shipping-option-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.shipping-option-section h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.add-address-btn {
+  font-family: 'Gilroy';
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--light-gray);
+  border: 1px dashed var(--border-color);
+  padding: 15px;
+  width: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--primary-color);
+  font-size: 14px;
+  justify-content: center;
+}
+
+.add-address-btn:hover {
+  background-color: #e8f1fc;
+}
+
+/* Address Form Styles */
+.address-form-container {
+  margin-top: 15px;
+  border-radius: 4px;
+  background-color: var(--background-color);
+  padding: 10px;
+  animation: fadeIn 0.3s ease;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-row:last-child {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group textarea {
+  font-family: "Gilroy", sans-serif;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input.error,
+.form-group textarea.error {
+  border-color: #e74c3c;
+}
+
+.error-message {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.calculate-shipping-btn {
+  background-color: #ffffff;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.calculate-shipping-btn:hover {
+  background-color: #2a5aa0;
+}
+
+.cancel-btn,
+.save-btn, 
+.calculate-shipping-btn  {
+  font-family: "Gilroy", sans-serif;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  border: none;
+}
+
+.calculate-shipping-btn {
+  background-color: #ffffff;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.calculate-shipping-btn:hover {
+  background-color: #d9e7fa;
+}
+
+.cancel-btn {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.save-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Saved Address Styles */
+.saved-addresses {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.address-card {
+  background-color: var(--light-gray);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 15px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.address-card.selected {
+  border-color: var(--primary-color);
+  background-color: rgba(50, 105, 186, 0.05);
+}
+
+.address-details {
+  margin-left: 10px;
+}
+
+.address-details p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.delivery-instructions {
+  font-style: italic;
+  color: #686868;
+  margin-top: 5px !important;
+}
+
+.pickup-notice {
+  font-size: 14px;
+  color: #686868;
+  margin-bottom: 15px;
+}
+
+.office-option {
+  background-color: var(--light-gray);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.office-option.selected {
+  border-color: var(--primary-color);
+  background-color: rgba(50, 105, 186, 0.05);
+}
+
+.radio-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  cursor: pointer;
+  position: relative;
+}
+
+.radio-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-checkmark {
+  position: relative;
+  top: 3px;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+}
+
+.radio-container input:checked ~ .radio-checkmark {
+  background-color: #fff;
+  border: 1px solid var(--primary-color);
+}
+
+.radio-container input:checked ~ .radio-checkmark:after {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-color);
+}
+
+.office-details h4 {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.office-details p {
+  font-size: 13px;
+  color: #686868;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.event-order {
+  margin-top: 10px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  position: relative;
+  font-size: 14px;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.checkbox-checkmark {
+  position: relative;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  box-sizing: content-box;
+}
+
+.checkbox-container input:checked ~ .checkbox-checkmark {
+  background-color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.checkbox-container input:checked ~ .checkbox-checkmark:after {
+  content: "";
+  position: absolute;
+  display: block;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Event Date Styles */
+.event-date-container {
+  margin-top: 15px;
+  animation: fadeIn 0.3s ease;
+}
+
+.event-date-field {
+  margin-bottom: 15px;
+}
+
+.event-date-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.date-input-wrapper input {
+  font-family: "Gilroy", sans-serif;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.date-input-wrapper i {
+  position: absolute;
+  right: 10px;
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+.production-time-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: rgba(50, 105, 186, 0.05);
+  border-radius: 4px;
+  font-size: 14px;
+  color: #686868;
+}
+
+.production-time-info i {
+  color: var(--primary-color);
+  font-size: 16px;
+  margin-top: 2px;
+}
+
+/* Date Picker Styles */
+.date-picker {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  width: 300px;
+  padding: 15px;
+  animation: fadeIn 0.2s ease;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.calendar-header button {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 5px;
+}
+
+.month-year {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.day-header {
+  text-align: center;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 5px;
+  color: #686868;
+}
+
+.day {
+  text-align: center;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.day:hover {
+  background-color: var(--light-gray);
+}
+
+.day.today {
+  background-color: rgba(50, 105, 186, 0.1);
+  font-weight: bold;
+}
+
+.day.empty {
+  cursor: default;
+}
+
+.day.empty:hover {
+  background-color: transparent;
+}
+
+/* Ensuring images are fluid */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+
+  .checkout-form {
+    padding: 20px;
+    order: 3;
+  }
+  .checkout-form h2 {
+    font-size: 18px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .date-picker {
+    width: 280px;
+  }
+}
+
+
+.shipping-cost-container {
+  margin-bottom: 15px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Shipping Cost Estimator Styles */
+.shipping-cost-estimator {
+  padding: 15px;
+  background-color: #f5f5f5;
+  border-top: 1px solid var(--border-color);
+  border-radius: 0px;
+}
+
+.shipping-cost-estimator h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+.shipping-cost-notice {
+  font-size: 14px;
+  color: #686868;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Price row for shipping cost */
+.price-row.shipping {
+  color: var(--text-color);
+}

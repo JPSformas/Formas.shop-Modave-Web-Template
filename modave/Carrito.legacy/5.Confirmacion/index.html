@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formas - Confirmación de Pedido</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="structure.css">
+    <link rel="stylesheet" href="order-summary.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="#" class="logo">
+                    <img src="IMG/Logo Formas.shop 2025-02.png" alt="Formas Logo">
+                </a>
+                <div class="user-actions">
+                    <a href="#" class="user"><i class="fas fa-user"></i> Usuario 1</a>
+                    <a href="#" class="cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">2</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container checkout-container">
+        <div class="stepper-wrapper">
+            <div class="stepper-item completed">
+                <div class="stepper-circle"></div>
+                <a class="stepper-title" href="../2.Datos de Compra/2.0/index.html">Datos de compra</a>
+            </div>
+            <div class="stepper-item completed">
+                <div class="stepper-circle"></div>
+                <a class="stepper-title" href="../3.Envio/index.html">Envío</a>
+            </div>
+            <div class="stepper-item completed">
+                <div class="stepper-circle"></div>
+                <a class="stepper-title" href="../4.Metodo de Pago/index.html">Método de pago</a>
+            </div>
+            <div class="stepper-item active">
+                <div class="stepper-circle"></div>
+                <a class="stepper-title" href="index.html">Confirmación</a>
+            </div>
+        </div>
+
+        <!-- Mobile Order Summary Toggle (only visible on mobile) -->
+        <div class="order-summary-toggle">
+            <button class="toggle-button">
+                <span class="toggle-title">Resumen de pedido</span>
+                <div class="toggle-right">
+                    <span class="total-price">$898.048,62</span><span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                </div>
+            </button>
+        </div>
+
+        <div class="checkout-content">
+            <div class="confirmation-sections">
+                <span class="confirmation-title">Confirmación de pedido</span>
+                <div class="confirmation-section">
+                    <div class="section-header">
+                        <h2>Datos del comprador</h2>
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <p>Nombre Apellido</p>
+                        <p>Razón social: Lorem Ipsum</p>
+                        <p>Cuit/Cuil: 12-34567891-23</p>
+                        <p>Teléfono: +54 9 11 1234-5678</p>
+                    </div>
+                </div>
+
+                <div class="confirmation-section">
+                    <div class="section-header">
+                        <h2>Logos adjuntados</h2>
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <div class="logo-file">
+                            <span class="file-name"><i class="fas fa-file-image file-icon"></i> Logo formas.png</span>
+                            <button class="delete-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="logo-file">
+                            <span class="file-name"><i class="fas fa-file-pdf file-icon"></i> Logo formas.pdf</span>
+                            <button class="delete-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="logo-file">
+                            <span class="file-name"><i class="fa fa-file file-icon"></i> Logo formas.ai</span>
+                            <button class="delete-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="logo-file">
+                            <span class="file-name"><i class="fa fa-file file-icon"></i> Logo formas.eps</span>
+                            <button class="delete-btn"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="confirmation-section">
+                    <div class="section-header">
+                        <h2>Envío a domicilio</h2>
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <p>Maitienzo 1308</p>
+                        <p>Buenos Aires, Florida Oeste - CP 1604.</p>
+                        <p>Teléfono: +54 9 11 1234-5678.</p>
+                        <p>Envío: Andreani</p>
+                    </div>
+                </div>
+
+                <div class="confirmation-section">
+                    <div class="section-header">
+                        <h2>Método de pago</h2>
+                        <button class="edit-btn"><i class="fas fa-pencil-alt"></i></button>
+                    </div>
+                    <div class="section-content">
+                        <p>Tarjeta de crédito</p>
+                        <p class="payment-link">Link de pago</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-summary">
+                <div class="cart-table">
+                    <div class="summary-header">
+                        <h3>Resumen del pedido</h3>
+                    </div>
+                    <div class="table-header">
+                        <span>Productos</span>
+                        
+                        <span class="options-column">
+                            <div class="dropdown">
+                                <button class="dropdown-toggle">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item">
+                                        <i class="fas fa-download"></i> Descargar cotización
+                                    </button>
+                                </div>
+                            </div>
+                        </span>
+                    </div>
+    
+                    <div class="cart-item">
+                        <div class="product-img" data-label="Producto">
+                            <img src="IMG/placeholder.jpg" alt="Mochila">                     
+                        </div>
+                        <div class="product-details" data-label="Detalles">
+                            <div class="detail-row">
+                                <span class="product-title">Herschel Classic Backpack</span>
+                                <span class="product-total">$487.767,50</span>
+                            </div>
+                            <div class="product-quantity">
+                                <span>Cantidad: 5</span>
+                            </div>
+                        </div>                             
+                    </div>
+
+                    <div class="cart-item">
+                        <div class="product-img" data-label="Producto">
+                            <img src="IMG/placeholderTextil.jpg" alt="Textil">                     
+                        </div>
+                        <div class="product-details" data-label="Detalles">
+                            <div class="detail-row">
+                                <span class="product-title">Remera Fall</span>
+                                <span class="product-total">$173.640,00</span>
+                            </div>
+                            <div class="product-quantity">
+                                <span>Cantidad: 10</span>
+                            </div>
+                        </div>                             
+                    </div>
+
+                    <div class="cart-item">
+                        <div class="product-img" data-label="Producto">
+                            <img src="IMG/placeholder2.jpg" alt="Drinkware">                    
+                        </div>
+                        <div class="product-details" data-label="Detalles">
+                            <div class="detail-row">
+                                <span class="product-title">Botella Toms</span>
+                                <span class="product-total">$163.246,88</span>
+                            </div>
+                            <div class="product-quantity">
+                                <span>Cantidad: 4</span>
+                            </div>
+                        </div>                             
+                    </div>
+                </div>
+                
+                <div class="coupon-section">
+                    <h4>Cupón de descuento</h4>
+                    <div class="coupon-input">
+                        <input type="text" placeholder="Ingresa aquí tu cupón">
+                        <button>Validar cupón</button>
+                    </div>
+                    <div class="applied-coupon">
+                        <div class="coupon-check">
+                          <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="coupon-info">
+                          <div class="coupon-code">FP10 aplicado</div>
+                          <div class="coupon-discount">10% off</div>
+                        </div>
+                        <button class="remove-coupon">Quitar</button>
+                    </div>
+                </div>
+
+                <div class="price-breakdown">
+                    <div class="price-row subtotal">
+                        <span>Subtotal</span>
+                        <span class="price-value">$824.654,38</span>
+                    </div>
+                    <div class="price-row discount">
+                        <span>Descuento</span>
+                        <span class="price-value">-$82.465,44</span>
+                    </div>
+                    <div class="price-row total_sin_IVA">
+                        <span>Total sin impuestos</span>
+                        <span class="price-value">$742.188,94</span>
+                    </div>
+                    <div class="price-row IVA">
+                        <span>Impuestos Aproximados</span>
+                        <span class="price-value">$155.859,68</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Total</span>
+                        <span class="price-value">$898.048,62</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="checkout-actions">
+            <div>
+                <a href="../4.Metodo de Pago/index.html" class="back-btn"><i class="fas fa-chevron-left"></i> Volver atrás</a>
+            </div>
+            <div>
+                <a class="confirm-btn" href="../6.Pedido Completo/order-success.html">Confirmar pedido</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Más información</h3>
+                    <ul>
+                        <li><a href="#">Quienes somos?</a></li>
+                        <li><a href="#">Servicios</a></li>
+                        <li><a href="#">Nuestros clientes</a></li>
+                        <li><a href="#">Cómo comprar?</a></li>
+                        <li><a href="#">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p><i class="fab fa-whatsapp"></i> +54 9 11 3420-4197</p>
+                    <p><i class="far fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8bede4f9e6eaf8e3e4fbcbede4f9e6eaf8fbfee9e7e2e8e2ffeaf9e2eaf8a5e8e4e6">[email&#160;protected]</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Maipú 1365 - B1604AVB Florida, Bs. As.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Formas Publicitarias S.A. 2023. Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>    
+</html>
+

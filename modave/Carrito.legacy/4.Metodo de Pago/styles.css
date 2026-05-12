@@ -1,0 +1,180 @@
+/* // PAYMENT FORM STYLES // */
+.checkout-form {
+  order: 1;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  padding: 0px 20px;
+}
+
+.checkout-form h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.form-notice {
+  color: #686868;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* Payment Method Styles */
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.payment-option {
+  border: 1px solid var(--border-color);
+  background-color: var(--light-gray);
+  border-radius: 4px;
+  padding: 15px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: height 0.3s ease-in-out;
+}
+
+.payment-option.selected {
+  border: 1px solid var(--primary-color);
+  background-color: rgba(50, 105, 186, 0.05);
+}
+
+.radio-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: relative;
+}
+
+.radio-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-checkmark {
+  position: relative;
+  height: 18px;
+  width: 18px;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+}
+
+.radio-container input:checked ~ .radio-checkmark {
+  background-color: #fff;
+  border: 1px solid var(--primary-color);
+}
+
+.radio-container input:checked ~ .radio-checkmark:after {
+  content: "";
+  position: absolute;
+  display: block;
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-color);
+}
+
+.payment-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.payment-label-with-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 100%;
+}
+
+.mercadoPago-logo {
+  width: 30px;
+  object-fit: contain;
+}
+
+/* Bank Details Styles */
+
+.payment-option.expanded {
+  height: auto;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 2;
+}
+
+.bank-details {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.clarification {
+  font-style: italic;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.bank-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.bank-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bank-info-row {
+  display: flex;
+  font-size: 14px;
+  gap: 5px
+}
+
+.bank-info-label {
+  font-weight: bold;
+}
+
+.bank-info-value {
+  flex: 1;
+}
+
+/* Ensuring images are fluid */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .checkout-form {
+    padding: 20px;
+    order: 3;
+  }
+  .checkout-form h2 {
+    font-size: 18px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .bank-info-row {
+    flex-direction: column;
+    margin-bottom: 5px;
+  }
+
+  .bank-info-label {
+    margin-bottom: 2px;
+  }
+}

@@ -2039,6 +2039,58 @@
         refresh();
     };
 
+    /* Quick Add — sync header image with selected color
+    -------------------------------------------------------------------------*/
+    var syncQuickAddVariantImage = function () {
+        var $quickAdd = $("#quickAdd");
+        if (!$quickAdd.length) return;
+
+        function getVariantImageSrc($colorBtn) {
+            var $img = $colorBtn.find("img").first();
+            if (!$img.length) return "";
+            return $img.attr("src") || $img.attr("data-src") || "";
+        }
+
+        function updateHeaderImage($context) {
+            var $modal = $context && $context.length ? $context.closest("#quickAdd") : $quickAdd;
+            if (!$modal.length) return;
+
+            var $activeColor = $modal.find(".variant-picker-values .color-btn.active").first();
+            if (!$activeColor.length) {
+                var $checkedInput = $modal.find(".variant-picker-values input[type='radio']:checked").first();
+                if ($checkedInput.length) {
+                    $activeColor = $modal.find("label[for='" + $checkedInput.attr("id") + "']").first();
+                }
+            }
+            if (!$activeColor.length) {
+                $activeColor = $modal.find(".variant-picker-values .color-btn").first();
+            }
+
+            var imageSrc = getVariantImageSrc($activeColor);
+            if (!imageSrc) return;
+
+            var $headerImage = $modal.find(".modal-header .tf-product-info-item .image img").first();
+            if ($headerImage.length) {
+                $headerImage.attr("src", imageSrc);
+                if ($headerImage.attr("data-src")) {
+                    $headerImage.attr("data-src", imageSrc);
+                }
+            }
+        }
+
+        $quickAdd.on("click", ".variant-picker-values .color-btn", function () {
+            $(this).closest(".variant-picker-values").find(".color-btn.active").removeClass("active");
+            $(this).addClass("active");
+            updateHeaderImage($(this));
+        });
+
+        $quickAdd.on("shown.bs.modal", function () {
+            updateHeaderImage($quickAdd);
+        });
+
+        updateHeaderImage($quickAdd);
+    };
+
     /* bottom sticky — dock into page when anchor scrolls into viewport; on mobile show only after scrolling past product heading
     -------------------------------------------------------------------------*/
     var scrollBottomSticky = function () {
@@ -2168,5 +2220,6 @@
         personalizationTabs();
         quantityBonifiedLogo();
         sizeQuantityInputs();
+        syncQuickAddVariantImage();
     });
 })(jQuery);

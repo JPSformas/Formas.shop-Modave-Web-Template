@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formas - Tu carrito</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="#" class="logo">
+                    <img src="IMG/Logo Formas.shop 2025-02.png" alt="Formas Logo">
+                </a>
+                <div class="user-actions">
+                    <a href="#" class="user"><i class="fas fa-user"></i> Usuario 1</a>
+                    <a href="#" class="cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">4</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Tu carrito</h1>
+        <p class="cart-notice">Realizado el pedido te enviaremos un boceto para tu aprobación final. Solo continuaremos si estás 100% conforme.</p>
+
+        <div class="your-cart">
+            <div class="cart-table">
+                <div class="table-header">
+                    <span>
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="check-all" checked>
+                            <span class="checkbox-checkmark"></span>
+                        </label>
+                    </span>
+                    <span>Productos</span>
+                    <span>Detalles</span>
+                    <span class="options-column">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item">
+                                    <i class="fas fa-download"></i> Descargar cotización
+                                </button>
+                            </div>
+                        </div>
+                    </span>
+                </div>
+                
+                <!-- Mobile-only table header -->
+                <div class="mobile-table-header">
+                    <div class="header-row">
+                        <span><strong>Productos</strong></span>
+                        <span class="options-column">
+                            <div class="dropdown">
+                                <button class="dropdown-toggle">
+                                    <i class="fas fa-ellipsis"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item">
+                                        <i class="fas fa-download"></i> Descargar cotización
+                                    </button>
+                                </div>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="header-row">
+                        <span class="items-count">Items seleccionados: <span class="mobile-item-count"></span></span>
+                        <span class="select-all-label">
+                            Seleccionar todos
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="check-all-mobile" checked>
+                                <span class="checkbox-checkmark"></span>
+                            </label>
+                        </span>
+                    </div>
+                </div>
+    
+                <div class="cart-item">
+                    <div class="check-option">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="buy-item" checked>
+                            <span class="checkbox-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="cart-item-left">
+                        <div class="product-info">
+                            <img src="IMG/placeholder.jpg" alt="Mochila">
+                            <div class="product-details">
+                                <span class="product-title">Herschel Classic Backpack</span>
+                                <div class="quantity">
+                                    <label>Cantidad</label>
+                                    <input type="number" value="5" min="1">
+                                </div>
+                                <span class="logo-info">Logo gratis desde 2 u</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cart-item-right">
+                        <div class="price-details">
+                            <div class="price-row">
+                                <span class="price-label">Precio unitario</span>
+                                <span class="price-value">$97.553,50</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Setup logo</span>
+                                <span class="price-value">Gratis</span>
+                            </div>
+                            <div class="price-row total-row">
+                                <span class="price-label">Total</span>
+                                <span class="price-value">$487.767,50</span>
+                            </div>
+                            <div class="price-row net-price">
+                                <span class="price-label">*Precio unitario neto</span>
+                                <span class="price-value">$97.553,50</span>
+                            </div>
+                            <div class="item-actions">
+                                <button class="action-button edit-logo">
+                                    <span>Editar logo</span>
+                                </button>
+                                <button class="action-button favorite">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button class="action-button share">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button class="action-button delete">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="price-info" data-label="Desglose">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="price-tooltip">
+                            <h4>Resumen</h4>
+                            <div class="price-info-row">
+                                <span>Precio de lista:</span>
+                                <span class="price-value">$103.780,00</span>
+                            </div>
+                            <div class="price-info-row discount">
+                                <span>Descuento por cantidad:</span>
+                                <span class="price-value">- $6.226,50</span>
+                            </div>
+                            <div class="price-info-row total">
+                                <span>Precio unitario:</span>
+                                <span class="price-value">$97.553,50</span>
+                            </div>
+                        </div>
+                    </div>                                
+                </div>
+
+                <div class="cart-item">
+                    <div class="check-option">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="buy-item" checked>
+                            <span class="checkbox-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="cart-item-left">
+                        <div class="product-info">
+                            <img src="IMG/placeholderTextil.jpg" alt="Textil">
+                            <div class="product-details">
+                                <span class="product-title">Remera Fall</span>
+                                <div class="quantity">
+                                    <label>Cantidad</label>
+                                    <input type="number" value="10" min="1">
+                                </div>
+                                <div class="logo-info">Logo gratis desde 109 u</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cart-item-right">
+                        <div class="price-details">
+                            <div class="price-row">
+                                <span class="price-label">Precio unitario</span>
+                                <span class="price-value">$7.364,00</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Setup logo</span>
+                                <span class="price-value">$100.000,00</span>
+                            </div>
+                            <div class="price-row total-row">
+                                <span class="price-label">Total</span>
+                                <span class="price-value">$173.640,00</span>
+                            </div>
+                            <div class="price-row net-price">
+                                <span class="price-label">*Precio unitario neto</span>
+                                <span class="price-value">$17.364,00</span>
+                            </div>
+                            <div class="item-actions">
+                                <button class="action-button edit-logo">
+                                    <span>Editar logo</span>
+                                </button>
+                                <button class="action-button favorite">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button class="action-button share">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button class="action-button delete">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="price-info" data-label="Desglose">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="price-tooltip">
+                            <h4>Resumen</h4>
+                            <div class="price-info-row">
+                                <span>Precio de lista:</span>
+                                <span class="price-value">$7.364,00</span>
+                            </div>
+                            <div class="price-info-row discount">
+                                <span>Descuento por cantidad:</span>
+                                <span class="price-value">- $0,00</span>
+                            </div>
+                            <div class="price-info-row total">
+                                <span>Precio unitario:</span>
+                                <span class="price-value">$7.364,00</span>
+                            </div>
+                        </div>
+                    </div>                                
+                </div>
+
+                <div class="cart-item">
+                    <div class="check-option">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="buy-item" checked>
+                            <span class="checkbox-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="cart-item-left">
+                        <div class="product-info">
+                            <img src="IMG/placeholder2.jpg" alt="Drinkware">
+                            <div class="product-details">
+                                <span class="product-title">Botella Toms</span>
+                                <div class="quantity">
+                                    <label>Cantidad</label>
+                                    <input type="number" value="4" min="1">
+                                </div>
+                                <div class="logo-info">Logo gratis desde 54 u</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cart-item-right">
+                        <div class="price-details">
+                            <div class="price-row">
+                                <span class="price-label">Precio unitario</span>
+                                <span class="price-value">$15.811,72</span>
+                            </div>
+                            <div class="price-row setup-row">
+                                <span class="price-label">Setup logo</span>
+                                <span class="price-value">$100.000,00</span>
+                            </div>
+                            <div class="price-row total-row">
+                                <span class="price-label">Total</span>
+                                <span class="price-value">$163.246,88</span>
+                            </div>
+                            <div class="price-row net-price">
+                                <span class="price-label">*Precio unitario neto</span>
+                                <span class="price-value">$35.811,72</span>
+                            </div>
+                            <div class="item-actions">
+                                <button class="action-button edit-logo">
+                                    <span>Editar logo</span>
+                                </button>
+                                <button class="action-button favorite">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button class="action-button share">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button class="action-button delete">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="price-info" data-label="Desglose">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="price-tooltip">
+                            <h4>Resumen</h4>
+                            <div class="price-info-row">
+                                <span>Precio de lista:</span>
+                                <span class="price-value">$15.811,72</span>
+                            </div>
+                            <div class="price-info-row discount">
+                                <span>Descuento por cantidad:</span>
+                                <span class="price-value">- $0,00</span>
+                            </div>
+                            <div class="price-info-row total">
+                                <span>Precio unitario:</span>
+                                <span class="price-value">$15.811,72</span>
+                            </div>
+                        </div>
+                    </div>                                
+                </div>
+
+                <div class="cart-item">
+                    <div class="check-option">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="buy-item" checked>
+                            <span class="checkbox-checkmark"></span>
+                        </label>
+                    </div>
+                    <div class="cart-item-left">
+                        <div class="product-info">
+                            <img src="IMG/placeholderNOLOGO.jpg" alt="Drinkware">
+                            <div class="product-details">
+                                <span class="product-title">Botella Toms</span>
+                                <div class="quantity">
+                                    <label>Cantidad</label>
+                                    <input type="number" value="4" min="1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cart-item-right">
+                        <div class="price-details">
+                            <div class="price-row">
+                                <span class="price-label">Precio unitario</span>
+                                <span class="price-value">$15.811,72</span>
+                            </div>
+                            <div class="price-row total-row">
+                                <span class="price-label">Total</span>
+                                <span class="price-value">$63.246,88</span>
+                            </div>
+                            <div class="item-actions">
+                                <button class="action-button favorite">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <button class="action-button share">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
+                                <button class="action-button delete">
+                                    <i class="far fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="price-info" data-label="Desglose">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="price-tooltip">
+                            <h4>Resumen</h4>
+                            <div class="price-info-row">
+                                <span>Precio de lista:</span>
+                                <span class="price-value">$15.811,72</span>
+                            </div>
+                            <div class="price-info-row discount">
+                                <span>Descuento por cantidad:</span>
+                                <span class="price-value">- $0,00</span>
+                            </div>
+                            <div class="price-info-row total">
+                                <span>Precio unitario:</span>
+                                <span class="price-value">$15.811,72</span>
+                            </div>
+                        </div>
+                    </div>                                
+                </div>
+                <div class="cart-actions">
+                    <button class="back-link" href="#">Continuar comprando</button>
+                </div>
+            </div>
+
+            <!-- Desktop Order Summary -->
+            <div class="desktop-order-summary-container ">
+                <div class="order-summary">
+                    <h2>Resumen del pedido</h2>
+                    
+                    <div class="summary-item">
+                        <span>Items seleccionados:</span>
+                        <span class="item-count"></span>
+                    </div>
+                
+                    <hr>
+    
+                    <div class="summary-item subtotal">
+                        <span>Subtotal:</span>
+                        <span class="price-value"></span>
+                    </div>
+                    <div class="summary-item IVA">
+                        <span>Impuestos aproximados:</span>
+                        <span class="price-value"></span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total:</span>
+                        <span class="price-value"></span>
+                    </div>
+
+                    <hr>
+
+                    <div class="coupon-section">
+                        <h4>Cupón de descuento</h4>
+                        <div class="coupon-input">
+                            <input type="text" placeholder="Ingresa aquí tu cupón">
+                            <button>Validar cupón</button>
+                        </div>
+                    </div>
+                </div>
+                <a class="checkout" href="../../2.Datos de Compra/2.0/index.html">Comprar todos los productos</a>
+            </div>  
+        </div>
+
+
+        <!-- Mobile Order Summary -->
+        <div class="mobile-order-summary collapsed">
+            <div class="mobile-summary-header">
+                <h2>Resumen del pedido</h2>
+                <div class="mobile-summary-total-container">
+                    <div class="mobile-summary-total"></div>
+                    <div class="mobile-summary-toggle">
+                        <i class="fas fa-chevron-up"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mobile-summary-content">
+                <div class="summary-item">
+                    <span>Items seleccionados:</span>
+                    <span class="item-count"></span>
+                </div>
+            
+                <hr>
+
+                <div class="summary-item subtotal">
+                    <span>Subtotal:</span>
+                    <span class="price-value"></span>
+                </div>
+                <div class="summary-item IVA">
+                    <span>Impuestos aproximados:</span>
+                    <span class="price-value"></span>
+                </div>
+                <div class="summary-item total">
+                    <span>Total:</span>
+                    <span class="price-value"></span>
+                </div>
+
+                <hr>
+
+                <div class="coupon-section">
+                    <h4>Cupón de descuento</h4>
+                    <div class="coupon-input">
+                        <input type="text" placeholder="Ingresa aquí tu cupón">
+                        <button>Validar cupón</button>
+                    </div>
+                </div>
+            </div>
+            
+            <a class="checkout" href="../../2.Datos de Compra/2.0/index.html">Comprar todos los productos</a>
+        </div>
+
+        <section class="recommended">
+            <h2>Productos recomendados</h2>
+            <div class="product-grid">
+                <div class="product-card">
+                    <img src="IMG/Placeholderjpg.jpg" alt="Producto">
+                    <h3>Producto</h3>
+                    <p class="price">desde <span>Precio</span> + IVA</p>
+                    <p class="promo">Logo gratis a partir de ## unidades</p>
+                    <div class="color-options">
+                        <span class="color blue"></span>
+                        <span class="color yellow"></span>
+                        <span class="color red"></span>
+                        <span class="color black"></span>
+                        <span class="more-colors">+4</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="IMG/Placeholderjpg.jpg" alt="Producto">
+                    <h3>Producto</h3>
+                    <p class="price">desde <span>Precio</span> + IVA</p>
+                    <p class="promo">Logo gratis a partir de ## unidades</p>
+                    <div class="color-options">
+                        <span class="color blue"></span>
+                        <span class="color yellow"></span>
+                        <span class="color red"></span>
+                        <span class="color black"></span>
+                        <span class="more-colors">+4</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="IMG/Placeholderjpg.jpg" alt="Producto">
+                    <h3>Producto</h3>
+                    <p class="price">desde <span>Precio</span> + IVA</p>
+                    <p class="promo">Logo gratis a partir de ## unidades</p>
+                    <div class="color-options">
+                        <span class="color blue"></span>
+                        <span class="color yellow"></span>
+                        <span class="color red"></span>
+                        <span class="color black"></span>
+                        <span class="more-colors">+4</span>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <img src="IMG/Placeholderjpg.jpg" alt="Producto">
+                    <h3>Producto</h3>
+                    <p class="price">desde <span>Precio</span> + IVA</p>
+                    <p class="promo">Logo gratis a partir de ## unidades</p>
+                    <div class="color-options">
+                        <span class="color blue"></span>
+                        <span class="color yellow"></span>
+                        <span class="color red"></span>
+                        <span class="color black"></span>
+                        <span class="more-colors">+4</span>
+                    </div>
+                </div>
+                <!-- Repeat product-card div for other recommended products -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Más información</h3>
+                    <ul>
+                        <li><a href="#">Quienes somos?</a></li>
+                        <li><a href="#">Servicios</a></li>
+                        <li><a href="#">Nuestros clientes</a></li>
+                        <li><a href="#">Cómo comprar?</a></li>
+                        <li><a href="#">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p><i class="fab fa-whatsapp"></i> +54 9 11 3420-4197</p>
+                    <p><i class="far fa-envelope"></i> formashop@formaspublicitarias.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Maipú 1365 - B1604AVB Florida, Bs. As.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Formas Publicitarias S.A. 2023. Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

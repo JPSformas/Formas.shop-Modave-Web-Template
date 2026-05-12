@@ -1,0 +1,337 @@
+/* Success Page Specific Styles */
+.success-container {
+  text-align: center;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 40px 20px;
+  margin: 30px 0;
+}
+
+/* Success Icon Animation Styles */
+.success-icon-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  perspective: 1000px;
+}
+
+.success-icon-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 1.5s;
+  transform-style: preserve-3d;
+}
+
+.success-icon-front, .success-icon-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-icon-front {
+  z-index: 2;
+}
+
+.success-icon-back {
+  transform: rotateY(180deg);
+  color: #8cc63f;
+  font-size: 80px;
+}
+
+.success-icon-front img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.flip {
+  transform: rotateY(180deg);
+}
+
+.success-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.success-message {
+  font-size: 16px;
+  color: #686868;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.order-number {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Order Tracking Container */
+.order-tracking-container {
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 30px 20px;
+  margin-bottom: 30px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.tracking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tracking-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.tracking-number {
+  font-size: 14px;
+  color: #686868;
+}
+
+.tracking-number span {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Track Order Status Bar */
+.track-order-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin: 30px auto;
+  max-width: 800px;
+}
+
+.track-order-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.track-order-item::before {
+  position: absolute;
+  content: "";
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  top: 6px;
+  left: -50%;
+  z-index: 1;
+}
+
+.track-order-item:first-child::before {
+  content: none;
+}
+
+.track-order-item::after {
+  position: absolute;
+  content: "";
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  top: 6px;
+  left: 50%;
+  z-index: 1;
+}
+
+.track-order-item:last-child::after {
+  content: none;
+}
+
+.track-order-item.completed::before,
+.track-order-item.completed::after,
+.track-order-item.active::before {
+  border-color: var(--accent-color);
+}
+
+.track-order-circle {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #ccc;
+  z-index: 2;
+}
+
+.track-order-item.active .track-order-circle {
+  background-color: var(--accent-color);
+  border: 2px solid #324a47;
+  box-sizing: border-box;
+}
+
+.track-order-item.completed .track-order-circle {
+  background-color: var(--accent-color);
+}
+
+.track-order-title {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: normal;
+  text-align: center;
+}
+
+.track-order-item.active .track-order-title {
+  font-weight: bold;
+}
+
+.track-order-date {
+  margin-top: 4px;
+  font-size: 10px;
+  color: #686868;
+  text-align: center;
+}
+
+.track-order-icon {
+  margin-top: 10px;
+  font-size: 16px;
+  color: var(--accent-color);
+}
+
+.track-order-item.completed .track-order-icon,
+.track-order-item.active .track-order-icon {
+  display: block;
+}
+
+.track-order-item:not(.completed):not(.active) .track-order-icon {
+  display: none;
+}
+
+/* Product List in Tracking Container */
+.order-products {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.order-products-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: var(--text-color);
+}
+
+.product-list {
+  list-style: none;
+  padding: 0;
+}
+
+.product-item {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.product-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  margin-right: 15px;
+  object-fit: cover;
+}
+
+.product-details {
+  flex: 1;
+}
+
+.product-name {
+  font-weight: bold;
+  color: var(--text-color);
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.product-quantity {
+  color: #686868;
+  font-size: 13px;
+}
+
+/* Button Styles */
+.action-btn {
+  font-family: 'Gilroy';
+  padding: 12px 25px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: inline-block;
+}
+
+.primary-btn {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  border: none;
+}
+
+.primary-btn:hover {
+  background-color: #252f3e;
+}
+
+.secondary-btn {
+  background-color: #ffffff;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.secondary-btn:hover {
+  background-color: #f5f5f5;
+}
+
+/* Button Container in Success Container */
+.success-button-container {
+  margin-top: 20px;
+}
+
+/* Button Container in Tracking Container */
+.tracking-button-container {
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .track-order-wrapper {
+      margin: 20px 0;
+  }
+
+  .track-order-title {
+      font-size: 10px;
+  }
+
+  .track-order-date {
+      font-size: 8px;
+  }
+
+  .track-order-icon {
+      font-size: 14px;
+  }
+
+  .tracking-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+  }
+
+  .action-btn {
+      width: 100%;
+      text-align: center;
+  }
+}

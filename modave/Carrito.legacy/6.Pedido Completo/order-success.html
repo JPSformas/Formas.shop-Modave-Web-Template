@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formas - Pedido Completado</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="structure.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <a href="#" class="logo">
+                    <img src="IMG/Logo Formas.shop 2025-02.png" alt="Formas Logo">
+                </a>
+                <div class="user-actions">
+                    <a href="#" class="user"><i class="fas fa-user"></i> Usuario 1</a>
+                    <a href="#" class="cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count">2</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container checkout-container">
+        <!-- Success Message -->
+        <div class="success-container">
+            <!-- Custom Flipping Icon Animation -->
+            <div class="success-icon-container">
+                <div class="success-icon-flipper">
+                    <div class="success-icon-front">
+                        <img src="IMG/Formas 2025 Favicon-19.png" alt="Formas Logo">
+                    </div>
+                    <div class="success-icon-back">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+            <h1 class="success-title">¡Pedido completado con éxito!</h1>
+            <p class="success-message">
+                Gracias por tu compra. Tu pedido <span class="order-number">#FP-2025-0789</span> ha sido recibido y está siendo procesado. 
+                Recibirás un correo electrónico con los detalles de tu pedido.
+            </p>
+            <!-- Seguir comprando button moved here -->
+            <div class="success-button-container">
+                <button class="action-btn primary-btn" onclick="window.location.href='../1.Resumen/2.0/index.html'">Seguir comprando</button>
+            </div>
+        </div>
+
+        <!-- Order Tracking Container -->
+        <div class="order-tracking-container">
+            <div class="tracking-header">
+                <div class="tracking-title">Estado del pedido</div>
+                <div class="tracking-number">Número de seguimiento: <span>FP-2025-0789</span></div>
+            </div>
+
+            <!-- Track Order Status Bar -->
+            <div class="track-order-wrapper">
+                <div class="track-order-item completed">
+                    <div class="track-order-circle"></div>
+                    <div class="track-order-title">Pedido recibido</div>
+                    <div class="track-order-date">19 May, 2025</div>
+                    <div class="track-order-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                </div>
+                <div class="track-order-item completed">
+                    <div class="track-order-circle"></div>
+                    <div class="track-order-title">En procesamiento</div>
+                    <div class="track-order-date">19 May, 2025</div>
+                    <div class="track-order-icon">
+                        <i class="fas fa-refresh"></i>
+                    </div>
+                </div>
+                <div class="track-order-item completed">
+                    <div class="track-order-circle"></div>
+                    <div class="track-order-title">En producción</div>
+                    <div class="track-order-date">-</div>
+                    <div class="track-order-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                </div>
+                <div class="track-order-item completed">
+                    <div class="track-order-circle"></div>
+                    <div class="track-order-title">Enviado</div>
+                    <div class="track-order-date">-</div>
+                    <div class="track-order-icon">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                </div>
+                <div class="track-order-item active">
+                    <div class="track-order-circle"></div>
+                    <div class="track-order-title">Entregado</div>
+                    <div class="track-order-date">-</div>
+                    <div class="track-order-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product List -->
+            <div class="order-products">
+                <h3 class="order-products-title">Productos en tu pedido</h3>
+                <ul class="product-list">
+                    <li class="product-item">
+                        <img src="IMG/placeholder.jpg" alt="Mochila" class="product-image">
+                        <div class="product-details">
+                            <div class="product-name">Herschel Classic Backpack</div>
+                            <div class="product-quantity">Cantidad: 5</div>
+                        </div>
+                    </li>
+                    <li class="product-item">
+                        <img src="IMG/placeholderTextil.jpg" alt="Textil" class="product-image">
+                        <div class="product-details">
+                            <div class="product-name">Remera Fall</div>
+                            <div class="product-quantity">Cantidad: 10</div>
+                        </div>
+                    </li>
+                    <li class="product-item">
+                        <img src="IMG/placeholder2.jpg" alt="Drinkware" class="product-image">
+                        <div class="product-details">
+                            <div class="product-name">Botella Toms</div>
+                            <div class="product-quantity">Cantidad: 4</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Ver detalles del pedido button moved here -->
+            <div class="tracking-button-container">
+                <button class="action-btn secondary-btn" onclick="window.location.href='../5.Confirmacion/index.html'">Ver detalles del pedido</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Más información</h3>
+                    <ul>
+                        <li><a href="#">Quienes somos?</a></li>
+                        <li><a href="#">Servicios</a></li>
+                        <li><a href="#">Nuestros clientes</a></li>
+                        <li><a href="#">Cómo comprar?</a></li>
+                        <li><a href="#">Preguntas Frecuentes</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p><i class="fab fa-whatsapp"></i> +54 9 11 3420-4197</p>
+                    <p><i class="far fa-envelope"></i> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8bede4f9e6eaf8e3e4fbcbede4f9e6eaf8fbfee9e7e2e8e2ffeaf9e2eaf8a5e8e4e6">[email&#160;protected]</a></p>
+                    <p><i class="fas fa-map-marker-alt"></i> Maipú 1365 - B1604AVB Florida, Bs. As.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Formas Publicitarias S.A. 2023. Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Flip animation for success icon
+            setTimeout(() => {
+                const flipper = document.querySelector('.success-icon-flipper');
+                if (flipper) {
+                    // Initial animation - scale up
+                    flipper.style.transform = 'scale(0.1)';
+                    flipper.style.opacity = '0';
+                    flipper.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+                    
+                    setTimeout(() => {
+                        flipper.style.transform = 'scale(1)';
+                        flipper.style.opacity = '1';
+                        
+                        // After showing the logo, start the flip animation
+                        setTimeout(() => {
+                            // Add spinning effect before flipping
+                            flipper.style.transition = 'transform 1s cubic-bezier(0.455, 0.03, 0.515, 0.955)';
+                            flipper.style.transform = 'rotateY(180deg) rotateZ(360deg)' ;
+                        }, 1000);
+                    }, 300);
+                }
+            }, 300);
+
+            // Update current date for the completed steps
+            const today = new Date();
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            const formattedDate = today.toLocaleDateString('es-ES', options);
+            
+            const completedDates = document.querySelectorAll('.track-order-item.completed .track-order-date, .track-order-item.active .track-order-date');
+            completedDates.forEach(dateElement => {
+                dateElement.textContent = formattedDate;
+            });
+        });
+    </script>
+</body>
+</html>

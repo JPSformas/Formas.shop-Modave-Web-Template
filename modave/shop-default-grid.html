@@ -22,6 +22,7 @@
    <link rel="stylesheet" href="css/swiper-bundle.min.css">
    <link rel="stylesheet" href="css/animate.css">
    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
    <style>
        /* Soft-disable list layout on this page only (easy to restore later). */
        .sw-layout-list,
@@ -60,7 +61,8 @@
     <!-- preload -->
     <div class="preload preload-container">
         <div class="preload-logo">
-            <div class="spinner"></div>
+            <!-- <div class="spinner"></div> -->
+            <img src="images/ISO LOADER FORMAS SHOP.gif" alt="Loading..." style="max-width: 70px; width: auto; height: auto; display: block;">
         </div>
     </div>
     <!-- /preload -->
@@ -623,7 +625,7 @@
                                                         <li><a href="shopping-cart.html" class="menu-link-text">Carrito de Compras</a></li>
                                                         <li><a href="forget-password.html" class="menu-link-text">Olvidé mi contraseña</a></li>
                                                         <li><a href="order-tracking.html" class="menu-link-text">Seguimiento de Pedidos</a></li>
-                                                        <li><a href="payment-confirmation.html" class="menu-link-text">Confirmación de Pago</a></li>
+                                                        <li><a href="order-success.html" class="menu-link-text">Confirmación de Pago</a></li>
                                                         <li><a href="payment-failure.html" class="menu-link-text">Fallo de Pago</a></li>
                                                         
                                                     </div>
@@ -759,7 +761,7 @@
                         <div class="header-right">
                             <form class="form-search d-xl-flex d-none position-relative">
                                 <fieldset class="text w-100">
-                                    <input type="text" placeholder="Search Products" class="style-line-bottom"
+                                    <input type="text" placeholder="Buscar productos" class="style-line-bottom"
                                         name="text" tabindex="0" value="" aria-required="true" required="">
                                 </fieldset>
                                 <button class="" type="submit">
@@ -830,15 +832,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-cart"><a href="#shoppingCart" data-bs-toggle="modal"
-                                        class="nav-icon-item">
-                                        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M16.5078 10.8734V6.36686C16.5078 5.17166 16.033 4.02541 15.1879 3.18028C14.3428 2.33514 13.1965 1.86035 12.0013 1.86035C10.8061 1.86035 9.65985 2.33514 8.81472 3.18028C7.96958 4.02541 7.49479 5.17166 7.49479 6.36686V10.8734M4.11491 8.62012H19.8877L21.0143 22.1396H2.98828L4.11491 8.62012Z"
-                                                stroke="#181818" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" />
-                                        </svg>
-                                        <span class="count-box">1</span></a>
+                                    class="nav-icon-item">
+                                    <div class="icon">
+                                        <i class="bi bi-cart"></i>
+                                    </div>
+                                    <span class="count-box">1</span></a>
                                 </li>
                             </ul>
                         </div>
@@ -5607,7 +5605,7 @@
                                     <li><a href="shopping-cart.html" class="sub-nav-link">Shopping Cart</a></li>
                                     <li><a href="forget-password.html" class="sub-nav-link">Forget Password</a></li>
                                     <li><a href="order-tracking.html" class="sub-nav-link">Order Tracking</a></li>
-                                    <li><a href="payment-confirmation.html" class="sub-nav-link">Payment confirmation</a></li>
+                                    <li><a href="order-success.html" class="sub-nav-link">Payment confirmation</a></li>
                                     <li><a href="payment-failure.html" class="sub-nav-link">Payment Failure</a></li>
                                     <li><a href="store-list-02.html" class="sub-nav-link ">Store List 2</a></li>
                                     <li><a href="contact-02.html" class="sub-nav-link ">Contact Us 2</a></li>
@@ -6083,8 +6081,8 @@
                                         </label>
                                     </div>
                                     <div class="tf-mini-cart-view-checkout">
-                                        <a href="shopping-cart.html" class="tf-btn w-100 btn-white radius-4 has-border"><span class="text">View cart</span></a>
-                                        <a href="shopping-cart.html" class="tf-btn w-100 btn-fill radius-4"><span class="text">Check Out</span></a>
+                                        <a href="shopping-cart.html" class="tf-btn w-100 btn-white radius-4 has-border"><span class="text">Ver carrito</span></a>
+                                        <a href="checkout-buyer.html" class="tf-btn w-100 btn-fill radius-4"><span class="text">Comprar</span></a>
                                     </div>
                                     <div class="text-center">
                                         <a class="link text-btn-uppercase" href="shop-default-grid.html">Or continue shopping</a>
