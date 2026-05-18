@@ -316,7 +316,7 @@ li {
 }
 
 .container {
-  max-width: 1320px;
+  max-width: 1500px;
 }
 
 .container {
@@ -329,11 +329,6 @@ li {
   padding-right: 15px;
 }
 
-@media (min-width: 1600px) {
-  .container-80 {
-    max-width: 80% !important;
-  }
-}
 
 .container-full4,
 .container-full3,
