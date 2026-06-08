@@ -665,6 +665,46 @@
       updateMetaFilter();
     });
 
+    /**
+     * Category filters: subs only → OR among subs. Main/contextual only → match any selected.
+     * Main + subs all under those mains → AND (narrow within category).
+     * Main + subs from other mains (e.g. Drinkware + Gorros) → OR union (all drinkware ∪ selected subs).
+     */
+    function productMatchesCategoryFilters(product) {
+      var hasMain = filters.categories.length > 0;
+      var hasCtx = filters.contextualCategories.length > 0;
+      var hasSub = filters.subcategories.length > 0;
+      if (!hasMain && !hasCtx && !hasSub) return true;
+
+      var categoryId = (product.attr("data-category") || "").trim();
+      var productSub = (product.attr("data-subcategory") || "").trim();
+      var productContextual = (product.attr("data-contextual-categories") || "")
+        .trim().split(/\s+/).filter(Boolean);
+
+      var matchesMain = hasMain && filters.categories.some(function (c) { return c.id === categoryId; });
+      var matchesCtx = hasCtx && filters.contextualCategories.some(function (ctx) {
+        return productContextual.indexOf(ctx.id) !== -1;
+      });
+      var matchesSub = hasSub && filters.subcategories.some(function (sub) { return sub.id === productSub; });
+
+      if (!hasSub) {
+        return (!hasMain || matchesMain) && (!hasCtx || matchesCtx);
+      }
+
+      var hasExternalSubs = hasMain && filters.subcategories.some(function (sub) {
+        return !filters.categories.some(function (cat) {
+          return (MAIN_SUB[cat.id] || []).indexOf(sub.id) !== -1;
+        });
+      });
+
+      if (hasExternalSubs) {
+        return matchesMain || matchesCtx || matchesSub;
+      }
+
+      var mainCtxOk = (!hasMain || matchesMain) && (!hasCtx || matchesCtx);
+      return mainCtxOk && matchesSub;
+    }
+
     function applyFilters() {
       const $gridProducts = $("#gridLayout .card-product");
       const $listProducts = $("#listLayout .card-product");
@@ -730,24 +770,12 @@
           }
         }
 
-        if (filters.categories.length > 0) {
-          const categoryId = (product.attr("data-category") || "").trim();
-          if (!filters.categories.some((category) => category.id === categoryId)) {
-            showProduct = false;
-          }
-        }
-
-        if (filters.contextualCategories.length > 0) {
-          const contextualStr = product.attr("data-contextual-categories") || "";
-          const productContextual = contextualStr.trim().split(/\s+/).filter(Boolean);
-          if (!filters.contextualCategories.some((ctx) => productContextual.indexOf(ctx.id) !== -1)) {
-            showProduct = false;
-          }
-        }
-
-        if (filters.subcategories.length > 0) {
-          const productSub = product.attr("data-subcategory") || "";
-          if (!filters.subcategories.some((sub) => sub.id === productSub)) {
+        if (
+          filters.categories.length > 0 ||
+          filters.contextualCategories.length > 0 ||
+          filters.subcategories.length > 0
+        ) {
+          if (!productMatchesCategoryFilters(product)) {
             showProduct = false;
           }
         }

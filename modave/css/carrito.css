@@ -40,7 +40,7 @@
   text-transform: uppercase;
 }
 .tf-cart-item .size-breakdown-toggle:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgb(from var(--brand-primary) r g b / 0.05);
 }
 
 .tf-table-page-cart .select-all-row {
@@ -266,11 +266,6 @@ body.sidebar-open {
 .desktop-only-summary .tf-btn {
   padding: 10px 32px;
 }
-.sidebar-checkout-content .summary-block {
-  background: var(--white, #ffffff);
-  border-radius: 8px;
-  padding: 20px;
-}*/
 .summary-block + .summary-block {
   margin-top: 16px;
 }
@@ -1014,11 +1009,6 @@ body.sidebar-open {
 }
 .checkout-actions .tf-btn {
   min-width: 180px;
-}
-@media (max-width: 575.98px) {
-  .checkout-actions .tf-btn {
-    flex: 1 1 100%;
-  }
 }
 
 /* ------- Buyer / Shipping notice text ------- */

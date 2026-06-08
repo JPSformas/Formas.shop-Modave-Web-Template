@@ -1730,14 +1730,35 @@
     /* Height Modal Menu
   ------------------------------------------------------------------------------------- */
     var heightModalMenu = function () {
-        function height() {
-            var height = $("header .row-demo .demo-item").first().outerHeight();
-            $("header .mega-menu .row-demo").height(height * 2 + 22);
+        var columnsPerRow = 6;
+        var maxVisibleRows = 2;
+
+        function setHeight() {
+            $("header .mega-menu .row-demo").each(function () {
+                var $row = $(this);
+                var $items = $row.find(".demo-item:visible");
+
+                if (!$items.length) {
+                    $row.height("auto");
+                    return;
+                }
+
+                var itemHeight = $items.first().outerHeight();
+                var gap =
+                    parseFloat($row.css("row-gap")) ||
+                    parseFloat($row.css("gap")) ||
+                    20;
+                var rows = Math.ceil($items.length / columnsPerRow);
+                var visibleRows = Math.min(rows, maxVisibleRows);
+
+                $row.height(
+                    itemHeight * visibleRows + gap * (visibleRows - 1)
+                );
+            });
         }
-        height();
-        $(window).resize(function () {
-            height();
-        });
+
+        setHeight();
+        $(window).resize(setHeight);
     };
 
     /* Handle Footer

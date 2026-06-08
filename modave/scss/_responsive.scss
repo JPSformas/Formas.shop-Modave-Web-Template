@@ -2092,6 +2092,14 @@
     .nav-account .dropdown-account {
         top: calc(100% + 20px);
     }
+    .nav-account-logged {
+        .header-user-name {
+            display: none;
+        }
+        .nav-account-trigger {
+            padding: 4px;
+        }
+    }
     .fl-sidebar-cart {
         margin-top: 30px;
     }
