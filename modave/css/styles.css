@@ -2773,6 +2773,7 @@ a:focus, a:hover {
   width: 44px;
   height: 44px;
   border-radius: 50%;
+  border: 1px solid var(--primary);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -3168,6 +3169,7 @@ header {
   width: 44px;
   height: 44px;
   border-radius: 50%;
+  border: 1px solid var(--primary);
   overflow: hidden;
 }
 .nav-account .dropdown-account-logged .dropdown-account-user .user-avatar img {
@@ -3316,6 +3318,7 @@ header {
   width: 32px;
   height: 32px;
   border-radius: 50%;
+  border: 1px solid var(--primary);
   overflow: hidden;
 }
 .nav-account-logged .header-user-avatar img {
@@ -5461,9 +5464,6 @@ input.style-line-bottom::placeholder {
   height: 20px;
   min-width: 20px;
   border-radius: 3px;
-}
-.form-login button {
-  padding: 10px 32px;
 }
 
 .form-has-password .toggle-password {
@@ -15416,10 +15416,12 @@ ul.list-text.type-number {
   align-items: center;
 }
 .sidebar-account .account-avatar .image {
+  position: relative;
   margin-bottom: 16px;
   width: 140px;
   height: 140px;
   border-radius: 50%;
+  border: 1px solid var(--line);
   overflow: hidden;
   margin-left: auto;
   margin-right: auto;
@@ -15428,6 +15430,156 @@ ul.list-text.type-number {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+.sidebar-account .account-avatar .avatar-editor {
+  position: relative;
+  width: 140px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.sidebar-account .account-avatar .avatar-editor .image .avatar-edit-trigger {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.sidebar-account .account-avatar .avatar-editor .image .avatar-edit-trigger .avatar-edit-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 28px 8px 12px;
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0) 100%);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.sidebar-account .account-avatar .avatar-editor .image:hover .avatar-edit-caption,
+.sidebar-account .account-avatar .avatar-editor.is-open .image .avatar-edit-caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+.sidebar-account .account-avatar .avatar-editor.is-open .image {
+  box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--primary);
+}
+.sidebar-account .account-avatar .avatar-editor .avatar-edit-actions {
+  display: none;
+}
+.sidebar-account .account-avatar .avatar-editor .avatar-edit-dropdown {
+  position: absolute;
+  top: calc(100% - 8px);
+  left: 50%;
+  z-index: 20;
+  min-width: 152px;
+  padding: 6px;
+  border-radius: 12px;
+  background-color: var(--white);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+.sidebar-account .account-avatar .avatar-editor .avatar-edit-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+.sidebar-account .account-avatar .avatar-editor .avatar-edit-dropdown .avatar-edit-option {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--main);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.sidebar-account .account-avatar .avatar-editor .avatar-edit-dropdown .avatar-edit-option svg {
+  flex-shrink: 0;
+}
+.sidebar-account .account-avatar .avatar-editor .avatar-edit-dropdown .avatar-edit-option:hover {
+  background-color: var(--surface);
+}
+.sidebar-account .account-avatar .avatar-editor .avatar-edit-dropdown .avatar-edit-option.avatar-edit-option-remove:hover {
+  color: #d92d20;
+}
+.sidebar-account .account-avatar .avatar-editor .avatar-edit-dropdown .avatar-edit-option.avatar-edit-option-remove:hover svg path {
+  stroke: currentColor;
+}
+@media only screen and (max-width: 991px) {
+  .sidebar-account .account-avatar .avatar-editor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 260px;
+    margin-bottom: 12px;
+  }
+  .sidebar-account .account-avatar .avatar-editor .image .avatar-edit-trigger {
+    display: none;
+  }
+  .sidebar-account .account-avatar .avatar-editor .avatar-edit-dropdown {
+    display: none !important;
+  }
+  .sidebar-account .account-avatar .avatar-editor.is-open .image {
+    box-shadow: none;
+  }
+  .sidebar-account .account-avatar .avatar-editor .avatar-edit-actions {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  .sidebar-account .account-avatar .avatar-editor .avatar-edit-actions .avatar-edit-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 8px;
+    border: 1px solid rgba(24, 24, 24, 0.12);
+    border-radius: 12px;
+    background-color: var(--white);
+    color: var(--main);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .sidebar-account .account-avatar .avatar-editor .avatar-edit-actions .avatar-edit-action-btn svg {
+    flex-shrink: 0;
+  }
+  .sidebar-account .account-avatar .avatar-editor .avatar-edit-actions .avatar-edit-action-btn:active {
+    background-color: var(--surface);
+  }
+  .sidebar-account .account-avatar .avatar-editor .avatar-edit-actions .avatar-edit-action-btn.avatar-edit-action-btn-remove {
+    color: var(--critical);
+  }
+  .sidebar-account .account-avatar .avatar-editor .avatar-edit-actions .avatar-edit-action-btn.avatar-edit-action-btn-remove svg path {
+    stroke: currentColor;
+  }
 }
 .sidebar-account .my-account-nav {
   display: flex;
@@ -16549,6 +16701,9 @@ ul.list-text.type-number {
   }
   .btn-sidebar-account {
     display: none;
+  }
+  .form-login button {
+    padding: 10px 32px;
   }
   .tab-shipping.type-two-cols {
     display: grid;
