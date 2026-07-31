@@ -254,7 +254,67 @@
         if ($(e.target).is("input") || $(e.target).is("label") || $(e.target).closest(".filter-expand").length) return;
         $(this).find(".filter-expand").trigger("click");
       });
+
+      setupCategorySeeMore($mainList, ".filter-category-row");
+      setupCategorySeeMore($ctxList, ".filter-contextual-row");
     }
+
+    var CATEGORY_SEE_MORE_LIMIT = 5;
+
+    function setupCategorySeeMore($list, rowSelector) {
+      if (!$list || !$list.length) return;
+
+      var wasExpanded = $list.hasClass("is-see-more-expanded");
+      $list.find("> .filter-see-more").remove();
+      $list.removeClass("is-see-more-expanded");
+
+      var $allRows = $list.children(rowSelector);
+      $allRows.removeClass("filter-see-more-hidden");
+
+      var $visibleRows = $allRows.filter(function () {
+        return !$(this).hasClass("filter-hidden");
+      });
+
+      if ($visibleRows.length <= CATEGORY_SEE_MORE_LIMIT) return;
+
+      if (!wasExpanded) {
+        $visibleRows.slice(CATEGORY_SEE_MORE_LIMIT).addClass("filter-see-more-hidden");
+      } else {
+        $list.addClass("is-see-more-expanded");
+      }
+
+      var $btn = $(
+        '<button type="button" class="filter-see-more">' +
+          '<span class="text">' + (wasExpanded ? "Ver menos" : "Ver más") + "</span>" +
+        "</button>"
+      );
+
+      $btn.on("click", function (e) {
+        e.preventDefault();
+        var expanded = $list.hasClass("is-see-more-expanded");
+        var $rows = $list.children(rowSelector).filter(function () {
+          return !$(this).hasClass("filter-hidden");
+        });
+
+        if (expanded) {
+          $list.removeClass("is-see-more-expanded");
+          $rows.slice(CATEGORY_SEE_MORE_LIMIT).addClass("filter-see-more-hidden");
+          $btn.find(".text").text("Ver más");
+        } else {
+          $list.addClass("is-see-more-expanded");
+          $rows.removeClass("filter-see-more-hidden");
+          $btn.find(".text").text("Ver menos");
+        }
+      });
+
+      $list.append($btn);
+    }
+
+    function refreshCategorySeeMore() {
+      setupCategorySeeMore($("#filter-main-categories-list"), ".filter-category-row");
+      setupCategorySeeMore($("#filter-contextual-categories-list"), ".filter-contextual-row");
+    }
+
     buildCategoryFilterUI();
 
     // Handle price input changes
@@ -399,6 +459,8 @@
           setVisible($(this), true);
         });
       }
+
+      refreshCategorySeeMore();
     }
 
     $(document).on("change", "input[name='category']", function () {

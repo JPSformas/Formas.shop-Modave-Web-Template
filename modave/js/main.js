@@ -110,6 +110,7 @@
   -------------------------------------------------------------------------------------*/
     var goTop = function () {
         let scrollTopButton = $("#scroll-top");
+        let filterBubble = $(".floating-filter-bubble");
         let isButtonVisible = false;
 
         function checkScroll() {
@@ -117,9 +118,11 @@
 
             if (scrollTop > 500 && !isButtonVisible) {
                 scrollTopButton.addClass("show");
+                filterBubble.addClass("show");
                 isButtonVisible = true;
             } else if (scrollTop <= 500 && isButtonVisible) {
                 scrollTopButton.removeClass("show");
+                filterBubble.removeClass("show");
                 isButtonVisible = false;
             }
         }
