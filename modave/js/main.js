@@ -44,6 +44,15 @@
 (function ($) {
     "use strict";
 
+    /* Formas checkout cart is owned by js/carrito.js — never handle its UI here. */
+    var isFormasCarrito = function (el) {
+        return (
+            $(el).closest(
+                "[data-cart-tbody], .tf-cart-item[data-cart-id], .size-breakdown-sidebar, .carrito-undo-toast, #shoppingCart.minicart-formas"
+            ).length > 0
+        );
+    };
+
     /* Select Image
   -------------------------------------------------------------------------------------*/
     var selectImages = function () {
@@ -94,13 +103,15 @@
 
     /* Delete File 
   -------------------------------------------------------------------------------------*/
-    var deleteFile = function (e) {
-        $(".remove").on("click", function (e) {
+    var deleteFile = function () {
+        // Delegated so theme mini-cart/compare still work; Formas cart skips to carrito.js
+        $(document).on("click", ".remove", function (e) {
+            if (isFormasCarrito(this)) return;
             e.preventDefault();
-            var $this = $(this);
-            $this.closest(".file-delete").remove();
+            $(this).closest(".file-delete").remove();
         });
-        $(".clear-file-delete").on("click", function (e) {
+        $(document).on("click", ".clear-file-delete", function (e) {
+            if (isFormasCarrito(this)) return;
             e.preventDefault();
             $(this).closest(".list-file-delete").find(".file-delete").remove();
         });
@@ -601,7 +612,7 @@
                     // Create file item with unique ID
                     var fileItem = $('<div class="attached-file-item d-flex align-items-center justify-content-between mb_4" data-file-id="' + fileData.id + '">' +
                         '<span class="text-caption-1">' + fileName + ' <span class="text-secondary-2">(' + fileSizeFormatted + ')</span></span>' +
-                        '<button type="button" class="btn-remove-file" title="Eliminar archivo"><i class="fa-solid fa-trash"></i></button>' +
+                        '<button type="button" class="btn-remove-file" title="Eliminar archivo"><i class="fa-regular fa-trash-can"></i></button>' +
                         '</div>');
                     
                     $attachedFiles.append(fileItem);
@@ -620,11 +631,12 @@
 
         // File removal handler (using event delegation)
         $(document).on("click", ".btn-remove-file", function (e) {
+            var $fileItem = $(this).closest(".attached-file-item");
+            if (!$fileItem.length) return;
+
             e.preventDefault();
             e.stopPropagation();
             
-            var $removeBtn = $(this);
-            var $fileItem = $removeBtn.closest(".attached-file-item");
             var fileId = $fileItem.data('file-id');
             var $input = $fileItem.closest(".personalization-tab-content").find(".tf-product-image-upload input[type='file']");
             var storedFiles = $input.data('files-storage') || [];
@@ -1318,6 +1330,10 @@
     var totalPriceVariant = function () {
         $(".tf-product-info-list,.tf-cart-item").each(function () {
             var productItem = $(this);
+            // Formas cart rows: owned by carrito.js
+            if (isFormasCarrito(productItem) || productItem.is("[data-cart-id]")) {
+                return;
+            }
             var basePrice =
                 parseFloat(
                     productItem.find(".price-on-sale").data("base-price")
@@ -1351,7 +1367,7 @@
             });
 
             productItem.find(".btn-increase").on("click", function (e) {
-                // Skip if this button is inside tf-product-info-quantity (handled by quantityBonifiedLogo)
+                // Skip product-detail qty (quantityBonifiedLogo)
                 if ($(this).closest(".tf-product-info-quantity").length > 0) {
                     return;
                 }
@@ -1361,7 +1377,7 @@
             });
 
             productItem.find(".btn-decrease").on("click", function (e) {
-                // Skip if this button is inside tf-product-info-quantity (handled by quantityBonifiedLogo)
+                // Skip product-detail qty (quantityBonifiedLogo)
                 if ($(this).closest(".tf-product-info-quantity").length > 0) {
                     return;
                 }
@@ -2052,7 +2068,10 @@
         $(document).on("click", ".personalization-tab", function () { setTimeout(refresh, 50); });
         $(document).on("change input", ".quantity-product", function () { setTimeout(refresh, 50); });
         $(document).on("change input", ".size-quantity-input", function () { setTimeout(refresh, 50); });
-        $(document).on("click", ".btn-decrease, .btn-increase", function () { setTimeout(refresh, 250); });
+        $(document).on("click", ".btn-decrease, .btn-increase", function () {
+            if (isFormasCarrito(this)) return;
+            setTimeout(refresh, 250);
+        });
 
         var lastQty = $(".quantity-product").val();
         setInterval(function () {

@@ -58,3 +58,8 @@ build/
 # Temporary files
 *.tmp
 *.temp
+
+#development files
+docs/
+tests/
+.superpowers/
