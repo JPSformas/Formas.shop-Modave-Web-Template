@@ -651,8 +651,8 @@
             '<span class="cart-price-label">Personalización</span>' +
             '<span class="cart-line-setup">' + (line.logoSelected ? "Con logo" : "Sin logo") + '</span>' +
           '</div>'
-        : '<div class="cart-price-row cart-price-row--setup ' + setupValue.cls + '" data-cart-title="Setup logo">' +
-            '<span class="cart-price-label">Setup logo</span>' +
+        : '<div class="cart-price-row cart-price-row--setup ' + setupValue.cls + '" data-cart-title="Personalización">' +
+            '<span class="cart-price-label">Personalización</span>' +
             '<span class="cart-line-setup">' + setupValue.value + '</span>' +
           '</div>';
 
@@ -776,6 +776,19 @@
       if (t && t.matches("[data-cart-qty]")) {
         commitQtyFromInput(t);
       }
+    });
+
+    list.addEventListener("click", function (e) {
+      if (e.target.closest(".tf-cart-checkbox, .wg-quantity, [data-cart-qty], .btn-quantity, [data-cart-edit], .remove, .cart-sizes-link, .cart-unit-price-tip, .cart-action-link")) {
+        return;
+      }
+      var selectRow = e.target.closest(".tf-cart-item");
+      if (!selectRow || !list.contains(selectRow)) return;
+      var selectCb = selectRow.querySelector("[data-cart-select]");
+      if (!selectCb) return;
+      e.preventDefault();
+      selectCb.checked = !selectCb.checked;
+      selectCb.dispatchEvent(new Event("change", { bubbles: true }));
     });
 
     list.addEventListener("click", function (e) {

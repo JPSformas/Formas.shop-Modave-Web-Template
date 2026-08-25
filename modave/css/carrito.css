@@ -1386,6 +1386,7 @@ body[data-carrito-step]:not([data-carrito-step="cart"]) .desktop-only-summary {
   padding: 16px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
   margin: 0;
+  cursor: pointer;
 }
 
 
@@ -1937,6 +1938,7 @@ body[data-carrito-step]:not([data-carrito-step="cart"]) .desktop-only-summary {
 
 body.cart-is-empty .cart-empty-state { display: block; }
 body.cart-is-empty .cart-form,
+body.cart-is-empty .cart-toolbar-top,
 body.cart-is-empty .cart-notice,
 body.cart-is-empty .desktop-only-summary { display: none !important; }
 body.cart-is-empty .mobile-order-summary { display: none !important; }
@@ -1978,6 +1980,79 @@ body.cart-kind-is-empty .mobile-order-summary { display: none !important; }
   color: var(--success);
   margin-top: 1px;
   flex: 0 0 auto;
+}
+
+/* Cart quotes dropdown*/
+.cart-toolbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+}
+.cart-toolbar-top .cart-notice {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-bottom: 0;
+}
+.cart-quote-dropdown {
+  flex: 0 0 auto;
+}
+.cart-quote-dropdown .tf-btn {
+  white-space: nowrap;
+  padding: 8px 14px;
+  font-size: 14px;
+}
+.cart-quote-dropdown .tf-btn .icon {
+  font-size: 14px;
+}
+.cart-quote-menu {
+  min-width: 240px;
+  padding: 6px 0;
+  margin-top: 4px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+.cart-quote-menu .dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  color: #212529;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  text-transform: none;
+  white-space: nowrap;
+  justify-content: flex-start;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.cart-quote-menu .dropdown-item:hover,
+.cart-quote-menu .dropdown-item:focus {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+.cart-quote-menu .dropdown-item:active {
+  background-color: #e9ecef;
+  color: #212529;
+}
+
+@media (max-width: 767.98px) {
+  .cart-toolbar-top {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .cart-quote-dropdown {
+    margin-left: auto;
+  }
 }
 
 /* Disabled checkout CTA (tf-btn is not Bootstrap .btn — needs its own guard) */

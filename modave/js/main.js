@@ -522,6 +522,49 @@
         });
     };
 
+    /* Setup cost per unit message
+  -------------------------------------------------------------------------*/
+    var formatArsAmount = function (amount) {
+        return Number(amount).toLocaleString("es-AR", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    };
+
+    var updateSetupCostMessage = function () {
+        var $boxes = $(".setup-cost-message");
+        if (!$boxes.length) return;
+
+        var noPersonalization = $(".personalization-tab.active").first().data("tab") === "sin-personalizacion";
+        if (noPersonalization) {
+            $boxes.addClass("d-none");
+            return;
+        }
+        $boxes.removeClass("d-none");
+
+        var $quantitySection = $(".tf-product-info-list .tf-product-info-quantity").first();
+        if (!$quantitySection.length) {
+            $quantitySection = $(".tf-product-info-quantity").first();
+        }
+
+        var minOrder = parseInt($quantitySection.data("min-order"), 10) || 1;
+        var setupPrice = parseFloat($quantitySection.data("setup-price"));
+        if (isNaN(setupPrice) || setupPrice < 0) setupPrice = 100000;
+
+        var qty = parseInt($quantitySection.find(".quantity-product").val(), 10);
+        if (!qty || qty < minOrder) qty = minOrder;
+
+        var perUnit = qty > 0 ? setupPrice / qty : setupPrice;
+        var html =
+            '<div class="message-icon"><i class="fa-solid fa-print"></i></div>' +
+            '<div class="message-content">' +
+                '<div class="message-text">Costo de aplicación <strong>' + qty + ' unidades</strong>: <strong>$' + formatArsAmount(perUnit) + ' + IVA</strong> por unidad.</div>' +
+                '<div class="message-subtext">Incluye 1 logo de hasta 2 colores en tampografía o serigrafía, un logo en DTF o 1 grabado láser</div>' +
+            '</div>';
+
+        $boxes.html(html);
+    };
+
     /* Personalization Tabs
   -------------------------------------------------------------------------*/
     var personalizationTabs = function () {
@@ -537,6 +580,7 @@
             // Add active class to clicked tab and corresponding content
             $tab.addClass("active");
             $("#" + tabId).addClass("active");
+            updateSetupCostMessage();
         });
 
         // Print method tabs
@@ -720,6 +764,7 @@
         // Initialize
         updateQuantityDisplay();
         updateBonifiedMessage();
+        updateSetupCostMessage();
         
         // Update min order display
         $minOrderDisplay.text(minOrder);
@@ -740,6 +785,7 @@
             $quantityInput.val(currentValue + 1);
             updateQuantityDisplay();
             updateBonifiedMessage();
+            updateSetupCostMessage();
             distributeQuantityToSizes();
         });
         
@@ -752,6 +798,7 @@
                 $quantityInput.val(currentValue - 1);
                 updateQuantityDisplay();
                 updateBonifiedMessage();
+                updateSetupCostMessage();
                 distributeQuantityToSizes();
             }
         });
@@ -807,6 +854,7 @@
                     typingTimeout = setTimeout(function() {
                         updateQuantityDisplay();
                         updateBonifiedMessage();
+                        updateSetupCostMessage();
                         distributeQuantityToSizes();
                     }, 300);
                 }
@@ -833,6 +881,7 @@
             $quantityInput.val(value);
             updateQuantityDisplay();
             updateBonifiedMessage();
+            updateSetupCostMessage();
             // Distribute to sizes after validation
             distributeQuantityToSizes();
         }
@@ -1136,6 +1185,8 @@
                 );
             }
             
+            updateSetupCostMessage();
+            
             // Reset flag after a short delay
             setTimeout(function() {
                 window.isUpdatingFromSizes = false;
@@ -1192,43 +1243,62 @@
     /* Header Full Bar (Pill to Bar Transformation - Sticky)
   -------------------------------------------------------------------------*/
     var headerFullBar = function () {
-        // Only run if header has the enable-full-bar class
-        if (!$("header").hasClass("enable-full-bar")) {
+        var $header = $("header.enable-full-bar").first();
+        if (!$header.length) {
             return;
         }
 
-        let lastScrollTop = 0;
-        let delta = 5;
-        let navbarHeight = $("header").outerHeight();
-        let didScroll = false;
+        var host = document.getElementById("wrapper") || document.body;
+        var sentinel = document.createElement("div");
+        sentinel.className = "header-full-bar-sentinel";
+        sentinel.setAttribute("aria-hidden", "true");
+        sentinel.style.cssText =
+            "position:absolute;top:0;left:0;width:1px;height:1px;pointer-events:none;visibility:hidden;";
 
-        // Ensure header is always visible initially
-        $("header").css("top", "0");
+        if (window.getComputedStyle(host).position === "static") {
+            host.style.position = "relative";
+        }
+        host.insertBefore(sentinel, host.firstChild);
 
-        $(window).scroll(function () {
-            didScroll = true;
-        });
+        function apply(isAtTop) {
+            $header.toggleClass("header-full-bar header-bg", !isAtTop);
+        }
 
-        setInterval(function () {
-            if (didScroll) {
-                let st = $(window).scrollTop();
-                navbarHeight = $("header").outerHeight();
+        function applyFromScroll() {
+            apply(window.scrollY <= 0);
+        }
 
-                if (st > navbarHeight) {
-                    // Always keep header sticky and transform to full bar when scrolled
-                    $("header").css("top", "0");
-                    $("header").addClass("header-full-bar");
-                    $("header").addClass("header-bg");
-                } else {
-                    // Reset to pill appearance when at top but keep it visible
-                    $("header").css("top", "0");
-                    $("header").removeClass("header-full-bar");
-                    $("header").removeClass("header-bg");
+        var ticking = false;
+        window.addEventListener(
+            "scroll",
+            function () {
+                if (ticking) {
+                    return;
                 }
-                lastScrollTop = st;
-                didScroll = false;
-            }
-        }, 250);
+                ticking = true;
+                requestAnimationFrame(function () {
+                    applyFromScroll();
+                    ticking = false;
+                });
+            },
+            { passive: true }
+        );
+
+        applyFromScroll();
+        $(window).on("pageshow", applyFromScroll);
+
+        if (!("IntersectionObserver" in window)) {
+            $(window).on("load", applyFromScroll);
+            return;
+        }
+
+        var observer = new IntersectionObserver(
+            function (entries) {
+                apply(entries[0].isIntersecting);
+            },
+            { root: null, threshold: 0 }
+        );
+        observer.observe(sentinel);
     };
 
     /* Auto Popup
@@ -2142,6 +2212,23 @@
         var heading = $(".tf-product-info-heading").first();
         if (!stickyBar.length || !anchor.length) return;
 
+        function syncScrollTopClearance() {
+            var clearanceVar = "--scroll-top-clearance";
+            var isMobile = window.matchMedia("(max-width: 991px)").matches;
+            var shouldLift = isMobile
+                && stickyBar.hasClass("sticky-bar-show")
+                && !stickyBar.hasClass("docked");
+
+            if (shouldLift) {
+                document.documentElement.style.setProperty(
+                    clearanceVar,
+                    Math.ceil(stickyBar.outerHeight()) + 12 + "px"
+                );
+            } else {
+                document.documentElement.style.removeProperty(clearanceVar);
+            }
+        }
+
         function update() {
             var scrollTop = $(window).scrollTop();
             var barHeight = stickyBar.outerHeight();
@@ -2166,6 +2253,8 @@
             } else {
                 stickyBar.addClass("sticky-bar-show");
             }
+
+            syncScrollTopClearance();
         }
 
         $(window).on("scroll resize", update);

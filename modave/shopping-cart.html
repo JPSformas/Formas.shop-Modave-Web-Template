@@ -765,7 +765,24 @@
         <!-- Section cart -->
         <section class="flat-spacing-4">
             <div class="container">
-                <p class="cart-notice text-caption-1 text-secondary mb-4" data-cart-notice>Realizado el pedido te enviaremos un boceto para tu aprobación final. Solo continuaremos si estás 100% conforme.</p>
+                <div class="cart-toolbar-top">
+                    <p class="cart-notice text-caption-1 text-secondary mb-0" data-cart-notice>Realizado el pedido te enviaremos un boceto para tu aprobación final. Solo continuaremos si estás 100% conforme.</p>
+                    <div class="dropdown cart-quote-dropdown">
+                        <button class="tf-btn radius-4" type="button" id="cartQuoteMenu" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">
+                            <i class="icon fa-solid fa-gear" aria-hidden="true"></i>
+                            <span class="text">Cotizaciones</span>
+                            <span class="icon icon-arrow-down" aria-hidden="true"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end cart-quote-menu" aria-labelledby="cartQuoteMenu">
+                            <li>
+                                <button class="dropdown-item" type="button" data-cart-quote-action="convert">Convertir carrito en cotización</button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="button" data-cart-quote-action="download">Descargar cotización</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-xl-8">
                         <div class="cart-kind-switch cart-kind-chrome">
