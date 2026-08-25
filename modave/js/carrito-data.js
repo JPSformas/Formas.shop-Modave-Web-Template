@@ -64,6 +64,8 @@
         image: "images/products/mochila.jpg",
         apparel: false,
         kind: "standard",
+        minQuantity: 2,
+        stock: 1876,
         pricing: {
           listUnitPriceCents: pesos(90000),
           volumePrices: volumeTiers(),
@@ -77,6 +79,8 @@
         image: "images/products/remera.jpg",
         apparel: true,
         kind: "standard",
+        minQuantity: 10,
+        stock: 1930,
         pricing: {
           listUnitPriceCents: pesos(10000),
           volumePrices: volumeTiers(),
@@ -90,6 +94,8 @@
         image: "images/products/botella-detail-1.jpg",
         apparel: false,
         kind: "standard",
+        minQuantity: 33,
+        stock: 24388,
         pricing: {
           listUnitPriceCents: pesos(20000),
           volumePrices: volumeTiers(),
@@ -103,6 +109,8 @@
         image: "images/products/botella-detail-variant-1.jpg",
         apparel: false,
         kind: "standard",
+        minQuantity: 33,
+        stock: 24388,
         pricing: {
           listUnitPriceCents: pesos(20000),
           volumePrices: volumeTiers(),
@@ -116,6 +124,8 @@
         image: "images/products/mochila.jpg",
         apparel: false,
         kind: "sample",
+        minQuantity: 1,
+        stock: 1876,
         pricing: {
           listUnitPriceCents: pesos(15765.54),
           volumePrices: []
@@ -127,6 +137,8 @@
         image: "images/products/botella-detail-1.jpg",
         apparel: false,
         kind: "sample",
+        minQuantity: 1,
+        stock: 24388,
         pricing: {
           listUnitPriceCents: pesos(15765.54),
           volumePrices: []
@@ -138,6 +150,8 @@
         image: "images/products/botella-detail-1.jpg",
         apparel: false,
         kind: "sample",
+        minQuantity: 1,
+        stock: 24388,
         pricing: {
           listUnitPriceCents: pesos(25765.54),
           volumePrices: []

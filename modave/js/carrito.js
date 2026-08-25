@@ -201,6 +201,34 @@
     return Pricing.formatPrice(value);
   }
 
+  function formatCount(value) {
+    return String(Math.round(Number(value) || 0));
+  }
+
+  function lineMinQuantity(line) {
+    if ((line.kind || CART_KIND.STANDARD) === CART_KIND.SAMPLE) return 1;
+    var min = Number(line.minQuantity);
+    return min > 0 ? min : 1;
+  }
+
+  function lineStock(line) {
+    if (line.apparel && APPAREL_STOCK) {
+      return Object.keys(APPAREL_STOCK).reduce(function (sum, size) {
+        return sum + (Number(APPAREL_STOCK[size]) || 0);
+      }, 0);
+    }
+    var stock = Number(line.stock);
+    return stock > 0 ? stock : 0;
+  }
+
+  function stockMetaHtml(line) {
+    return '<p class="cart-stock-meta">' +
+      '<span>Min.: ' + formatCount(lineMinQuantity(line)) + '</span>' +
+      '<span class="cart-action-sep" aria-hidden="true">|</span>' +
+      '<span>Stock: ' + formatCount(lineStock(line)) + '</span>' +
+      '</p>';
+  }
+
   function findCoupon(code) {
     if (!code) return null;
     return Data.coupons[String(code).trim().toUpperCase()] || null;
@@ -694,6 +722,7 @@
                   sampleBadge +
                 '</div>' +
                 qtyBlock +
+                stockMetaHtml(line) +
               '</div>' +
             '</div>' +
             '<div class="cart-card__pricing">' +
