@@ -4596,6 +4596,52 @@ footer.has-pb {
 .tf-btn.btn-white.has-border:hover {
   border-color: var(--primary);
 }
+/* Secondary / cancel / alternate — soft gray hover, no primary wipe */
+.tf-btn.btn-secondary {
+  background-color: var(--white);
+  border: 1px solid var(--line);
+  color: var(--main);
+}
+.tf-btn.btn-secondary::after {
+  content: none;
+}
+.tf-btn.btn-secondary:hover {
+  background-color: var(--surface);
+  border-color: var(--secondary-2);
+  color: var(--main);
+}
+.tf-btn.btn-secondary:active {
+  background-color: var(--light-grey);
+  border-color: var(--secondary);
+  color: var(--main);
+}
+.tf-btn.btn-secondary:focus-visible {
+  outline: 2px solid var(--main);
+  outline-offset: 2px;
+}
+/* Danger / destructive confirm — uses --critical, no white wipe */
+.tf-btn.btn-danger {
+  background-color: var(--critical);
+  border: 1px solid var(--critical);
+  color: var(--white);
+}
+.tf-btn.btn-danger::after {
+  content: none;
+}
+.tf-btn.btn-danger:hover {
+  background-color: color-mix(in srgb, var(--critical) 80%, var(--black));
+  border-color: color-mix(in srgb, var(--critical) 80%, var(--black));
+  color: var(--white);
+}
+.tf-btn.btn-danger:active {
+  background-color: color-mix(in srgb, var(--critical) 65%, var(--black));
+  border-color: color-mix(in srgb, var(--critical) 65%, var(--black));
+  color: var(--white);
+}
+.tf-btn.btn-danger:focus-visible {
+  outline: 2px solid var(--critical);
+  outline-offset: 2px;
+}
 .tf-btn.btn-primary {
   background-color: var(--main);
   border: none;
@@ -15843,16 +15889,67 @@ ul.list-text.type-number {
 .my-account-wrap {
   display: flex;
   gap: 81px;
-  max-width: 1130px;
+  /* max-width: 1130px; */
   margin-left: auto;
   margin-right: auto;
 }
 .my-account-wrap .my-account-content {
   width: 100%;
+  min-width: 0;
+  overflow-x: clip;
 }
 .my-account-wrap .wrap-sidebar-account {
   width: 369px;
   flex-shrink: 0;
+}
+
+@media only screen and (max-width: 1400px) {
+  .my-account-wrap .wrap-sidebar-account {
+    width: 260px;
+  }
+  .my-account-wrap .sidebar-account {
+    border-radius: 16px;
+    padding: 24px 16px;
+  }
+  .my-account-wrap .sidebar-account .account-avatar {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 24px;
+  }
+  .my-account-wrap .sidebar-account .account-avatar .image,
+  .my-account-wrap .sidebar-account .account-avatar .avatar-editor {
+    width: 100px;
+  }
+  .my-account-wrap .sidebar-account .account-avatar .image {
+    height: 100px;
+  }
+  .my-account-wrap .sidebar-account .account-avatar h6 {
+    font-size: 16px;
+    line-height: 22px;
+  }
+  .my-account-wrap .sidebar-account .account-avatar .body-text-2 {
+    font-size: 12px;
+    line-height: 18px;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+  }
+  .my-account-wrap .sidebar-account .my-account-nav .my-account-nav-item {
+    gap: 10px;
+    padding: 12px 14px;
+    font-size: 16px;
+    line-height: 22px;
+    border-radius: 12px;
+  }
+  .my-account-wrap .sidebar-account .my-account-nav .my-account-nav-item svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
 }
 
 .sidebar-account {
@@ -16084,6 +16181,8 @@ ul.list-text.type-number {
 
 .account-orders .wrap-account-order {
   overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
 }
 .account-orders .wrap-account-order::-webkit-scrollbar {
   height: 3px;
@@ -16102,15 +16201,370 @@ ul.list-text.type-number {
   padding: 15px 20px;
 }
 .account-orders table thead tr {
-  border: 1px solid var(--line);
+  border: 0;
+  border-bottom: 1px solid var(--line);
   background-color: var(--surface);
 }
 .account-orders table tbody {
-  border: 1px solid var(--line);
-  border-top: 0;
+  border: 0;
 }
 .account-orders table tbody tr:not(:last-child) {
   border-bottom: 1px solid var(--line);
+}
+
+/* Mis Cotizaciones */
+.account-quotes,
+.account-quotes .account-orders {
+  min-width: 0;
+  max-width: 100%;
+}
+.account-quotes .quotes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.account-quotes .quotes-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.account-quotes .quotes-page-size,
+.account-quotes .quotes-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.account-quotes .quotes-page-size select,
+.account-quotes .quotes-search input {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 10px;
+  background-color: var(--white);
+  color: var(--main);
+  outline: none;
+}
+.account-quotes .quotes-search input {
+  width: 220px;
+}
+.account-quotes .quotes-search input:focus,
+.account-quotes .quotes-page-size select:focus {
+  border-color: var(--main);
+}
+.account-quotes table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.account-quotes table th.sortable .sort-icon {
+  margin-left: 6px;
+  opacity: 0.35;
+  font-size: 12px;
+}
+.account-quotes table th.sortable.sorted .sort-icon {
+  opacity: 1;
+}
+.account-quotes table td {
+  vertical-align: middle;
+}
+.account-quotes .account-orders .wrap-account-order {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  scrollbar-width: auto;
+  scrollbar-color: #7a7a7a #e4e4e4;
+}
+.account-quotes .account-orders .wrap-account-order::-webkit-scrollbar {
+  height: 10px;
+}
+.account-quotes .account-orders .wrap-account-order::-webkit-scrollbar-track {
+  background: #e4e4e4;
+  border-radius: 999px;
+}
+.account-quotes .account-orders .wrap-account-order::-webkit-scrollbar-thumb {
+  background: #7a7a7a;
+  border-radius: 999px;
+}
+.account-quotes .account-orders table {
+  width: 100%;
+  min-width: 940px;
+  table-layout: fixed;
+}
+.account-quotes .account-orders table thead tr {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+.account-quotes .account-orders table tbody {
+  border: 0;
+}
+.account-quotes .account-orders table td,
+.account-quotes .account-orders table th {
+  padding: 12px 8px;
+  box-sizing: border-box;
+}
+.account-quotes .account-orders table th {
+  white-space: nowrap;
+  overflow: hidden;
+}
+.account-quotes table th .sort-icon {
+  margin-left: 4px;
+}
+.account-quotes table th:nth-child(1),
+.account-quotes table .cell-id {
+  width: 60px;
+}
+.account-quotes table th:nth-child(2),
+.account-quotes table .cell-date {
+  width: 100px;
+}
+.account-quotes table th:nth-child(3),
+.account-quotes table .cell-name {
+  width: 200px;
+}
+.account-quotes table th:nth-child(4),
+.account-quotes table .cell-client {
+  width: 105px;
+}
+.account-quotes table th:nth-child(5),
+.account-quotes table .cell-products {
+  width: 100px;
+}
+.account-quotes table th:nth-child(6),
+.account-quotes table .cell-pdv {
+  width: 145px;
+}
+.account-quotes table th.th-actions,
+.account-quotes table .cell-actions {
+  width: 90px;
+}
+.account-quotes table .cell-name,
+.account-quotes table .cell-client,
+.account-quotes table .cell-pdv {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.account-quotes table .cell-id {
+  font-weight: 600;
+}
+.account-quotes table .cell-date {
+  white-space: nowrap;
+}
+.account-quotes table .cell-products,
+.account-quotes table th.th-products {
+  text-align: center;
+  white-space: nowrap;
+}
+.account-quotes table .cell-actions {
+  overflow: hidden;
+}
+.account-quotes table .cell-muted {
+  color: var(--secondary-2);
+}
+.account-quotes .quote-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+.account-quotes .btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background-color: var(--white);
+  color: var(--main);
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.account-quotes .btn-icon:hover {
+  background-color: var(--main);
+  border-color: var(--main);
+  color: var(--white);
+}
+.account-quotes .btn-icon:active {
+  transform: scale(0.96);
+}
+.account-quotes .btn-icon:focus-visible {
+  outline: 2px solid var(--main);
+  outline-offset: 2px;
+}
+.account-quotes .btn-icon.btn-icon-delete {
+  color: var(--critical);
+}
+.account-quotes .btn-icon.btn-icon-delete:hover {
+  background-color: var(--critical);
+  border-color: var(--critical);
+  color: var(--white);
+}
+.account-quotes .btn-icon.btn-icon-delete:focus-visible {
+  outline-color: var(--critical);
+}
+.account-quotes .quotes-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.account-quotes .wg-pagination .pagination-item {
+  cursor: pointer;
+}
+.account-quotes .wg-pagination .pagination-item.pagination-text {
+  width: auto;
+  padding: 0 16px;
+}
+.account-quotes .wg-pagination li.disabled .pagination-item {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.account-quotes .wg-pagination li.disabled:hover .pagination-item {
+  background-color: transparent;
+  border-color: var(--line);
+  color: var(--main);
+}
+.account-quotes .quotes-empty {
+  text-align: center;
+  padding: 40px 20px !important;
+  color: var(--secondary-2);
+}
+.modal-delete-quote .modal-dialog {
+  max-width: 480px;
+}
+.modal-delete-quote .modal-content {
+  padding: 32px;
+  border-radius: 8px;
+}
+.modal-delete-quote .modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+.modal-delete-quote .modal-actions .tf-btn {
+  flex: 1;
+}
+@media (max-width: 767.98px) {
+  .account-quotes .quotes-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .account-quotes .quotes-header .tf-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .account-quotes .quotes-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .account-quotes .quotes-search {
+    width: 100%;
+  }
+  .account-quotes .quotes-search input {
+    flex: 1;
+    width: auto;
+  }
+  .account-quotes .account-orders .wrap-account-order {
+    overflow-x: visible;
+    border: 0;
+    border-radius: 0;
+  }
+  .account-quotes .account-orders table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    table-layout: auto;
+  }
+  .account-quotes .account-orders table thead {
+    display: none;
+  }
+  .account-quotes .account-orders table tbody {
+    border: 0;
+    display: block;
+    width: 100%;
+  }
+  .account-quotes table th:nth-child(n),
+  .account-quotes table .cell-id,
+  .account-quotes table .cell-date,
+  .account-quotes table .cell-name,
+  .account-quotes table .cell-client,
+  .account-quotes table .cell-products,
+  .account-quotes table .cell-pdv,
+  .account-quotes table .cell-actions,
+  .account-quotes table th.th-actions {
+    width: auto;
+    max-width: none;
+  }
+  .account-quotes table .cell-name,
+  .account-quotes table .cell-client,
+  .account-quotes table .cell-pdv,
+  .account-quotes table .cell-date,
+  .account-quotes table .cell-products {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    text-align: right;
+  }
+  .account-quotes table tbody tr {
+    display: block;
+    width: 100%;
+    border: 1px solid var(--line) !important;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 6px 0;
+  }
+  .account-quotes table tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    max-width: none;
+    padding: 8px 16px;
+    text-align: right;
+    box-sizing: border-box;
+  }
+  .account-quotes table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    text-align: left;
+    flex-shrink: 0;
+  }
+  .account-quotes table tbody td.cell-actions::before {
+    content: none;
+  }
+  .account-quotes table tbody td.cell-actions {
+    justify-content: flex-end;
+    border-top: 1px solid var(--line);
+    margin-top: 6px;
+    padding-top: 12px;
+  }
+  .account-quotes table tbody td.quotes-empty {
+    display: block;
+    text-align: center;
+  }
+  .account-quotes .quotes-footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .account-quotes .wg-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
 .badge {
