@@ -1157,7 +1157,9 @@
                                         data-min-order="33" 
                                         data-min-bonified="109" 
                                         data-logo-price-per-unit="3484.84"
-                                        data-setup-price="100000">
+                                        data-setup-price="100000"
+                                        data-logo-gratis-enabled="false"
+                                        data-volume-tiers='[{"max":30,"unit":29033.22},{"max":40,"unit":27291.23},{"max":82,"unit":26710.56},{"max":123,"unit":25258.90},{"max":null,"unit":24968.57}]'>
                                     <div class="step-header mb_12">
                                         <div class="step-text me-1">3 - Cantidades:</div>
                                     </div>
@@ -1237,7 +1239,7 @@
                                             <div class="message-subtext">Incluye 1 logo de hasta 2 colores en tampografía o serigrafía, un logo en DTF o 1 grabado láser</div>
                                         </div>
                                     </div>
-                                    <div class="bonified-logo-message" id="bonified-logo-message">
+                                    <div class="bonified-logo-message d-none" id="bonified-logo-message">
                                         <!-- Content will be dynamically updated by JavaScript -->
                                     </div>
                                 </div>
@@ -1273,13 +1275,15 @@
                                             <span class="text-caption-1 text-secondary-2">Precio unitario:</span>
                                             <span class="text-caption-1 fw-6" id="sticky-bar-unit-price">$27.291,23 + IVA</span>
                                         </div>
-                                        <div class="tf-sticky-atc-price-row">
-                                            <span class="text-caption-1 text-secondary-2">Personalización:</span>
-                                            <span class="text-caption-1 fw-6" id="sticky-bar-personalization">$100.000 + IVA</span>
-                                        </div>
                                         <div class="tf-sticky-atc-price-row tf-sticky-atc-price-subtotal">
                                             <span>Subtotal:</span>
-                                            <span id="sticky-bar-subtotal">$1.000.610,59 + IVA</span>
+                                            <span class="sticky-subtotal-tip" id="sticky-bar-subtotal-tip">
+                                                <button type="button" class="sticky-subtotal-tip__btn" aria-expanded="false" aria-controls="sticky-subtotal-tip-panel" aria-label="Cómo se calcula el subtotal">
+                                                    <span id="sticky-bar-subtotal">$1.000.610,59 + IVA</span>
+                                                    <i class="fa-solid fa-circle-question" aria-hidden="true"></i>
+                                                </button>
+                                                <span class="sticky-subtotal-tip__panel" id="sticky-subtotal-tip-panel" role="tooltip"></span>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -5253,7 +5257,9 @@
                                     data-min-order="33" 
                                     data-min-bonified="109" 
                                     data-logo-price-per-unit="3484.84"
-                                    data-setup-price="100000">
+                                    data-setup-price="100000"
+                                    data-logo-gratis-enabled="false"
+                                    data-volume-tiers='[{"max":30,"unit":29033.22},{"max":40,"unit":27291.23},{"max":82,"unit":26710.56},{"max":123,"unit":25258.90},{"max":null,"unit":24968.57}]'>
                                 <div class="step-header mb_12">
                                     <div class="step-text me-1">Cantidades:</div>
                                 </div>
@@ -5332,7 +5338,7 @@
                                         <div class="message-subtext">Incluye 1 logo de hasta 2 colores en tampografía o serigrafía, un logo en DTF o 1 grabado láser</div>
                                     </div>
                                 </div>
-                                <div class="bonified-logo-message" id="bonified-logo-message">
+                                <div class="bonified-logo-message d-none" id="bonified-logo-message">
                                     <!-- Content will be dynamically updated by JavaScript -->
                                 </div>
                             </div>

@@ -11793,17 +11793,111 @@ input.style-line-bottom::placeholder {
   padding-top: 6px;
   border-top: 1px solid var(--line);
 }
-.tf-sticky-btn-atc .tf-sticky-atc-price-subtotal span:first-child {
+.tf-sticky-btn-atc .tf-sticky-atc-price-subtotal > span:first-child {
   font-size: 14px;
   line-height: 22px;
   font-weight: 600;
   color: var(--main);
 }
-.tf-sticky-btn-atc .tf-sticky-atc-price-subtotal span:last-child {
+.tf-sticky-btn-atc .sticky-subtotal-tip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--main);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__btn #sticky-bar-subtotal {
   font-size: 16px;
   line-height: 24px;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__btn i {
+  font-size: 13px;
+  color: var(--secondary);
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__btn:hover i,
+.tf-sticky-btn-atc .sticky-subtotal-tip.is-open .sticky-subtotal-tip__btn i,
+.tf-sticky-btn-atc .sticky-subtotal-tip:focus-within .sticky-subtotal-tip__btn i {
   color: var(--main);
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__btn:focus-visible {
+  outline: 2px solid var(--main);
+  outline-offset: 2px;
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__panel {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  z-index: 80;
+  min-width: 240px;
+  max-width: min(300px, 80vw);
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--main);
+  color: var(--white);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.18);
+  text-align: left;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__panel::before {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  right: 18px;
+  width: 8px;
+  height: 8px;
+  background: var(--main);
+  transform: rotate(45deg);
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip:hover .sticky-subtotal-tip__panel,
+.tf-sticky-btn-atc .sticky-subtotal-tip:focus-within .sticky-subtotal-tip__panel,
+.tf-sticky-btn-atc .sticky-subtotal-tip.is-open .sticky-subtotal-tip__panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 3px 0;
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__row.is-result {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgb(255 255 255 / 0.22);
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__row.is-result .sticky-subtotal-tip__label,
+.tf-sticky-btn-atc .sticky-subtotal-tip__row.is-result .sticky-subtotal-tip__value {
+  font-weight: 700;
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__label {
+  color: rgb(255 255 255 / 0.78);
+}
+.tf-sticky-btn-atc .sticky-subtotal-tip__value {
+  color: var(--white);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 .tf-sticky-btn-atc .tf-sticky-atc-infos {
   display: flex;
@@ -19353,6 +19447,9 @@ ul.list-text.type-number {
   }
   .tf-sticky-btn-atc .tf-sticky-atc-price-row {
     justify-content: space-between;
+  }
+  .tf-sticky-btn-atc .sticky-subtotal-tip__panel {
+    min-width: min(260px, calc(100vw - 32px));
   }
   .form-sticky-atc .tf-sticky-atc-product {
     display: none;

@@ -531,38 +531,158 @@
         });
     };
 
+    var formatArsMoney = function (amount) {
+        return "$" + formatArsAmount(amount);
+    };
+
+    var getProductQuantitySection = function () {
+        var $section = $(".tf-product-info-list .tf-product-info-quantity").first();
+        if (!$section.length) $section = $(".tf-product-info-quantity").first();
+        return $section;
+    };
+
+    var parseVolumeTiers = function ($section) {
+        var raw = $section.attr("data-volume-tiers");
+        if (!raw) return [];
+        try {
+            var parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (err) {
+            return [];
+        }
+    };
+
+    var getVolumeUnitPrice = function ($section, qty) {
+        var tiers = parseVolumeTiers($section);
+        var unit = NaN;
+        for (var i = 0; i < tiers.length; i++) {
+            var max = tiers[i].max;
+            unit = Number(tiers[i].unit);
+            if (max == null || qty <= Number(max)) break;
+        }
+        if (isNaN(unit)) unit = 27291.23;
+        return unit;
+    };
+
+    var isLogoGratisEnabled = function ($section) {
+        var flag = String($section.data("logo-gratis-enabled") || "").toLowerCase();
+        return flag === "true" || flag === "1";
+    };
+
+    var getProductQuote = function () {
+        var $section = getProductQuantitySection();
+        var minOrder = parseInt($section.data("min-order"), 10) || 1;
+        var minBonified = parseInt($section.data("min-bonified"), 10) || 0;
+        var setupPrice = parseFloat($section.data("setup-price"));
+        if (isNaN(setupPrice) || setupPrice < 0) setupPrice = 100000;
+
+        var qty = parseInt($section.find(".quantity-product").val(), 10);
+        if (!qty || qty < minOrder) qty = minOrder;
+
+        var noPersonalization = $(".tf-product-info-list .personalization-tab.active").first().data("tab") === "sin-personalizacion";
+        var logoGratisOn = isLogoGratisEnabled($section);
+        var logoGratisReached = logoGratisOn && !noPersonalization && minBonified > 0 && qty >= minBonified;
+        var unitPrice = getVolumeUnitPrice($section, qty);
+        var merchandise = unitPrice * qty;
+        var personalization = noPersonalization || logoGratisReached ? 0 : setupPrice;
+
+        return {
+            qty: qty,
+            unitPrice: unitPrice,
+            merchandise: merchandise,
+            personalization: personalization,
+            subtotal: merchandise + personalization,
+            noPersonalization: noPersonalization,
+            logoGratisOn: logoGratisOn,
+            logoGratisReached: logoGratisReached,
+            minBonified: minBonified,
+            setupPrice: setupPrice
+        };
+    };
+
     var updateSetupCostMessage = function () {
         var $boxes = $(".setup-cost-message");
         if (!$boxes.length) return;
 
-        var noPersonalization = $(".personalization-tab.active").first().data("tab") === "sin-personalizacion";
-        if (noPersonalization) {
+        var quote = getProductQuote();
+        var hideSetup = quote.noPersonalization || quote.logoGratisOn;
+        if (hideSetup) {
             $boxes.addClass("d-none");
             return;
         }
         $boxes.removeClass("d-none");
 
-        var $quantitySection = $(".tf-product-info-list .tf-product-info-quantity").first();
-        if (!$quantitySection.length) {
-            $quantitySection = $(".tf-product-info-quantity").first();
-        }
-
-        var minOrder = parseInt($quantitySection.data("min-order"), 10) || 1;
-        var setupPrice = parseFloat($quantitySection.data("setup-price"));
-        if (isNaN(setupPrice) || setupPrice < 0) setupPrice = 100000;
-
-        var qty = parseInt($quantitySection.find(".quantity-product").val(), 10);
-        if (!qty || qty < minOrder) qty = minOrder;
-
-        var perUnit = qty > 0 ? setupPrice / qty : setupPrice;
+        var perUnit = quote.qty > 0 ? quote.setupPrice / quote.qty : quote.setupPrice;
         var html =
             '<div class="message-icon"><i class="fa-solid fa-print"></i></div>' +
             '<div class="message-content">' +
-                '<div class="message-text">Costo de aplicación <strong>' + qty + ' unidades</strong>: <strong>$' + formatArsAmount(perUnit) + ' + IVA</strong> por unidad.</div>' +
+                '<div class="message-text">Costo de aplicación <strong>' + quote.qty + ' unidades</strong>: <strong>$' + formatArsAmount(perUnit) + ' + IVA</strong> por unidad.</div>' +
                 '<div class="message-subtext">Incluye 1 logo de hasta 2 colores en tampografía o serigrafía, un logo en DTF o 1 grabado láser</div>' +
             '</div>';
 
         $boxes.html(html);
+    };
+
+    var stickySubtotalTipRow = function (label, value, extraClass) {
+        return '<span class="sticky-subtotal-tip__row' + (extraClass ? " " + extraClass : "") + '">' +
+            '<span class="sticky-subtotal-tip__label">' + label + '</span>' +
+            '<span class="sticky-subtotal-tip__value">' + value + '</span>' +
+        '</span>';
+    };
+
+    var updateStickyBarPrices = function () {
+        var $unit = $("#sticky-bar-unit-price");
+        var $subtotal = $("#sticky-bar-subtotal");
+        var $panel = $("#sticky-subtotal-tip-panel");
+        if (!$unit.length && !$subtotal.length) return;
+
+        var quote = getProductQuote();
+        $unit.text(formatArsMoney(quote.unitPrice) + " + IVA");
+        $subtotal.text(formatArsMoney(quote.subtotal) + " + IVA");
+
+        if (!$panel.length) return;
+
+        var personalizationLabel = "Personalización";
+        var personalizationValue = formatArsMoney(quote.personalization);
+        if (quote.noPersonalization) {
+            personalizationLabel = "Sin logo";
+            personalizationValue = formatArsMoney(0);
+        } else if (quote.logoGratisReached) {
+            personalizationValue = "Gratis";
+        }
+
+        $panel.html(
+            stickySubtotalTipRow(
+                formatArsMoney(quote.unitPrice) + " × " + quote.qty + " u.",
+                formatArsMoney(quote.merchandise)
+            ) +
+            stickySubtotalTipRow(personalizationLabel, personalizationValue) +
+            stickySubtotalTipRow("Subtotal", formatArsMoney(quote.subtotal) + " + IVA", "is-result")
+        );
+    };
+
+    var bindStickySubtotalTip = function () {
+        var $tip = $("#sticky-bar-subtotal-tip");
+        if (!$tip.length || $tip.data("bound")) return;
+        $tip.data("bound", true);
+
+        $(document).on("click", ".sticky-subtotal-tip__btn", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $current = $(this).closest(".sticky-subtotal-tip");
+            var open = !$current.hasClass("is-open");
+            $(".sticky-subtotal-tip").removeClass("is-open");
+            $(".sticky-subtotal-tip__btn").attr("aria-expanded", "false");
+            $current.toggleClass("is-open", open);
+            $current.find(".sticky-subtotal-tip__btn").attr("aria-expanded", open ? "true" : "false");
+        });
+
+        $(document).on("click", function (e) {
+            if (!$(e.target).closest(".sticky-subtotal-tip").length) {
+                $(".sticky-subtotal-tip").removeClass("is-open");
+                $(".sticky-subtotal-tip__btn").attr("aria-expanded", "false");
+            }
+        });
     };
 
     /* Personalization Tabs
@@ -581,6 +701,11 @@
             $tab.addClass("active");
             $("#" + tabId).addClass("active");
             updateSetupCostMessage();
+            var quote = getProductQuote();
+            if (!quote.logoGratisOn || quote.noPersonalization) {
+                $(".bonified-logo-message").addClass("d-none").empty();
+            }
+            updateStickyBarPrices();
         });
 
         // Print method tabs
@@ -786,6 +911,7 @@
             updateQuantityDisplay();
             updateBonifiedMessage();
             updateSetupCostMessage();
+            updateStickyBarPrices();
             distributeQuantityToSizes();
         });
         
@@ -855,6 +981,7 @@
                         updateQuantityDisplay();
                         updateBonifiedMessage();
                         updateSetupCostMessage();
+                        updateStickyBarPrices();
                         distributeQuantityToSizes();
                     }, 300);
                 }
@@ -882,6 +1009,7 @@
             updateQuantityDisplay();
             updateBonifiedMessage();
             updateSetupCostMessage();
+            updateStickyBarPrices();
             // Distribute to sizes after validation
             distributeQuantityToSizes();
         }
@@ -914,6 +1042,12 @@
         function updateBonifiedMessage() {
             var currentQuantity = parseInt($quantityInput.val()) || minOrder;
             var $message = $bonifiedMessage;
+            if (!isLogoGratisEnabled($quantitySection) || $(".tf-product-info-list .personalization-tab.active").first().data("tab") === "sin-personalizacion") {
+                $message.addClass("d-none").empty();
+                updateStickyBarPrices();
+                return;
+            }
+            $message.removeClass("d-none");
             
             if (currentQuantity >= minBonified) {
                 // Bonified minimum reached - show success message
@@ -1157,6 +1291,17 @@
                 $btnDecrease.prop('disabled', false);
             }
             
+            if (!isLogoGratisEnabled($quantitySection) || $(".tf-product-info-list .personalization-tab.active").first().data("tab") === "sin-personalizacion") {
+                $bonifiedMessage.addClass("d-none").empty();
+                updateSetupCostMessage();
+                updateStickyBarPrices();
+                setTimeout(function() {
+                    window.isUpdatingFromSizes = false;
+                }, 100);
+                return;
+            }
+            $bonifiedMessage.removeClass("d-none");
+
             // Update bonified message
             if (total >= minBonified) {
                 $bonifiedMessage.removeClass("not-reached").addClass("reached");
@@ -1186,6 +1331,7 @@
             }
             
             updateSetupCostMessage();
+            updateStickyBarPrices();
             
             // Reset flag after a short delay
             setTimeout(function() {
@@ -2132,6 +2278,7 @@
 
             var productName = $("h3.name").first().text().trim();
             if (productName) $stickyTitle.text(productName);
+            updateStickyBarPrices();
         }
 
         $(document).on("click", ".color-btn", function () { setTimeout(refresh, 50); });
@@ -2346,6 +2493,7 @@
         new WOW().init();
         RTL();
         scrollBottomSticky();
+        bindStickySubtotalTip();
         updateStickyBarSummary();
         preloader();
         productVariantSwatches();
