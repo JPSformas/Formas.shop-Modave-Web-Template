@@ -804,28 +804,31 @@
                                 </form>
                             </div>
                             <div class="wrap">
-                                <h5 class="title">Datos del comprador</h5>
+                                <div class="buyer-form-head">
+                                    <h5 class="title">Datos del comprador</h5>
+                                    <a href="#" class="btn-line btn-sm" data-buyer-edit><span class="text"><i class="fa-solid fa-edit"></i> Editar</span></a>
+                                </div>
                                 <p class="form-notice">Nos contactaremos al número proporcionado para finalizar la compra. La información que ingreses se usará para la facturación.</p>
-                                <form id="buyerForm" class="info-box buyer-form" novalidate>
+                                <form id="buyerForm" class="info-box buyer-form is-locked" novalidate>
                                     <div class="form-row grid-2">
                                         <div>
-                                            <input type="text" name="nombre" placeholder="Nombre*"  value="Juan" required>
+                                            <input type="text" name="nombre" placeholder="Nombre*" value="Juan Pedro" required readonly>
                                         </div>
                                         <div>
-                                            <input type="text" name="apellido" placeholder="Apellido*" value="Perez" required>
+                                            <input type="text" name="apellido" placeholder="Apellido*" value="Sbatella" required readonly>
                                         </div>
                                     </div>
                                     <div class="form-row grid-2">
                                         <div>
-                                            <input type="text" name="razonSocial" placeholder="Razón social*" value="Formas Publicitarias" required>
+                                            <input type="text" name="razonSocial" placeholder="Razón social*" value="Formas Publicitarias" required readonly>
                                         </div>
                                         <div>
-                                            <input type="text" name="cuit" placeholder="CUIT/CUIL* (Ej: 12-34567891-23)" value="12-34567891-23" required>
+                                            <input type="text" name="cuit" placeholder="CUIT/CUIL* (Ej: 12-34567891-23)" value="12-34567891-23" required readonly>
                                         </div>
                                     </div>
                                     <div class="form-row grid-1">
                                         <div>
-                                            <input type="tel" name="telefono" placeholder="Teléfono* (Ej: +54 9 11 2345-6789)" value="+54 9 11 2345-6789" required>
+                                            <input type="tel" name="telefono" placeholder="Teléfono* (Ej: +54 9 11 2345-6789)" value="+54 9 11 3333-3333" required readonly>
                                         </div>
                                     </div>
                                 </form>

@@ -1311,6 +1311,28 @@ body[data-carrito-step]:not([data-carrito-step="cart"]) .desktop-only-summary {
   font-size: 13px;
   margin-bottom: 18px;
 }
+.buyer-form-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.tf-page-checkout .wrap .buyer-form-head .title {
+  margin-bottom: 0;
+}
+.buyer-form.is-locked input {
+  background: #f1f1f4;
+  color: #3d3d55;
+  font-weight: 500;
+  cursor: default;
+  border-color: #e4e4ed;
+}
+.buyer-form.is-locked input:hover,
+.buyer-form.is-locked input:focus {
+  border-color: #e4e4ed;
+  box-shadow: none;
+}
 .pickup-notice {
   font-size: 13px;
   color: var(--secondary, #666);

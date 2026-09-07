@@ -1234,13 +1234,47 @@
   /* ====================================================================
    *  Step 2 — Buyer
    * ==================================================================== */
+  function buyerHasData(buyer) {
+    if (!buyer) return false;
+    return Object.keys(buyer).some(function (key) {
+      return String(buyer[key] || "").trim() !== "";
+    });
+  }
+
+  function setupBuyerEditLock(form) {
+    var btn = document.querySelector("[data-buyer-edit]");
+    if (!btn) return;
+
+    function setLocked(locked) {
+      form.classList.toggle("is-locked", locked);
+      Array.prototype.slice.call(form.querySelectorAll("input, textarea, select")).forEach(function (el) {
+        if (locked) el.setAttribute("readonly", "readonly");
+        else el.removeAttribute("readonly");
+      });
+      btn.setAttribute("aria-pressed", locked ? "false" : "true");
+      if (!locked) {
+        var first = form.querySelector("input");
+        if (first) first.focus();
+      } else {
+        persistBuyer(form);
+      }
+    }
+
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      setLocked(!form.classList.contains("is-locked"));
+    });
+  }
+
   function initBuyer() {
     initCheckoutSummary();
 
     var form = document.getElementById("buyerForm");
     if (form) {
       var s = read();
-      fillForm(form, s.buyer || {});
+      if (buyerHasData(s.buyer)) fillForm(form, s.buyer);
+      else persistBuyer(form);
+      setupBuyerEditLock(form);
       Array.prototype.slice.call(form.elements).forEach(function (el) {
         if (!el.name) return;
         el.addEventListener("change", function () { persistBuyer(form); });
