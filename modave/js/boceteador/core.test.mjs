@@ -7,6 +7,9 @@ import {
   snapshotPlacement,
   restorePlacement,
   measuresOk,
+  placeOnPhoto,
+  alignLogo,
+  simpleCanSave,
 } from "./core.js";
 
 test("createEditorState defaults", () => {
@@ -71,4 +74,40 @@ test("restorePlacement roundtrip", () => {
   assert.deepEqual(s2.zone, s.zone);
   assert.equal(s2.logos.length, 1);
   assert.equal(s2.logos[0].src, "data:y");
+});
+
+test("placeOnPhoto centers first logo at ~40% photo width", () => {
+  const logo = { aspect: 2 };
+  placeOnPhoto(logo, 0, { w: 1000, h: 1000 });
+  assert.ok(Math.abs(logo.w - 0.4) < 1e-9);
+  assert.ok(Math.abs(logo.h - 0.2) < 1e-9);
+  assert.ok(Math.abs(logo.x - (1 - logo.w) / 2) < 1e-9);
+  assert.ok(Math.abs(logo.y - (1 - logo.h) / 2) < 1e-9);
+  assert.equal(logo.rot, 0);
+});
+
+test("placeOnPhoto offsets extra logos and does not set a zone", () => {
+  const a = { aspect: 1 };
+  const b = { aspect: 1 };
+  placeOnPhoto(a, 0, { w: 800, h: 600 });
+  placeOnPhoto(b, 1, { w: 800, h: 600 });
+  assert.ok(b.x > a.x);
+  assert.equal(a.zone, undefined);
+});
+
+test("alignLogo centers on the full photo", () => {
+  const logo = { x: 0.1, y: 0.2, w: 0.3, h: 0.1 };
+  alignLogo(logo, "h");
+  assert.ok(Math.abs(logo.x - (1 - 0.3) / 2) < 1e-9);
+  alignLogo(logo, "v");
+  assert.ok(Math.abs(logo.y - (1 - 0.1) / 2) < 1e-9);
+});
+
+test("simpleCanSave needs logos and a technique, not cm", () => {
+  const s = createEditorState();
+  assert.equal(simpleCanSave(s, "DTF"), false);
+  addLogo(s, { src: "data:x", cmW: 0, cmH: 0 });
+  assert.equal(simpleCanSave(s, ""), false);
+  assert.equal(simpleCanSave(s, "   "), false);
+  assert.equal(simpleCanSave(s, "DTF"), true);
 });
