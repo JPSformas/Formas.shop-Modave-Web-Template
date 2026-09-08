@@ -16,6 +16,7 @@ export function createSketch(partial = {}) {
     printColors: [],
     engraved: false,
     status: SKETCH_STATUS.ATTACHED,
+    editorMode: "pro",
     ...partial,
   };
 }

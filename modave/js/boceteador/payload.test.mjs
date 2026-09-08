@@ -37,3 +37,18 @@ test("validateSketch rejects invalid print color hex", () => {
   assert.equal(r.ok, false);
   assert.ok(r.errors.includes("printColors.hex"));
 });
+
+test("createSketch defaults editorMode to pro", () => {
+  const s = createSketch({ productId: "botella" });
+  assert.equal(s.editorMode, "pro");
+});
+
+test("validateSketch accepts simple sketches without zone or print colors", () => {
+  const r = validateSketch(createSketch({
+    productId: "botella",
+    editorMode: "simple",
+    printColors: [],
+    placement: { zone: null, logos: [{ x: 0.3, y: 0.3, w: 0.4, h: 0.2 }] },
+  }));
+  assert.equal(r.ok, true);
+});
