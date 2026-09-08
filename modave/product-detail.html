@@ -1,4 +1,4 @@
-﻿
+
 <!DOCTYPE html>
 
 <!--[if IE 8 ]><html class="ie" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US"> <![endif]-->
@@ -24,6 +24,7 @@
    <link rel="stylesheet" href="css/swiper-bundle.min.css">
    <link rel="stylesheet" href="css/animate.css">
    <link rel="stylesheet" type="text/css" href="css/styles.css"/>
+   <link rel="stylesheet" href="css/boceteador.css">
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
     <!-- Favicon and Touch Icons  -->
@@ -1060,7 +1061,7 @@
                                     </div>
                                 </div>
                                 <!-- Step 2 - Personalización -->
-                                <div class="tf-product-personalization">
+                                <div class="tf-product-personalization" data-product-id="botella-demo">
                                     <div class="step-header mb_12">
                                         <div class="step-text me-1">2 - Personalización:</div>
                                         <p class="step-description text-caption-1 mt-2">Podes elegir personalizarlo ahora con nuestra herramienta online, que lo hagamos nosotros por vos o llevar el producto sin logo</p>
@@ -1090,13 +1091,13 @@
 
                                     <!-- Tab Content: Personalizar ahora -->
                                     <div class="personalization-tab-content active" id="personalizar-ahora">
-                                        <p class="text-caption-1 mb_12">Serás redirigido al personalizador luego de agregar al carrito o comprar</p>
                                         <div class="tf-product-image-upload">
-                                            <label class="btn-style-7">
+                                            <button type="button" class="btn-style-7" id="btn-personaliza-ahora">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="me-2 flex-shrink-0" width="1em" height="1em" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M512 96C547.3 96 576 124.7 576 160L576 272L512 272L512 160L128 160L128 480L272 480L272 544L128 544L121.5 543.7C91.4 540.6 67.4 516.7 64.4 486.6L64 480L64 160C64 126.9 89.2 99.6 121.5 96.3L128 96L512 96zM528 320C554.5 320 576 341.5 576 368L576 496C576 522.5 554.5 544 528 544L368 544C341.5 544 320 522.5 320 496L320 368C320 341.5 341.5 320 368 320L528 320z"/></svg>
                                                 <span class="text">Personaliza ahora</span>
-                                            </label>
+                                            </button>
                                         </div>
+                                        <input type="hidden" id="formas-boceto-json" name="boceto" value="">
                                     </div>
                                     
 
@@ -5468,6 +5469,10 @@
         </div>
     </div>
     <!-- /modal share social -->
+
+    <div id="formas-boceto-modal" hidden></div>
+
+    <!-- Javascript -->
     
 
 
@@ -5491,6 +5496,7 @@
 
     <script type="module" src="js/model-viewer.min.js"></script>
     <script type="module" src="js/zoom.js"></script>
+    <script type="module" src="js/boceteador/host.js"></script>
     <script>
         (function () {
             var btn = document.getElementById("quoteConfirmBtn");
