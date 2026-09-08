@@ -1,4 +1,6 @@
 import { createUi } from "./ui.js";
+import { createSimpleUi } from "./ui-simple.js";
+import { resolveEditorMode } from "./mode.js";
 import { getCurrent, listStills } from "./photo-swiper.js";
 import { prepend, removeBocetos } from "./gallery-swiper.js";
 import { createPageStore } from "./store-page.js";
@@ -20,6 +22,12 @@ function productIdFromPage() {
   return (el && el.getAttribute("data-product-id")) || "pdp-product";
 }
 
+function editorModeFromPage() {
+  const el = document.querySelector("[data-boceteador-mode]")
+    || document.querySelector("[data-product-id]");
+  return resolveEditorMode(el && el.getAttribute("data-boceteador-mode"));
+}
+
 function setOpenLabel(btn, sketch) {
   if (!btn) return;
   const text = btn.querySelector(".text") || btn;
@@ -36,7 +44,9 @@ async function boot() {
     input: jsonInput,
     storage: window.sessionStorage,
   });
-  const ui = await createUi(modalRoot);
+  const ui = editorModeFromPage() === "simple"
+    ? await createSimpleUi(modalRoot)
+    : await createUi(modalRoot);
   modalRoot = ui.root;
 
   let current = store.load();
