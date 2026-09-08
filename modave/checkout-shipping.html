@@ -814,11 +814,25 @@
                                                 <input type="text" name="departamento" placeholder="Departamento">
                                             </div>
                                             <div class="grid-2">
-                                                <input type="text" name="codigoPostal" placeholder="Código postal*" required>
-                                                <input type="text" name="ciudad" placeholder="Ciudad*" required>
+                                                <select name="provincia" aria-label="Provincia" required>
+                                                    <option value="" disabled selected>Provincia*</option>
+                                                    <option value="Buenos Aires">Buenos Aires</option>
+                                                    <option value="CABA">CABA</option>
+                                                    <option value="Córdoba">Córdoba</option>
+                                                    <option value="Santa Fe">Santa Fe</option>
+                                                    <option value="Mendoza">Mendoza</option>
+                                                </select>
+                                                <select name="localidad" aria-label="Localidad" required>
+                                                    <option value="" disabled selected>Localidad*</option>
+                                                    <option value="Florida Oeste">Florida Oeste</option>
+                                                    <option value="Vicente López">Vicente López</option>
+                                                    <option value="San Isidro">San Isidro</option>
+                                                    <option value="CABA">CABA</option>
+                                                    <option value="Córdoba">Córdoba</option>
+                                                </select>
                                             </div>
                                             <div class="grid-2">
-                                                <input type="text" name="provincia" placeholder="Provincia*" required>
+                                                <input type="text" name="codigoPostal" placeholder="Código postal*" required>
                                                 <input type="tel" name="telefono" placeholder="Teléfono*" required>
                                             </div>
                                             <div>

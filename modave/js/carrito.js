@@ -1476,7 +1476,7 @@
             '<input type="radio" name="delivery-address" class="tf-check-rounded" value="' + idx + '"' + (checked ? " checked" : "") + '>' +
             '<div class="address-details">' +
               '<p class="text-button">' + escapeHtml(a.calle) + ' ' + escapeHtml(a.numero) + (line2 ? ", " + escapeHtml(line2) : "") + '</p>' +
-              '<p>' + escapeHtml(a.ciudad) + ', ' + escapeHtml(a.provincia) + ' (CP ' + escapeHtml(a.codigoPostal) + ')</p>' +
+              '<p>' + escapeHtml(a.localidad || a.ciudad) + ', ' + escapeHtml(a.provincia) + ' (CP ' + escapeHtml(a.codigoPostal) + ')</p>' +
               '<p>Teléfono: ' + escapeHtml(a.telefono) + '</p>' +
               ref +
               '<div class="address-shipping-cost"><strong>Costo de envío estimado (sin IVA):</strong> ' + shippingCostLabel + '</div>' +
@@ -1603,9 +1603,11 @@
     var form = formContainer.querySelector("form");
     var s = read();
     var initial = editingIndex >= 0 ? s.shipping.addresses[editingIndex] : null;
-    fillForm(form, initial || {
+    fillForm(form, initial ? Object.assign({}, initial, {
+      localidad: initial.localidad || initial.ciudad || ""
+    }) : {
       calle: "", numero: "", piso: "", departamento: "",
-      codigoPostal: "", ciudad: "", provincia: "", telefono: "", referencias: ""
+      codigoPostal: "", localidad: "", provincia: "", telefono: "", referencias: ""
     });
     placeAddressForm(formContainer, editingIndex);
 
@@ -1871,7 +1873,7 @@
         var a = sh.addresses[sh.selectedAddressIndex];
         shipBox.innerHTML = '<p class="text-button">Envío a domicilio</p>' +
                             '<p>' + escapeHtml(a.calle) + ' ' + escapeHtml(a.numero) + (a.piso ? ", " + escapeHtml(a.piso) : "") + (a.departamento ? " " + escapeHtml(a.departamento) : "") + '</p>' +
-                            '<p>' + escapeHtml(a.ciudad) + ', ' + escapeHtml(a.provincia) + ' (CP ' + escapeHtml(a.codigoPostal) + ')</p>' +
+                            '<p>' + escapeHtml(a.localidad || a.ciudad) + ', ' + escapeHtml(a.provincia) + ' (CP ' + escapeHtml(a.codigoPostal) + ')</p>' +
                             '<p>Teléfono: ' + escapeHtml(a.telefono) + '</p>' +
                             (sh.isEvent && sh.eventDate ? '<p>Fecha de evento: ' + escapeHtml(sh.eventDate) + '</p>' : '');
       } else {
