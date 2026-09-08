@@ -282,3 +282,28 @@
 #pantonePop .cd{font-weight:700}
 #pantonePop .hx{margin-left:auto; font-family:ui-monospace,SFMono-Regular,monospace; font-size:10.5px; color:#6E6E85}
 #pantonePop .none{padding:10px 12px; font-size:12px; color:#6E6E85}
+
+/* ---- boceteador simple ---- */
+#formas-boceto-modal.bm-simple .bm-ajustes{
+  margin-top:12px;
+  border:1px solid var(--formas-gray-200);
+  border-radius:12px;
+  padding:8px 12px 12px;
+  background:var(--formas-gray-50);
+}
+#formas-boceto-modal.bm-simple .bm-ajustes > summary{
+  cursor:pointer;
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  list-style:none;
+}
+#formas-boceto-modal.bm-simple .bm-ajustes > summary::-webkit-details-marker{display:none}
+#formas-boceto-modal.bm-simple .bm-tech-hint{
+  margin:8px 0 0;
+  color:var(--text-muted);
+  font-size:12px;
+  line-height:1.45;
+}
