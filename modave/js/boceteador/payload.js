@@ -13,6 +13,7 @@ export function createSketch(partial = {}) {
     medidaW: "",
     medidaH: "",
     technique: "",
+    notes: "",
     printColors: [],
     engraved: false,
     status: SKETCH_STATUS.ATTACHED,

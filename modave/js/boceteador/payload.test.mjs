@@ -10,6 +10,9 @@ test("createSketch fills required keys", () => {
   assert.equal(s.composedImage, "");
   assert.deepEqual(s.logoFiles, []);
   assert.equal(s.engraved, false);
+  assert.equal(s.notes, "");
+  assert.equal(s.medidaW, "");
+  assert.equal(s.medidaH, "");
 });
 
 test("validateSketch rejects missing productId", () => {
@@ -41,6 +44,7 @@ test("validateSketch rejects invalid print color hex", () => {
 test("createSketch defaults editorMode to pro", () => {
   const s = createSketch({ productId: "botella" });
   assert.equal(s.editorMode, "pro");
+  assert.equal(s.notes, "");
 });
 
 test("validateSketch accepts simple sketches without zone or print colors", () => {

@@ -76,6 +76,7 @@ async function boot() {
       opts.placement = current.placement;
       opts.photoUrl = current.sourcePhotoUrl || photo.url;
       opts.technique = current.technique;
+      opts.notes = current.notes;
       opts.printColors = current.printColors;
     }
     ui.open(opts);

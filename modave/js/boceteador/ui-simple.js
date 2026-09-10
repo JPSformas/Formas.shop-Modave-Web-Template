@@ -3,7 +3,6 @@ import {
   snapshotPlacement,
   restorePlacement,
   composeFoto,
-  medidaFromLogo,
   clamp,
   placeOnPhoto,
   alignLogo,
@@ -21,8 +20,12 @@ import {
 import { createSketch } from "./payload.js";
 import { samePhotoUrl } from "./photo-swiper.js";
 
+const TECH_NOSOTROS = "Sugerido por Formas";
+const TECH_NOSOTROS_LEGACY = "Lo elegimos nosotros";
+
 const TECHNIQUE_HINTS = {
   "": "Elegí cómo se aplica el logo sobre el producto.",
+  [TECH_NOSOTROS]: "Elegimos el método de aplicación que mejor se adecue al producto.",
   "DTP Full Color": "Impresión digital a todo color. Sirve cuando el logo tiene muchos colores o degradés.",
   DTF: "El logo se imprime en un film y se pega con calor. Sirve en varios tipos de tela.",
   "Serigrafía": "Tinta a través de una malla. Buena para cantidades y colores planos.",
@@ -31,12 +34,7 @@ const TECHNIQUE_HINTS = {
   "Bordado": "El logo se cose con hilo. Textura y durabilidad en textiles.",
   "Vinilo": "Un recorte adhesivo sobre el producto. Colores sólidos y bordes nítidos.",
   "Sublimación": "El logo se mete en el material con calor. Típico en productos preparados para sublimar.",
-  __otra: "Escribí cómo querés que lo apliquemos.",
 };
-
-function fmtCm(n) {
-  return n.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 
 export async function createSimpleUi(mountEl) {
   if (!mountEl) throw new Error("createSimpleUi requires a mount element");
@@ -53,7 +51,6 @@ export async function createSimpleUi(mountEl) {
   const $ = (id) => root.querySelector("#" + id);
   const photo = $("photo");
   const frame = $("frame");
-  const chip = $("measureChip");
   const applyBtn = $("applyBtn");
 
   const state = createEditorState();
@@ -71,13 +68,42 @@ export async function createSimpleUi(mountEl) {
 
   const selLogo = () => state.logos[state.sel] || null;
   const frameRect = () => ({ w: frame.clientWidth || 1, h: frame.clientHeight || 1 });
-  const unitK = () => (state.unit === "mm" ? 10 : 1);
-  const fmtPair = (wCm, hCm) => fmtCm(wCm * unitK()) + " × " + fmtCm(hCm * unitK()) + " " + state.unit;
+
+  function setTechPath(path) {
+    const us = $("techLetUsChoose");
+    const me = $("techPickMyself");
+    const wrap = $("techPickWrap");
+    const body = $("techPickBody");
+    const nosotros = path === "nosotros";
+    const pick = path === "pick";
+    if (us) {
+      us.setAttribute("aria-pressed", String(nosotros));
+      us.setAttribute("aria-checked", String(nosotros));
+    }
+    if (me) {
+      me.setAttribute("aria-pressed", String(pick));
+      me.setAttribute("aria-checked", String(pick));
+    }
+    if (wrap) wrap.classList.toggle("is-on", pick);
+    if (body) body.hidden = !pick;
+    if (!pick && $("technique")) $("technique").value = "";
+  }
 
   function techValue() {
+    const us = $("techLetUsChoose");
+    if (us && us.getAttribute("aria-checked") === "true") return TECH_NOSOTROS;
     const sel = $("technique");
-    if (!sel) return "";
-    return sel.value === "__otra" ? (($("techniqueOther") && $("techniqueOther").value) || "").trim() : sel.value;
+    return sel ? sel.value.trim() : "";
+  }
+
+  function notesValue() {
+    const el = $("bocetoNotes");
+    return el ? el.value.trim() : "";
+  }
+
+  function setNotes(value) {
+    const el = $("bocetoNotes");
+    if (el) el.value = value || "";
   }
 
   function clampPan() {
@@ -117,8 +143,8 @@ export async function createSimpleUi(mountEl) {
   function updateTechHint() {
     const hint = $("techHint");
     if (!hint) return;
-    const sel = $("technique");
-    const key = sel && sel.value === "__otra" ? "__otra" : (sel && sel.value) || "";
+    const key = techValue();
+    hint.hidden = !key || key === TECH_NOSOTROS || key === TECH_NOSOTROS_LEGACY;
     hint.textContent = TECHNIQUE_HINTS[key] || TECHNIQUE_HINTS[""];
   }
 
@@ -132,8 +158,6 @@ export async function createSimpleUi(mountEl) {
   }
 
   function render() {
-    const { w: FW, h: FH } = frameRect();
-
     state.logos.forEach((l, i) => {
       if (!l.el) return;
       Object.assign(l.el.style, {
@@ -147,44 +171,7 @@ export async function createSimpleUi(mountEl) {
       l.el.classList.toggle("selected", i === state.sel);
     });
 
-    const L = selLogo();
-    if (L) {
-      const m = medidaFromLogo(state, L, { cmPerPx: null, frameW: FW, frameH: FH });
-      if (m) {
-        chip.hidden = false;
-        chip.textContent = fmtPair(m.w / unitK(), m.h / unitK());
-        chip.style.left = (L.x + L.w / 2) * 100 + "%";
-        const rad = ((L.rot || 0) * Math.PI) / 180;
-        const vH = Math.abs(L.w * FW * Math.sin(rad)) + Math.abs(L.h * FH * Math.cos(rad));
-        const cyL = (L.y + L.h / 2) * FH;
-        const Zc = state.zoom;
-        const chipH = 24 / Zc;
-        const gapC = 10 / Zc;
-        let chipTop = cyL + vH / 2 + gapC;
-        if (chipTop + chipH > FH) chipTop = cyL - vH / 2 - gapC - chipH - 34 / Zc;
-        if (chipTop < 0) chipTop = clamp(cyL + vH / 2 + gapC, 0, FH - chipH);
-        chip.style.top = chipTop + "px";
-        $("logoReadout").hidden = false;
-        $("logoSizeOut").textContent = fmtPair(m.w / unitK(), m.h / unitK());
-      } else {
-        chip.hidden = true;
-        $("logoReadout").hidden = true;
-      }
-      if ($("logoWcm")) $("logoWcm").disabled = false;
-      if ($("logoHcm")) $("logoHcm").disabled = false;
-    } else {
-      chip.hidden = true;
-      $("logoReadout").hidden = true;
-    }
-
     setStepStates();
-  }
-
-  function syncLockUI() {
-    $("lockAspectBtn").setAttribute("aria-pressed", String(state.lockAspect));
-    $("lockAspectBtn").title = state.lockAspect
-      ? "Medidas ancladas por proporción — clic para desanclar"
-      : "Medidas desancladas: cargá ancho y alto libres — clic para anclar";
   }
 
   function setThumb(el, src) {
@@ -235,9 +222,6 @@ export async function createSimpleUi(mountEl) {
     const ajustes = $("logoAjustes");
     if (ajustes) ajustes.hidden = !L;
     $("logoTools").hidden = !L;
-    $("logoCmFields").hidden = !state.logos.length;
-    $("unitField").hidden = !state.logos.length;
-    $("lockAspectBtn").hidden = state.mode === "product";
     const btn = $("removeWhiteBtn");
     btn.hidden = !L;
     if (L) {
@@ -252,27 +236,21 @@ export async function createSimpleUi(mountEl) {
         const activo = L.useTrim !== false;
         $("trimUndo").textContent = activo ? "Deshacer recorte" : "Volver a recortar";
         $("trimNoteTxt").textContent = !activo
-          ? "Recorte deshecho: la medida corresponde al archivo completo, con sus márgenes."
+          ? "Recorte deshecho: se usa el archivo completo, con sus márgenes."
           : (L.crop.manual
-            ? "Recorte manual aplicado: la medida corresponde al rectángulo que marcaste."
-            : "Se recortaron los márgenes vacíos del logo: la medida corresponde al logo real, no al recuadro del archivo.");
+            ? "Recorte manual aplicado."
+            : "Se recortaron los márgenes vacíos del logo.");
       }
       $("logoOpacity").value = String(Math.round((L.opacity == null ? 1 : L.opacity) * 100));
       $("opacityVal").textContent = $("logoOpacity").value + "%";
       root.querySelectorAll("#tintSeg [data-tint]").forEach((b) =>
         b.setAttribute("aria-pressed", String(b.dataset.tint === L.tint)));
-      if (state.mode === "logo") {
-        $("logoWcm").value = L.cmW > 0 ? +(L.cmW * unitK()).toFixed(2) : "";
-        $("logoHcm").value = L.cmH > 0 ? +(L.cmH * unitK()).toFixed(2) : "";
-      }
     } else {
       $("logoThumb").textContent = "◐";
       setTxt($("logoTxt"), "Elegir logo", "PNG sin fondo recomendado · también SVG, JPG, PDF o AI");
       $("jpgNote").hidden = true;
       $("trimNote").hidden = true;
       $("cropEditBtn").hidden = true;
-      $("logoWcm").value = "";
-      $("logoHcm").value = "";
     }
   }
 
@@ -339,21 +317,6 @@ export async function createSimpleUi(mountEl) {
     syncUndoUI();
     syncLogoUI();
     setStepStates();
-    render();
-  }
-
-  function setUnit(u) {
-    state.unit = u;
-    $("unitCm").setAttribute("aria-pressed", String(u === "cm"));
-    $("unitMm").setAttribute("aria-pressed", String(u === "mm"));
-    root.querySelectorAll("#logoCmFields .suffix").forEach((s) => {
-      s.textContent = u;
-    });
-    [$("logoWcm"), $("logoHcm")].forEach((i) => {
-      i.min = u === "mm" ? 1 : 0.1;
-      i.max = u === "mm" ? 2000 : 200;
-    });
-    syncLogoUI();
     render();
   }
 
@@ -616,20 +579,16 @@ export async function createSimpleUi(mountEl) {
   }
 
   function applyTechnique(value) {
-    const sel = $("technique");
-    const other = $("techniqueOther");
-    if (!sel || !value) return;
-    const match = [...sel.options].find((o) => o.value === value || o.textContent === value);
-    if (match) {
-      sel.value = match.value;
-      if (other) other.hidden = match.value === "__otra";
-    } else {
-      sel.value = "__otra";
-      if (other) {
-        other.hidden = false;
-        other.value = value;
-      }
+    if (!value) return;
+    if (value === TECH_NOSOTROS || value === TECH_NOSOTROS_LEGACY) {
+      setTechPath("nosotros");
+      return;
     }
+    setTechPath("pick");
+    const sel = $("technique");
+    if (!sel) return;
+    const match = [...sel.options].find((o) => o.value === value || o.textContent === value);
+    if (match) sel.value = match.value;
   }
 
   function clearLogos() {
@@ -676,40 +635,6 @@ export async function createSimpleUi(mountEl) {
     const L = selLogo();
     if (!L) return;
     alignLogo(L, "v");
-    render();
-  });
-
-  $("lockAspectBtn").addEventListener("click", () => {
-    state.lockAspect = !state.lockAspect;
-    const L = selLogo();
-    if (state.lockAspect && L && L.cmW > 0) {
-      L.cmH = L.cmW / L.aspect;
-      $("logoHcm").value = (L.cmH * unitK()).toFixed(2);
-    }
-    syncLockUI();
-    render();
-  });
-  $("unitCm").addEventListener("click", () => setUnit("cm"));
-  $("unitMm").addEventListener("click", () => setUnit("mm"));
-
-  $("logoWcm").addEventListener("input", () => {
-    const L = selLogo();
-    if (!L) return;
-    L.cmW = (parseFloat($("logoWcm").value) / unitK()) || 0;
-    if (state.lockAspect && L.cmW > 0) {
-      L.cmH = L.cmW / L.aspect;
-      $("logoHcm").value = (L.cmH * unitK()).toFixed(2);
-    }
-    render();
-  });
-  $("logoHcm").addEventListener("input", () => {
-    const L = selLogo();
-    if (!L) return;
-    L.cmH = (parseFloat($("logoHcm").value) / unitK()) || 0;
-    if (state.lockAspect && L.cmH > 0) {
-      L.cmW = L.cmH * L.aspect;
-      $("logoWcm").value = (L.cmW * unitK()).toFixed(2);
-    }
     render();
   });
 
@@ -832,7 +757,6 @@ export async function createSimpleUi(mountEl) {
     const { w: FW, h: FH } = frameRect();
     L.aspect = w / h;
     L.h = (L.w * FW / L.aspect) / FH;
-    if (state.mode === "logo" && state.lockAspect && L.cmW > 0) L.cmH = L.cmW / L.aspect;
     $("cropModal").hidden = true;
     rebuildLogo(L, () => {
       syncLogoUI();
@@ -848,7 +772,6 @@ export async function createSimpleUi(mountEl) {
     const { w: FW, h: FH } = frameRect();
     L.aspect = newAspect;
     L.h = (L.w * FW / newAspect) / FH;
-    if (state.mode === "logo" && state.lockAspect && L.cmW > 0) L.cmH = L.cmW / newAspect;
     rebuildLogo(L, () => {
       syncLogoUI();
       render();
@@ -873,7 +796,10 @@ export async function createSimpleUi(mountEl) {
     const L = selLogo();
     if (!L) return;
     L.tint = b.dataset.tint;
-    if (L.tint === "engrave" && !techValue()) $("technique").value = "Grabado láser";
+    if (L.tint === "engrave" && !techValue()) {
+      applyTechnique("Grabado láser");
+      setStepStates();
+    }
     rebuildLogo(L, () => {
       syncLogoUI();
       render();
@@ -889,7 +815,7 @@ export async function createSimpleUi(mountEl) {
   });
 
   frame.addEventListener("pointerdown", (e) => {
-    if (document.activeElement && document.activeElement.tagName === "INPUT") document.activeElement.blur();
+    if (document.activeElement && (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) document.activeElement.blur();
     const r = frame.getBoundingClientRect();
     const Z = state.zoom;
     const px = { x: (e.clientX - r.left) / Z, y: (e.clientY - r.top) / Z };
@@ -965,13 +891,16 @@ export async function createSimpleUi(mountEl) {
     render();
   }));
 
-  $("technique").addEventListener("change", () => {
-    const otra = $("technique").value === "__otra";
-    $("techniqueOther").hidden = !otra;
-    if (otra) $("techniqueOther").focus();
+  $("technique").addEventListener("change", setStepStates);
+  $("techLetUsChoose").addEventListener("click", () => {
+    setTechPath("nosotros");
     setStepStates();
   });
-  $("techniqueOther").addEventListener("input", setStepStates);
+  $("techPickMyself").addEventListener("click", () => {
+    setTechPath("pick");
+    setStepStates();
+    $("technique").focus();
+  });
 
   $("cleanToggle").addEventListener("click", () => {
     const on = !frame.classList.contains("clean");
@@ -983,8 +912,6 @@ export async function createSimpleUi(mountEl) {
   applyBtn.addEventListener("click", () => {
     if (!simpleCanSave(state, techValue()) || !saveCb) return;
     const principal = state.logos[0];
-    const { w: FW, h: FH } = frameRect();
-    const m = medidaFromLogo(state, principal, { cmPerPx: null, frameW: FW, frameH: FH });
     saveCb(createSketch({
       productId,
       variantColor,
@@ -992,9 +919,10 @@ export async function createSimpleUi(mountEl) {
       composedImage: composeFoto(photo, frame, state.logos),
       logoFiles: state.logos.map((l) => ({ name: l.name, src: l.img ? l.img.src : l.src })),
       placement: snapshotPlacement(state),
-      medidaW: m ? fmtCm(m.w) + " " + state.unit : "",
-      medidaH: m ? fmtCm(m.h) + " " + state.unit : "",
+      medidaW: "",
+      medidaH: "",
       technique: techValue(),
+      notes: notesValue(),
       engraved: principal.tint === "engrave",
       printColors: [],
       editorMode: "simple",
@@ -1021,8 +949,6 @@ export async function createSimpleUi(mountEl) {
         render();
       });
     });
-    setUnit(state.unit);
-    syncLockUI();
     syncLogoUI();
     setStepStates();
     render();
@@ -1048,9 +974,9 @@ export async function createSimpleUi(mountEl) {
         state.zone = null;
         state.drawMode = false;
         $("technique").value = "";
-        $("techniqueOther").value = "";
-        $("techniqueOther").hidden = true;
+        setNotes("");
       }
+      setTechPath("nosotros");
       const startUrl = opts.photoUrl || (catalogPhotos[0] && catalogPhotos[0].url);
       const startName = opts.photoName || (catalogPhotos[0] && catalogPhotos[0].alt) || "producto";
       try {
@@ -1060,7 +986,9 @@ export async function createSimpleUi(mountEl) {
       }
       if (opts.placement) restore(opts.placement);
       if (opts.technique) applyTechnique(opts.technique);
+      setNotes(opts.notes);
       syncPhotoPick();
+      setStepStates();
       render();
     };
     run();
@@ -1071,7 +999,6 @@ export async function createSimpleUi(mountEl) {
     document.body.style.overflow = "";
   }
 
-  syncLockUI();
   syncLogoUI();
   setStepStates();
   render();

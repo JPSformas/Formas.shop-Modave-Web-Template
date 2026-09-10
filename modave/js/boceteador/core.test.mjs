@@ -110,4 +110,5 @@ test("simpleCanSave needs logos and a technique, not cm", () => {
   assert.equal(simpleCanSave(s, ""), false);
   assert.equal(simpleCanSave(s, "   "), false);
   assert.equal(simpleCanSave(s, "DTF"), true);
+  assert.equal(simpleCanSave(s, "Sugerido por Formas"), true);
 });
