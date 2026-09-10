@@ -131,6 +131,36 @@ export function measuresOk(state, cmPerPxVal) {
   return !!cmPerPxVal;
 }
 
+export function placeOnPhoto(logo, idx = 0, frame = { w: 1, h: 1 }) {
+  const FW = frame.w || 1;
+  const FH = frame.h || 1;
+  const asp = logo.aspect || 1;
+  let wPx = FW * 0.4;
+  let hPx = wPx / asp;
+  if (hPx > FH * 0.4) {
+    hPx = FH * 0.4;
+    wPx = hPx * asp;
+  }
+  const off = Math.min((Number(idx) || 0) * 0.03, 0.15);
+  logo.w = wPx / FW;
+  logo.h = hPx / FH;
+  logo.x = clamp((1 - logo.w) / 2 + off, 0, Math.max(0, 1 - logo.w));
+  logo.y = clamp((1 - logo.h) / 2 + off, 0, Math.max(0, 1 - logo.h));
+  logo.rot = 0;
+  return logo;
+}
+
+export function alignLogo(logo, axis) {
+  if (!logo) return logo;
+  if (axis === "h") logo.x = clamp((1 - logo.w) / 2, 0, Math.max(0, 1 - logo.w));
+  if (axis === "v") logo.y = clamp((1 - logo.h) / 2, 0, Math.max(0, 1 - logo.h));
+  return logo;
+}
+
+export function simpleCanSave(state, technique) {
+  return !!(state && state.logos && state.logos.length && String(technique || "").trim());
+}
+
 export { clamp };
 
 export function composeFoto(photoEl, frameEl, logos) {
