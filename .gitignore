@@ -65,3 +65,6 @@ build/
 docs/
 tests/
 .superpowers/
+
+# Local PHP runtime (portable binaries, not source)
+.tools/

@@ -27,6 +27,10 @@ function instagram_http_get($url) {
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 12);
+        $caFile = dirname(__DIR__) . '/config/cacert.pem';
+        if (is_readable($caFile)) {
+            curl_setopt($ch, CURLOPT_CAINFO, $caFile);
+        }
         $body = curl_exec($ch);
         $err = curl_error($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -95,6 +99,7 @@ if (!empty($tokenInfo['access_token']) && instagram_should_refresh_token(isset($
 
 $fetchLive = function () use ($tokenInfo, $logPath) {
     if (empty($tokenInfo['access_token'])) {
+        instagram_log($logPath, 'graph_error', 'missing token');
         throw new Exception('missing token');
     }
     try {
