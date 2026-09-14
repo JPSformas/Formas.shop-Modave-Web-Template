@@ -9492,12 +9492,22 @@ input.style-line-bottom::placeholder {
   min-width: 0;
   height: auto;
   overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #dbdbdb;
+  box-sizing: border-box;
 }
 .tf-sw-instagram .instagram-media {
   margin: 0 auto !important;
   min-width: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
+}
+.tf-sw-instagram .swiper-slide iframe {
+  display: block;
+  max-width: none;
+  width: calc(100% + 2px);
+  margin: -1px;
+  border: 0 !important;
 }
 .banner-cls {
   position: relative;
