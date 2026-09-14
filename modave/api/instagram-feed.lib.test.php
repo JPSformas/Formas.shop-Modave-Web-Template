@@ -129,6 +129,21 @@ $empty = instagram_resolve_feed(
 expect_eq($empty['source'], 'pins-only', 'empty pins source');
 expect_eq($empty['items'], array(), 'empty items');
 
+$payload = instagram_resolve_feed(
+    array('sort' => 'recent', 'limit' => 6, 'pinned' => array()),
+    null,
+    function () {
+        return array(
+            array('id' => '9', 'media_product_type' => 'REELS', 'permalink' => 'https://www.instagram.com/reel/Z/'),
+        );
+    },
+    1,
+    1800
+);
+$encoded = json_encode(array('items' => $payload['items'], 'source' => $payload['source']));
+expect_true(strpos($encoded, 'access_token') === false, 'client json has no access_token');
+expect_true(isset($payload['items'][0]['permalink']), 'client item has permalink');
+
 if ($fails > 0) {
     echo "\n$fails failed\n";
     exit(1);
