@@ -50,6 +50,8 @@ bower_components/
 # API keys and sensitive configuration
 **/config/api-keys.php
 **/config/secrets.php
+**/config/instagram-token.json
+**/data/instagram-reels-cache.json
 
 # Build directories
 dist/
@@ -63,3 +65,6 @@ build/
 docs/
 tests/
 .superpowers/
+
+# Local PHP runtime (portable binaries, not source)
+.tools/
