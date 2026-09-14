@@ -2,6 +2,32 @@
   var EMBED_SRC = "https://www.instagram.com/embed.js";
   var FEED_URL = "api/instagram-reels.php";
 
+  function embedLang() {
+    var el = document.querySelector(".tf-sw-instagram");
+    var raw = (el && el.getAttribute("data-embed-lang")) || "es";
+    var lang = String(raw).split(/[-_]/)[0].toLowerCase();
+    return lang || "es";
+  }
+
+  function withEmbedLang(url) {
+    try {
+      var u = new URL(url, window.location.href);
+      u.searchParams.set("hl", embedLang());
+      return u.toString();
+    } catch (e) {
+      return url;
+    }
+  }
+
+  function applyIframeLang(iframe) {
+    if (!iframe || iframe.getAttribute("data-embed-hl") === "1") return;
+    var src = iframe.getAttribute("src") || "";
+    if (!src) return;
+    iframe.setAttribute("data-embed-hl", "1");
+    var next = withEmbedLang(src);
+    if (next !== src) iframe.src = next;
+  }
+
   function slidesPerViewFor(swiperEl, width) {
     var mobile = parseInt(swiperEl.getAttribute("data-mobile"), 10) || 2;
     var mobileSm = parseInt(swiperEl.getAttribute("data-mobile-sm"), 10) || mobile;
@@ -99,6 +125,7 @@
         var iframes = slide.querySelectorAll("iframe");
         for (var i = 0; i < iframes.length; i++) {
           if (state.iframes.indexOf(iframes[i]) !== -1) continue;
+          applyIframeLang(iframes[i]);
           state.iframes.push(iframes[i]);
           iframes[i].addEventListener("load", state.onLoad);
         }
@@ -167,7 +194,7 @@
       if (!slide.querySelector("blockquote.instagram-media")) {
         var bq = document.createElement("blockquote");
         bq.className = "instagram-media";
-        bq.setAttribute("data-instgrm-permalink", permalink);
+        bq.setAttribute("data-instgrm-permalink", withEmbedLang(permalink));
         bq.setAttribute("data-instgrm-version", "14");
         slide.appendChild(bq);
       }
