@@ -22,6 +22,88 @@ function instagram_normalize_permalink($url) {
     return 'https://www.instagram.com/reel/' . $m[2] . '/';
 }
 
+function instagram_profile_url_from_username($username) {
+    if (!is_string($username)) {
+        return null;
+    }
+    $username = ltrim(trim($username), '@');
+    if (!preg_match('/^[A-Za-z0-9._]{1,30}$/', $username)) {
+        return null;
+    }
+    $reserved = array(
+        'about', 'accounts', 'developer', 'explore', 'legal', 'p', 'reel', 'reels',
+        'share', 'stories', 'tv',
+    );
+    if (in_array(strtolower($username), $reserved, true)) {
+        return null;
+    }
+    return 'https://www.instagram.com/' . $username . '/';
+}
+
+function instagram_normalize_profile_url($url) {
+    if (!is_string($url)) {
+        return null;
+    }
+    $url = trim($url);
+    if ($url === '') {
+        return null;
+    }
+    $fromName = instagram_profile_url_from_username($url);
+    if ($fromName !== null) {
+        return $fromName;
+    }
+    $parts = parse_url($url);
+    if ($parts === false || empty($parts['host']) || empty($parts['path'])) {
+        return null;
+    }
+    $host = strtolower($parts['host']);
+    if ($host !== 'instagram.com' && $host !== 'www.instagram.com') {
+        return null;
+    }
+    if (!preg_match('#^/([A-Za-z0-9._]{1,30})/?$#', $parts['path'], $m)) {
+        return null;
+    }
+    return instagram_profile_url_from_username($m[1]);
+}
+
+function instagram_profile_url_from_graph_user($json) {
+    if (!is_array($json) || empty($json['username'])) {
+        return null;
+    }
+    return instagram_profile_url_from_username($json['username']);
+}
+
+function instagram_resolve_profile_url($configured, $cached, $graph) {
+    $candidates = array($configured, $graph, $cached);
+    foreach ($candidates as $candidate) {
+        $normalized = instagram_normalize_profile_url($candidate);
+        if ($normalized !== null) {
+            return $normalized;
+        }
+    }
+    return '';
+}
+
+function instagram_token_fingerprint($accessToken) {
+    if (!is_string($accessToken) || $accessToken === '') {
+        return '';
+    }
+    return substr(hash('sha256', $accessToken), 0, 16);
+}
+
+function instagram_cache_for_token($cache, $fingerprint) {
+    if (!is_array($cache)) {
+        return null;
+    }
+    if ($fingerprint === '' || !isset($cache['token_fp'])) {
+        return $cache;
+    }
+    if ($cache['token_fp'] !== $fingerprint) {
+        return null;
+    }
+    return $cache;
+}
+
 function instagram_filter_reels($media) {
     $out = array();
     if (!is_array($media)) {

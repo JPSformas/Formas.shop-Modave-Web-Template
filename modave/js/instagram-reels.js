@@ -220,6 +220,18 @@
     });
   }
 
+  function applyProfileLink(url) {
+    var a = document.querySelector("[data-instagram-profile-link]");
+    if (!a) return;
+    if (url) {
+      a.href = url;
+      a.style.display = "";
+      return;
+    }
+    a.removeAttribute("href");
+    a.style.display = "none";
+  }
+
   function render(items) {
     var swiperEl = document.querySelector(".tf-sw-instagram");
     if (!swiperEl) return;
@@ -260,9 +272,11 @@
       return res.json();
     })
     .then(function (data) {
+      applyProfileLink(data && data.profile_url ? data.profile_url : "");
       render(data && data.items ? data.items : []);
     })
     .catch(function () {
+      applyProfileLink("");
       render([]);
     });
 })();

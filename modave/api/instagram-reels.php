@@ -4,7 +4,7 @@ header('Cache-Control: no-store');
 
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
-    echo json_encode(array('items' => array(), 'source' => 'pins-only'));
+    echo json_encode(array('items' => array(), 'source' => 'pins-only', 'profile_url' => ''));
     exit;
 }
 
@@ -60,10 +60,16 @@ function instagram_read_json_file($path) {
 }
 
 $ttl = 1800;
+$configuredProfile = '';
 if (is_readable($configPath)) {
     $cfg = include $configPath;
-    if (is_array($cfg) && isset($cfg['cache_ttl_seconds'])) {
-        $ttl = (int) $cfg['cache_ttl_seconds'];
+    if (is_array($cfg)) {
+        if (isset($cfg['cache_ttl_seconds'])) {
+            $ttl = (int) $cfg['cache_ttl_seconds'];
+        }
+        if (isset($cfg['profile_url'])) {
+            $configuredProfile = $cfg['profile_url'];
+        }
     }
 }
 
@@ -77,7 +83,6 @@ if ($tokenInfo === null) {
     $tokenInfo = array('access_token' => '', 'expires_at' => 0);
 }
 
-$cache = instagram_read_json_file($cachePath);
 $now = time();
 
 if (!empty($tokenInfo['access_token']) && instagram_should_refresh_token(isset($tokenInfo['expires_at']) ? $tokenInfo['expires_at'] : 0, $now)) {
@@ -96,6 +101,10 @@ if (!empty($tokenInfo['access_token']) && instagram_should_refresh_token(isset($
         instagram_log($logPath, 'token_refresh_failed', $e->getMessage());
     }
 }
+
+$cache = instagram_read_json_file($cachePath);
+$tokenFp = instagram_token_fingerprint(isset($tokenInfo['access_token']) ? $tokenInfo['access_token'] : '');
+$cache = instagram_cache_for_token($cache, $tokenFp);
 
 $fetchLive = function () use ($tokenInfo, $logPath) {
     if (empty($tokenInfo['access_token'])) {
@@ -121,12 +130,40 @@ foreach ($result['skipped_pins'] as $bad) {
     instagram_log($logPath, 'bad_pin', $bad);
 }
 
+$cachedProfile = (is_array($cache) && isset($cache['profile_url'])) ? $cache['profile_url'] : '';
+$graphProfile = '';
+if (instagram_resolve_profile_url($configuredProfile, $cachedProfile, '') === '' && !empty($tokenInfo['access_token'])) {
+    try {
+        $meUrl = 'https://graph.instagram.com/me?fields=username&access_token=' . rawurlencode($tokenInfo['access_token']);
+        $graphProfile = instagram_profile_url_from_graph_user(json_decode(instagram_http_get($meUrl), true));
+        if ($graphProfile === null) {
+            $graphProfile = '';
+        }
+    } catch (Exception $e) {
+        instagram_log($logPath, 'graph_error', 'username: ' . $e->getMessage());
+        $graphProfile = '';
+    }
+}
+
+$profileUrl = instagram_resolve_profile_url($configuredProfile, $cachedProfile, $graphProfile);
+
 if ($result['save_cache']) {
     $written = @file_put_contents($cachePath, json_encode(array(
         'saved_at' => $now,
         'items' => $result['items'],
+        'profile_url' => $profileUrl,
+        'token_fp' => $tokenFp,
     ), JSON_PRETTY_PRINT), LOCK_EX);
     if ($written === false) {
+        instagram_log($logPath, 'cache_write_failed', $cachePath);
+    }
+} elseif ($profileUrl !== '' && is_array($cache) && (!isset($cache['profile_url']) || $cache['profile_url'] !== $profileUrl || !isset($cache['token_fp']))) {
+    $cache['profile_url'] = $profileUrl;
+    if ($tokenFp !== '') {
+        $cache['token_fp'] = $tokenFp;
+    }
+    $patched = @file_put_contents($cachePath, json_encode($cache, JSON_PRETTY_PRINT), LOCK_EX);
+    if ($patched === false) {
         instagram_log($logPath, 'cache_write_failed', $cachePath);
     }
 }
@@ -134,4 +171,5 @@ if ($result['save_cache']) {
 echo json_encode(array(
     'items' => $result['items'],
     'source' => $result['source'],
+    'profile_url' => $profileUrl,
 ));

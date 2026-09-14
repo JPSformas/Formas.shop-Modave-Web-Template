@@ -30,8 +30,57 @@ expect_eq(
     'normalize reels path to reel'
 );
 expect_eq(instagram_normalize_permalink('https://www.instagram.com/p/CCCC/'), null, 'feed posts are invalid');
-expect_eq(instagram_normalize_permalink('https://www.instagram.com/formas.ar/'), null, 'profile url is invalid');
+expect_eq(instagram_normalize_permalink('https://www.instagram.com/formas.ar/'), null, 'profile url is invalid as a reel');
 expect_eq(instagram_normalize_permalink(''), null, 'empty is invalid');
+
+expect_eq(
+    instagram_profile_url_from_username('formas.ar'),
+    'https://www.instagram.com/formas.ar/',
+    'username becomes profile url'
+);
+expect_eq(
+    instagram_profile_url_from_username('@other.shop'),
+    'https://www.instagram.com/other.shop/',
+    'strips leading at'
+);
+expect_eq(instagram_profile_url_from_username('reel'), null, 'reserved reel name');
+expect_eq(
+    instagram_normalize_profile_url('https://www.instagram.com/other.shop/?utm_source=ig'),
+    'https://www.instagram.com/other.shop/',
+    'profile url strips query'
+);
+expect_eq(instagram_normalize_profile_url('https://www.instagram.com/reel/AAAA/'), null, 'reel is not a profile');
+expect_eq(
+    instagram_profile_url_from_graph_user(array('id' => '1', 'username' => 'other.shop')),
+    'https://www.instagram.com/other.shop/',
+    'graph username'
+);
+expect_eq(
+    instagram_resolve_profile_url('https://www.instagram.com/override/', 'https://www.instagram.com/cached/', 'https://www.instagram.com/graph/'),
+    'https://www.instagram.com/override/',
+    'configured profile wins'
+);
+expect_eq(
+    instagram_resolve_profile_url('', 'https://www.instagram.com/cached/', 'https://www.instagram.com/graph/'),
+    'https://www.instagram.com/graph/',
+    'graph profile beats cache'
+);
+expect_eq(
+    instagram_resolve_profile_url('', 'https://www.instagram.com/cached/', ''),
+    'https://www.instagram.com/cached/',
+    'cached profile when no graph'
+);
+expect_eq(instagram_token_fingerprint(''), '', 'empty token has no fingerprint');
+expect_eq(strlen(instagram_token_fingerprint('abc')), 16, 'fingerprint length');
+expect_true(
+    instagram_token_fingerprint('abc') !== instagram_token_fingerprint('xyz'),
+    'different tokens differ'
+);
+$legacyCache = array('saved_at' => 1, 'items' => array());
+expect_eq(instagram_cache_for_token($legacyCache, 'fp1'), $legacyCache, 'legacy cache without fp still used');
+$otherAccount = array('saved_at' => 1, 'items' => array(), 'token_fp' => 'fp1');
+expect_eq(instagram_cache_for_token($otherAccount, 'fp2'), null, 'other account cache discarded');
+expect_eq(instagram_cache_for_token($otherAccount, 'fp1'), $otherAccount, 'matching token keeps cache');
 
 $media = array(
     array('id' => '1', 'media_type' => 'VIDEO', 'media_product_type' => 'REELS', 'permalink' => 'https://www.instagram.com/reel/R1/', 'timestamp' => '2026-01-01'),
@@ -140,9 +189,14 @@ $payload = instagram_resolve_feed(
     1,
     1800
 );
-$encoded = json_encode(array('items' => $payload['items'], 'source' => $payload['source']));
+$encoded = json_encode(array(
+    'items' => $payload['items'],
+    'source' => $payload['source'],
+    'profile_url' => 'https://www.instagram.com/other.shop/',
+));
 expect_true(strpos($encoded, 'access_token') === false, 'client json has no access_token');
 expect_true(isset($payload['items'][0]['permalink']), 'client item has permalink');
+expect_true(strpos($encoded, 'profile_url') !== false, 'client json includes profile_url');
 
 if ($fails > 0) {
     echo "\n$fails failed\n";
