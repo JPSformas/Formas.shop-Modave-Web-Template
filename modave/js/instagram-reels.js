@@ -28,6 +28,10 @@
     return new Promise(function (resolve, reject) {
       var existing = document.querySelector('script[src="' + EMBED_SRC + '"]');
       if (existing) {
+        if (existing.readyState === "complete" || window.instgrm) {
+          resolve();
+          return;
+        }
         existing.addEventListener("load", function () { resolve(); });
         existing.addEventListener("error", reject);
         return;
@@ -41,13 +45,123 @@
     });
   }
 
+  var EMBED_UPDATE_MAX = 10;
+  var EMBED_UPDATE_MS = 200;
+  var embedWatchState = null;
+
+  function stopEmbedWatch(state) {
+    if (!state) return;
+    if (state.observer) state.observer.disconnect();
+    if (state.timer) clearTimeout(state.timer);
+    (state.iframes || []).forEach(function (iframe) {
+      iframe.removeEventListener("load", state.onLoad);
+    });
+  }
+
+  function iframeHasSize(iframe) {
+    var h = iframe.offsetHeight;
+    if (!h && iframe.getBoundingClientRect) {
+      h = iframe.getBoundingClientRect().height;
+    }
+    return h >= 80;
+  }
+
+  function visibleEmbedsReady(slides) {
+    var any = false;
+    var ready = true;
+    for (var s = 0; s < slides.length; s++) {
+      var iframes = slides[s].querySelectorAll("iframe");
+      if (!iframes.length) {
+        if (slides[s].querySelector("blockquote.instagram-media")) ready = false;
+        continue;
+      }
+      any = true;
+      for (var i = 0; i < iframes.length; i++) {
+        if (!iframeHasSize(iframes[i])) ready = false;
+      }
+    }
+    return any && ready;
+  }
+
+  function watchEmbedsThenUpdate(swiper, slides) {
+    stopEmbedWatch(embedWatchState);
+    var state = {
+      observer: null,
+      timer: null,
+      tries: 0,
+      iframes: [],
+      onLoad: null,
+    };
+    embedWatchState = state;
+
+    function bindIframes() {
+      slides.forEach(function (slide) {
+        var iframes = slide.querySelectorAll("iframe");
+        for (var i = 0; i < iframes.length; i++) {
+          if (state.iframes.indexOf(iframes[i]) !== -1) continue;
+          state.iframes.push(iframes[i]);
+          iframes[i].addEventListener("load", state.onLoad);
+        }
+      });
+    }
+
+    function maybeFinish() {
+      if (embedWatchState !== state) return;
+      swiper.update();
+      if (visibleEmbedsReady(slides) || state.tries >= EMBED_UPDATE_MAX) {
+        stopEmbedWatch(state);
+        if (embedWatchState === state) embedWatchState = null;
+      }
+    }
+
+    state.onLoad = function () {
+      maybeFinish();
+    };
+
+    bindIframes();
+
+    if (typeof MutationObserver !== "undefined") {
+      state.observer = new MutationObserver(function () {
+        bindIframes();
+        maybeFinish();
+      });
+      slides.forEach(function (slide) {
+        state.observer.observe(slide, {
+          childList: true,
+          subtree: true,
+        });
+      });
+    }
+
+    function retry() {
+      if (embedWatchState !== state) return;
+      state.tries += 1;
+      bindIframes();
+      maybeFinish();
+      if (embedWatchState === state) {
+        state.timer = setTimeout(retry, EMBED_UPDATE_MS);
+      }
+    }
+
+    swiper.update();
+    if (visibleEmbedsReady(slides)) {
+      stopEmbedWatch(state);
+      embedWatchState = null;
+      return;
+    }
+    state.timer = setTimeout(retry, EMBED_UPDATE_MS);
+  }
+
   function processVisible(swiper, swiperEl) {
     if (!swiper || !window.instgrm || !window.instgrm.Embeds) return;
     var perView = slidesPerViewFor(swiperEl, window.innerWidth);
     var indexes = neighborIndexes(swiper.activeIndex || 0, perView, swiper.slides.length);
+    var watched = [];
     indexes.forEach(function (i) {
       var slide = swiper.slides[i];
-      if (!slide || slide.getAttribute("data-embed-processed") === "1") return;
+      if (!slide) return;
+      watched.push(slide);
+      if (slide.getAttribute("data-embed-processed") === "1") return;
       var permalink = slide.getAttribute("data-permalink");
       if (!permalink) return;
       if (!slide.querySelector("blockquote.instagram-media")) {
@@ -60,7 +174,7 @@
       slide.setAttribute("data-embed-processed", "1");
     });
     window.instgrm.Embeds.process();
-    swiper.update();
+    watchEmbedsThenUpdate(swiper, watched);
   }
 
   function initSwiper(swiperEl) {
@@ -130,8 +244,10 @@
       .catch(function () {
         swiperEl.style.display = "none";
       });
-    swiper.on("slideChange", function () {
-      processVisible(swiper, swiperEl);
+    ["slideChange", "resize", "breakpoint"].forEach(function (evt) {
+      swiper.on(evt, function () {
+        processVisible(swiper, swiperEl);
+      });
     });
   }
 

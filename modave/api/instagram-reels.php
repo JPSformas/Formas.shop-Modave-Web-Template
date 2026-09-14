@@ -84,7 +84,10 @@ if (!empty($tokenInfo['access_token']) && instagram_should_refresh_token(isset($
             throw new Exception('invalid refresh payload');
         }
         $tokenInfo = $parsed;
-        @file_put_contents($tokenPath, json_encode($tokenInfo, JSON_PRETTY_PRINT), LOCK_EX);
+        $tokenWritten = @file_put_contents($tokenPath, json_encode($tokenInfo, JSON_PRETTY_PRINT), LOCK_EX);
+        if ($tokenWritten === false) {
+            instagram_log($logPath, 'token_persist_failed', $tokenPath);
+        }
     } catch (Exception $e) {
         instagram_log($logPath, 'token_refresh_failed', $e->getMessage());
     }
