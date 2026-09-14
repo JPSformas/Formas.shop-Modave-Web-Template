@@ -9488,6 +9488,17 @@ input.style-line-bottom::placeholder {
   font-size: 18px;
   transition: color 0.3s ease;
 }
+.tf-sw-instagram .swiper-slide {
+  min-width: 0;
+  height: auto;
+  overflow: hidden;
+}
+.tf-sw-instagram .instagram-media {
+  margin: 0 auto !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
 .banner-cls {
   position: relative;
   border-radius: 20px;

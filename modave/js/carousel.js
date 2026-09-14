@@ -165,50 +165,6 @@ if ($(".tf-sw-collection").length > 0) {
   });
 }
 
-if ($(".tf-sw-tiktok").length > 0) {
-  var tfSwTiktok = $(".tf-sw-tiktok");
-  var preview = tfSwTiktok.data("preview");
-  var tablet = tfSwTiktok.data("tablet");
-  var mobile = tfSwTiktok.data("mobile");
-  var mobileSm = tfSwTiktok.data("mobile-sm") !== undefined ? tfSwTiktok.data("mobile-sm") : mobile;
-  var spacingLg = tfSwTiktok.data("space-lg");
-  var spacingMd = tfSwTiktok.data("space-md");
-  var spacing = tfSwTiktok.data("space");
-  var loop = tfSwTiktok.data("loop");
-  var perGroup = tfSwTiktok.data("pagination") || 1;
-  var perGroupMd = tfSwTiktok.data("pagination-md") || 1;
-  var perGroupLg = tfSwTiktok.data("pagination-lg") || 1;
-  var swiper = new Swiper(".tf-sw-tiktok", {
-    slidesPerView: mobile,
-    spaceBetween: spacing,
-    speed: 1000,
-    pagination: {
-      el: ".sw-pagination-tiktok",
-      clickable: true,
-    },
-    observer: true,
-    observeParents: true,
-    slidesPerGroup: perGroup,
-    breakpoints: {
-      575: {
-        slidesPerView: mobileSm,
-        spaceBetween: spacing,
-        slidesPerGroup: perGroup,
-      },
-      768: {
-        slidesPerView: tablet,
-        spaceBetween: spacingMd,
-        slidesPerGroup: perGroupMd,
-      },
-      1200: {
-        slidesPerView: preview,
-        spaceBetween: spacingLg,
-        slidesPerGroup: perGroupLg,
-      },
-    },
-  });
-}
-
 // Generic carousel: use tf-sw-generic + sw-pagination-generic.
 // Pagination can be next sibling of swiper OR inside the swiper. Optional nav: .nav-prev-generic / .nav-next-generic in same parent.
 if ($(".tf-sw-generic").length > 0) {
