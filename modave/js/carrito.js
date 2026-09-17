@@ -696,6 +696,7 @@
           'Ver desglose de talles <i class="icon-arrRight"></i>' +
         '</button>';
 
+      var stockMeta = stockMetaHtml(line);
       var qtyBlock = apparel
         ? '<div class="cart-qty-block is-apparel" data-cart-title="Cantidad">' +
             '<span class="cart-qty-text">' +
@@ -703,6 +704,7 @@
               '<strong class="cart-qty-value" data-cart-qty-display="' + id + '">' + line.qty + '</strong>' +
             '</span>' +
             sizesBtn +
+            stockMeta +
           '</div>'
         : '<div class="cart-qty-block" data-cart-title="Cantidad">' +
             '<span class="cart-qty-label">Cantidad</span>' +
@@ -711,6 +713,7 @@
               '<input type="text" class="quantity-product" data-cart-qty="' + id + '" name="number-' + id + '" value="' + line.qty + '" inputmode="numeric" pattern="[0-9]*" aria-label="Cantidad">' +
               '<span class="btn-quantity btn-increase" aria-hidden="true">+</span>' +
             '</div>' +
+            stockMeta +
           '</div>';
 
       return '' +
@@ -729,7 +732,6 @@
                   sampleBadge +
                 '</div>' +
                 qtyBlock +
-                stockMetaHtml(line) +
               '</div>' +
             '</div>' +
             '<div class="cart-card__pricing">' +
@@ -2360,6 +2362,7 @@
     root.querySelectorAll("[data-minicart-total-label]").forEach(function (el) {
       el.textContent = copy.totalLabel;
     });
+    renderCouponSection(root, state);
 
     var cta = root.querySelector("[data-cart-cta]");
     if (cta) {
@@ -2399,6 +2402,17 @@
       e.preventDefault();
       tool.click();
     });
+    bindCouponSections(root, function () {
+      renderMinicart();
+    });
+    var couponForm = root.querySelector(".form-add-coupon");
+    if (couponForm) {
+      couponForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var input = couponForm.querySelector("[data-coupon-input]");
+        if (input) handleCoupon(root, input.value, function () { renderMinicart(); });
+      });
+    }
     var shipForm = root.querySelector("[data-minicart-shipping]");
     if (shipForm) {
       function hideMinicartShippingResult() {

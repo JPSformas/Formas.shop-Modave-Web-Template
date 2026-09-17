@@ -4614,11 +4614,18 @@
                                         </svg>
                                         <div class="text-caption-1">Envío</div>
                                     </div>
+                                    <div class="tf-mini-cart-tool-btn btn-add-coupon" role="button" tabindex="0">
+                                        <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M17.3247 11.1751L11.3497 17.1501C11.1949 17.305 11.0111 17.428 10.8087 17.5118C10.6064 17.5957 10.3895 17.6389 10.1705 17.6389C9.95148 17.6389 9.7346 17.5957 9.53227 17.5118C9.32994 17.428 9.14613 17.305 8.99134 17.1501L1.83301 10.0001V1.66675H10.1663L17.3247 8.82508C17.6351 9.13735 17.8093 9.55977 17.8093 10.0001C17.8093 10.4404 17.6351 10.8628 17.3247 11.1751V11.1751Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M5.99902 5.83325H6.00902" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <div class="text-caption-1">Cupón</div>
+                                    </div>
                                     <div class="tf-mini-cart-tool-btn btn-add-quote" role="button" tabindex="0" data-minicart-quote-tool>
                                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path d="M6.667 2.5h4.166L14.167 5.833V16.667c0 .46-.373.833-.834.833H6.667A.833.833 0 0 1 5.833 16.667V3.333c0-.46.373-.833.834-.833Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M10.833 2.5v3.333h3.334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M7.5 10h5M7.5 13.333h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                            <path d="M5.167 2.5h7.166L15.667 5.833V16.667c0 .46-.373.833-.834.833H5.167A.833.833 0 0 1 4.333 16.667V3.333c0-.46.373-.833.834-.833Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M12.333 2.5v3.333h3.334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M6.5 10h7M6.5 13.333h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                                         </svg>
                                         <div class="text-caption-1">Cotización</div>
                                     </div>
@@ -4700,14 +4707,54 @@
                                     </form>
                                 </div>
                             </div>
+                            <div class="tf-mini-cart-tool-openable add-coupon">
+                                <div class="tf-mini-cart-tool-content">
+                                    <div class="tf-mini-cart-tool-text">
+                                        <span class="icon" aria-hidden="true">
+                                            <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M17.3247 11.1751L11.3497 17.1501C11.1949 17.305 11.0111 17.428 10.8087 17.5118C10.6064 17.5957 10.3895 17.6389 10.1705 17.6389C9.95148 17.6389 9.7346 17.5957 9.53227 17.5118C9.32994 17.428 9.14613 17.305 8.99134 17.1501L1.83301 10.0001V1.66675H10.1663L17.3247 8.82508C17.6351 9.13735 17.8093 9.55977 17.8093 10.0001C17.8093 10.4404 17.6351 10.8628 17.3247 11.1751V11.1751Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M5.99902 5.83325H6.00902" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                        <span class="text-title">Agregar cupón</span>
+                                    </div>
+                                    <form class="form-add-coupon tf-mini-cart-tool-wrap" data-coupon-section>
+                                        <div data-coupon-input-box>
+                                            <fieldset>
+                                                <label class="text-caption-1 text-secondary mb_8" for="minicart-coupon-code">Código</label>
+                                                <input id="minicart-coupon-code" type="text" placeholder="Ingresá tu cupón" name="coupon" data-coupon-input autocomplete="off" required>
+                                            </fieldset>
+                                            <div class="tf-cart-tool-btns">
+                                                <button type="submit" class="tf-btn w-100 btn-reset radius-4" data-coupon-apply><span class="text">Validar</span></button>
+                                                <div class="text-center w-100 text-btn-uppercase tf-mini-cart-tool-close">Cancelar</div>
+                                            </div>
+                                        </div>
+                                        <div data-coupon-applied style="display:none">
+                                            <div class="box-discount active applied-coupon">
+                                                <div class="discount-top">
+                                                    <div class="text-caption-1">Descuento aplicado</div>
+                                                    <span class="sale-off text-btn-uppercase" data-coupon-pct></span>
+                                                </div>
+                                                <div class="discount-bot">
+                                                    <span class="text-btn-uppercase" data-coupon-code></span>
+                                                    <button type="button" class="tf-btn" data-coupon-remove><span class="text">Quitar</span></button>
+                                                </div>
+                                            </div>
+                                            <div class="tf-cart-tool-btns">
+                                                <div class="text-center w-100 text-btn-uppercase tf-mini-cart-tool-close">Aceptar</div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                             <div class="tf-mini-cart-tool-openable add-quote">
                                 <div class="tf-mini-cart-tool-content">
                                     <div class="tf-mini-cart-tool-text">
                                         <span class="icon" aria-hidden="true">
                                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M6.667 2.5h4.166L14.167 5.833V16.667c0 .46-.373.833-.834.833H6.667A.833.833 0 0 1 5.833 16.667V3.333c0-.46.373-.833.834-.833Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M10.833 2.5v3.333h3.334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                                <path d="M7.5 10h5M7.5 13.333h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                                <path d="M5.167 2.5h7.166L15.667 5.833V16.667c0 .46-.373.833-.834.833H5.167A.833.833 0 0 1 4.333 16.667V3.333c0-.46.373-.833.834-.833Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M12.333 2.5v3.333h3.334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M6.5 10h7M6.5 13.333h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                                             </svg>
                                         </span>
                                         <span class="text-title">Cotización</span>

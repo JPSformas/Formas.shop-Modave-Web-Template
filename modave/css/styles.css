@@ -7093,6 +7093,35 @@ input.style-line-bottom::placeholder {
   width: 100%;
   min-width: 0;
 }
+.modal-shopping-cart.minicart-formas .add-coupon .coupon-error {
+  margin-top: 8px;
+  color: #d23333;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.modal-shopping-cart.minicart-formas .add-coupon .box-discount.applied-coupon {
+  width: 100%;
+  margin-top: 4px;
+  background-color: rgba(46, 155, 58, 0.08);
+}
+.modal-shopping-cart.minicart-formas .add-coupon .box-discount.applied-coupon .sale-off {
+  color: var(--success);
+  white-space: nowrap;
+}
+.modal-shopping-cart.minicart-formas .add-coupon .box-discount.applied-coupon::before,
+.modal-shopping-cart.minicart-formas .add-coupon .box-discount.applied-coupon::after {
+  top: 34px;
+}
+.modal-shopping-cart.minicart-formas .add-coupon .box-discount.applied-coupon .discount-bot .tf-btn {
+  height: auto;
+  min-height: 32px;
+  background: transparent;
+  color: var(--main);
+  border: 1px solid var(--line);
+  text-transform: none;
+}
 .modal-shopping-cart.minicart-formas.is-checkout-step [data-cart-cta],
 .modal-shopping-cart.minicart-formas.is-checkout-step .text-center {
   display: none;
@@ -20179,9 +20208,6 @@ ul.list-text.type-number {
   .modal-shopping-cart .tf-mini-cart-bottom-wrap .tf-mini-cart-view-checkout {
     gap: 10px;
     margin-bottom: 12px;
-  }
-  .modal-shopping-cart .tf-mini-cart-bottom-wrap .tf-mini-cart-view-checkout .tf-btn {
-    padding: 8px 14px;
   }
   .modal-shopping-cart .tf-mini-cart-tool-openable .tf-mini-cart-tool-content .tf-mini-cart-tool-wrap,
   .modal-shopping-cart .tf-mini-cart-tool-openable .tf-mini-cart-tool-content .tf-mini-cart-tool-text {
