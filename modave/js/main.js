@@ -506,16 +506,24 @@
         });
 
         $(".btn-add-note").click(function () {
+            $(".tf-mini-cart-tool-openable").removeClass("open");
             $(".add-note").addClass("open");
         });
         $(".btn-add-coupon").click(function () {
+            $(".tf-mini-cart-tool-openable").removeClass("open");
             $(".add-coupon").addClass("open");
         });
         $(".btn-estimate-shipping").click(function () {
+            $(".tf-mini-cart-tool-openable").removeClass("open");
             $(".estimate-shipping").addClass("open");
         });
         $(".btn-add-gift").click(function () {
+            $(".tf-mini-cart-tool-openable").removeClass("open");
             $(".add-gift").addClass("open");
+        });
+        $(".btn-add-quote").click(function () {
+            $(".tf-mini-cart-tool-openable").removeClass("open");
+            $(".add-quote").addClass("open");
         });
         $(".tf-mini-cart-tool-close").click(function () {
             $(".tf-mini-cart-tool-openable").removeClass("open");

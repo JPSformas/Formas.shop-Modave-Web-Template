@@ -134,7 +134,10 @@
         emptyOtherTitle: "No hay muestras en este carrito",
         emptyOtherBody: "Tus productos están en la otra pestaña. El checkout es por un carrito a la vez.",
         emptySwitch: "Ver productos",
+        deleteSelected: "Quitar",
+        deleteSelectedAria: "Quitar muestras seleccionadas",
         undo: "¡Listo! Eliminaste la muestra.",
+        undoSelected: "¡Listo! Quitamos las muestras seleccionadas.",
         secure: "Compra protegida · las muestras se envían sin producción personalizada",
         trust: [
           "Sin mínimo de cantidad",
@@ -157,7 +160,10 @@
       emptyOtherTitle: "No hay productos en este carrito",
       emptyOtherBody: "Tus muestras están en la otra pestaña. El checkout es por un carrito a la vez.",
       emptySwitch: "Ver muestras",
+      deleteSelected: "Quitar",
+      deleteSelectedAria: "Quitar productos seleccionados",
       undo: "¡Listo! Eliminaste el producto.",
+      undoSelected: "¡Listo! Quitamos los productos seleccionados.",
       secure: "Compra protegida · te enviamos un boceto antes de producir",
       trust: [
         "Aprobás el diseño antes de que produzcamos",
@@ -642,6 +648,7 @@
       if (mobileSummary) renderSidebar(mobileSummary, { renderItems: false });
     });
     bindSelectAll();
+    bindDeleteSelected();
     bindPricingCtaGuard();
     setupApparelSizeSidebar();
     setupMobileOrderSummary();
@@ -882,6 +889,13 @@
   }
 
   var _undoTimer = null;
+  function refreshCartView(state) {
+    var tbody = document.querySelector("[data-cart-tbody]");
+    if (tbody) renderCartRows(tbody, state);
+    rerenderTotalsAndSelectAll();
+    refreshEmptyState();
+  }
+
   function removeLineById(id) {
     var s = read();
     var idx = s.cart.findIndex(function (l) { return l.id === id; });
@@ -889,38 +903,41 @@
     var deletedLine = s.cart[idx];
     s.cart.splice(idx, 1);
     write(s);
-    var tbody = document.querySelector("[data-cart-tbody]");
-    if (tbody) renderCartRows(tbody, s);
-    rerenderTotalsAndSelectAll();
-    refreshEmptyState();
+    refreshCartView(s);
     return { line: deletedLine, index: idx };
   }
 
   function handleDeleteRow(row) {
     var id = row.getAttribute("data-cart-id");
     var result = removeLineById(id);
-    if (result) showUndoToast(result.line, result.index);
+    if (result) showUndoToast([result]);
   }
 
-  function showUndoToast(line, originalIndex) {
+  function restoreRemovedLines(removed) {
+    var s = read();
+    removed.slice().sort(function (a, b) { return a.index - b.index; }).forEach(function (item) {
+      s.cart.splice(Math.min(item.index, s.cart.length), 0, item.line);
+    });
+    write(s);
+    refreshCartView(s);
+  }
+
+  function showUndoToast(removed, message) {
+    if (!removed || !removed.length) return;
     var existing = document.querySelector(".carrito-undo-toast");
     if (existing) existing.remove();
     if (_undoTimer) clearTimeout(_undoTimer);
 
     var toast = document.createElement("div");
     toast.className = "carrito-undo-toast";
-    var undoCopy = cartKindCopy(line.kind || CART_KIND.STANDARD);
-    toast.innerHTML = '<span>' + undoCopy.undo + '</span>' +
+    var first = removed[0].line;
+    var undoCopy = cartKindCopy(first.kind || CART_KIND.STANDARD);
+    toast.innerHTML = '<span>' + (message || undoCopy.undo) + '</span>' +
                       '<button type="button" class="undo-button">DESHACER</button>';
     document.body.appendChild(toast);
 
     toast.querySelector(".undo-button").addEventListener("click", function () {
-      var s = read();
-      s.cart.splice(Math.min(originalIndex, s.cart.length), 0, line);
-      write(s);
-      var tbody = document.querySelector("[data-cart-tbody]");
-      if (tbody) renderCartRows(tbody, s);
-      rerenderTotalsAndSelectAll();
+      restoreRemovedLines(removed);
       toast.remove();
       if (_undoTimer) clearTimeout(_undoTimer);
     });
@@ -929,6 +946,55 @@
       toast.classList.add("fade-out");
       setTimeout(function () { toast.remove(); }, 300);
     }, 5000);
+  }
+
+  function removeSelectedLines() {
+    var s = read();
+    var kind = currentQuoteKind(s);
+    var removed = [];
+    var kept = [];
+    s.cart.forEach(function (line, index) {
+      var lineKind = line.kind || CART_KIND.STANDARD;
+      if (lineKind === kind && line.selected) {
+        removed.push({ line: line, index: index });
+      } else {
+        kept.push(line);
+      }
+    });
+    if (!removed.length) return;
+    s.cart = kept;
+    write(s);
+    refreshCartView(s);
+    var copy = cartKindCopy(kind);
+    showUndoToast(removed, removed.length === 1 ? copy.undo : copy.undoSelected);
+  }
+
+  function bindDeleteSelected() {
+    document.querySelectorAll("[data-cart-delete-selected]").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (btn.disabled) return;
+        removeSelectedLines();
+      });
+    });
+  }
+
+  function syncDeleteSelectedState(kindLines, checkedCount, copy) {
+    var count = typeof checkedCount === "number"
+      ? checkedCount
+      : (kindLines || []).filter(function (l) { return l.selected; }).length;
+    var labelCopy = copy || cartKindCopy(currentQuoteKind(read()));
+    document.querySelectorAll("[data-cart-delete-selected]").forEach(function (btn) {
+      var enabled = count > 0;
+      btn.disabled = !enabled;
+      var text = btn.querySelector("span");
+      if (text) {
+        text.textContent = enabled
+          ? labelCopy.deleteSelected + " (" + count + ")"
+          : labelCopy.deleteSelected;
+      }
+      btn.setAttribute("aria-label", labelCopy.deleteSelectedAria);
+    });
   }
 
   function bindSelectAll() {
@@ -957,10 +1023,12 @@
     var kindLines = linesOfKind(s, kind);
     var total = kindLines.length;
     var checked = kindLines.filter(function (l) { return l.selected; }).length;
+    var copy = cartKindCopy(kind);
     document.querySelectorAll("[data-cart-select-all]").forEach(function (cb) {
       cb.checked = total > 0 && checked === total;
       cb.indeterminate = checked > 0 && checked < total;
     });
+    syncDeleteSelectedState(kindLines, checked, copy);
   }
 
   function rerenderTotalsAndSelectAll() {
@@ -1996,6 +2064,7 @@
     var s = read();
     s.activeCartKind = kind;
     write(s);
+    closeMinicartTools(document.getElementById("shoppingCart"));
     var tbody = document.querySelector("[data-cart-tbody]");
     if (tbody) {
       renderCartRows(tbody, s);
@@ -2101,6 +2170,12 @@
     });
   }
 
+  function closeMinicartTools(root) {
+    (root || document).querySelectorAll(".tf-mini-cart-tool-openable.open").forEach(function (el) {
+      el.classList.remove("open");
+    });
+  }
+
   function ensureMinicartChrome(root) {
     if (!root.querySelector("[data-cart-kind-tabs]")) {
       var header = root.querySelector(".header");
@@ -2186,6 +2261,8 @@
       var text = label && label.querySelector("span:not(.tf-check)");
       if (text) text.textContent = copy.selectAll;
     });
+    var kindLines = linesOfKind(state, kind);
+    syncDeleteSelectedState(kindLines, kindLines.filter(function (l) { return l.selected; }).length, copy);
     document.querySelectorAll("[data-minicart-view]").forEach(function (link) {
       link.href = kind === CART_KIND.SAMPLE ? "shopping-cart.html?cart=muestras" : "shopping-cart.html";
     });
@@ -2314,8 +2391,36 @@
       if (!row) return;
       e.preventDefault();
       var result = removeLineById(row.getAttribute("data-cart-id"));
-      if (result) showUndoToast(result.line, result.index);
+      if (result) showUndoToast([result]);
     });
+    root.addEventListener("keydown", function (e) {
+      var tool = e.target.closest(".tf-mini-cart-tool-btn");
+      if (!tool || (e.key !== "Enter" && e.key !== " ")) return;
+      e.preventDefault();
+      tool.click();
+    });
+    var shipForm = root.querySelector("[data-minicart-shipping]");
+    if (shipForm) {
+      function hideMinicartShippingResult() {
+        var resultEl = shipForm.querySelector("[data-minicart-shipping-result]");
+        if (resultEl) resultEl.hidden = true;
+      }
+      shipForm.addEventListener("input", hideMinicartShippingResult);
+      shipForm.addEventListener("change", hideMinicartShippingResult);
+      shipForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!shipForm.checkValidity()) {
+          shipForm.reportValidity();
+          return;
+        }
+        if (!requirePostalCode(shipForm)) return;
+        var resultEl = shipForm.querySelector("[data-minicart-shipping-result]");
+        var amountEl = shipForm.querySelector("[data-minicart-shipping-amount]");
+        if (!resultEl || !amountEl) return;
+        amountEl.textContent = formatPrice(mockShippingCostMajor());
+        resultEl.hidden = false;
+      });
+    }
     renderMinicart();
   }
 

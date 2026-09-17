@@ -2965,7 +2965,7 @@
     <!-- /quickView -->
 
     <!-- shoppingCart -->
-    <div class="modal fullRight fade modal-shopping-cart minicart-formas" id="shoppingCart">
+    <div class="modal fullRight fade modal-shopping-cart minicart-formas" id="shoppingCart" data-active-cart-kind="standard">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="d-flex flex-column flex-grow-1 h-100">
@@ -3060,6 +3060,25 @@
                                 </div>
                             </div>
                             <div class="tf-mini-cart-bottom">
+                                <div class="tf-mini-cart-tool">
+                                    <div class="tf-mini-cart-tool-btn btn-estimate-shipping" role="button" tabindex="0">
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M13.333 2.5H0.833008V13.3333H13.333V2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M13.333 6.66675H16.6663L19.1663 9.16675V13.3334H13.333V6.66675Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M4.58333 17.4999C5.73393 17.4999 6.66667 16.5672 6.66667 15.4166C6.66667 14.266 5.73393 13.3333 4.58333 13.3333C3.43274 13.3333 2.5 14.266 2.5 15.4166C2.5 16.5672 3.43274 17.4999 4.58333 17.4999Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M15.4163 17.4999C16.5669 17.4999 17.4997 16.5672 17.4997 15.4166C17.4997 14.266 16.5669 13.3333 15.4163 13.3333C14.2657 13.3333 13.333 14.266 13.333 15.4166C13.333 16.5672 14.2657 17.4999 15.4163 17.4999Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                        <div class="text-caption-1">Envío</div>
+                                    </div>
+                                    <div class="tf-mini-cart-tool-btn btn-add-quote" role="button" tabindex="0" data-minicart-quote-tool>
+                                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                            <path d="M6.667 2.5h4.166L14.167 5.833V16.667c0 .46-.373.833-.834.833H6.667A.833.833 0 0 1 5.833 16.667V3.333c0-.46.373-.833.834-.833Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M10.833 2.5v3.333h3.334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M7.5 10h5M7.5 13.333h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                        </svg>
+                                        <div class="text-caption-1">Cotización</div>
+                                    </div>
+                                </div>
                                 <div class="tf-mini-cart-bottom-wrap">
                                     <div class="minicart-total-row">
                                         <span data-minicart-total-label>Total (Productos)</span>
@@ -3071,6 +3090,95 @@
                                             <span class="text">Comprar productos</span>
                                             <i class="icon icon-arrRight" aria-hidden="true"></i>
                                         </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tf-mini-cart-tool-openable estimate-shipping">
+                                <div class="tf-mini-cart-tool-content">
+                                    <div class="tf-mini-cart-tool-text">
+                                        <span class="icon" aria-hidden="true">
+                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13.333 2.5H0.833008V13.3333H13.333V2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M13.333 6.66675H16.6663L19.1663 9.16675V13.3334H13.333V6.66675Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M4.58333 17.4999C5.73393 17.4999 6.66667 16.5672 6.66667 15.4166C6.66667 14.266 5.73393 13.3333 4.58333 13.3333C3.43274 13.3333 2.5 14.266 2.5 15.4166C2.5 16.5672 3.43274 17.4999 4.58333 17.4999Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M15.4163 17.4999C16.5669 17.4999 17.4997 16.5672 17.4997 15.4166C17.4997 14.266 16.5669 13.3333 15.4163 13.3333C14.2657 13.3333 13.333 14.266 13.333 15.4166C13.333 16.5672 14.2657 17.4999 15.4163 17.4999Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </span>
+                                        <span class="text-title">Calcular envío</span>
+                                    </div>
+                                    <form class="form-estimate-shipping tf-mini-cart-tool-wrap" data-minicart-shipping>
+                                        <div class="minicart-shipping-fields">
+                                            <div class="minicart-shipping-field">
+                                                <label class="text-caption-1 text-secondary mb_8" for="minicart-shipping-province">Provincia</label>
+                                                <div class="tf-select">
+                                                    <select id="minicart-shipping-province" name="provincia" required>
+                                                        <option value="" disabled selected>Elegí una provincia</option>
+                                                        <option value="CABA">CABA</option>
+                                                        <option value="Buenos Aires">Buenos Aires</option>
+                                                        <option value="Catamarca">Catamarca</option>
+                                                        <option value="Chaco">Chaco</option>
+                                                        <option value="Chubut">Chubut</option>
+                                                        <option value="Córdoba">Córdoba</option>
+                                                        <option value="Corrientes">Corrientes</option>
+                                                        <option value="Entre Ríos">Entre Ríos</option>
+                                                        <option value="Formosa">Formosa</option>
+                                                        <option value="Jujuy">Jujuy</option>
+                                                        <option value="La Pampa">La Pampa</option>
+                                                        <option value="La Rioja">La Rioja</option>
+                                                        <option value="Mendoza">Mendoza</option>
+                                                        <option value="Misiones">Misiones</option>
+                                                        <option value="Neuquén">Neuquén</option>
+                                                        <option value="Río Negro">Río Negro</option>
+                                                        <option value="Salta">Salta</option>
+                                                        <option value="San Juan">San Juan</option>
+                                                        <option value="San Luis">San Luis</option>
+                                                        <option value="Santa Cruz">Santa Cruz</option>
+                                                        <option value="Santa Fe">Santa Fe</option>
+                                                        <option value="Santiago del Estero">Santiago del Estero</option>
+                                                        <option value="Tierra del Fuego">Tierra del Fuego</option>
+                                                        <option value="Tucumán">Tucumán</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="minicart-shipping-field">
+                                                <label class="text-caption-1 text-secondary mb_8" for="minicart-shipping-cp">CP</label>
+                                                <input id="minicart-shipping-cp" type="text" inputmode="numeric" placeholder="" name="codigoPostal" autocomplete="postal-code" required>
+                                            </div>
+                                        </div>
+                                        <div class="minicart-shipping-result" data-minicart-shipping-result hidden role="status" aria-live="polite">
+                                            <span class="minicart-shipping-result__label">Costo de envío estimado (sin IVA)</span>
+                                            <strong class="minicart-shipping-result__amount" data-minicart-shipping-amount></strong>
+                                        </div>
+                                        <div class="tf-cart-tool-btns">
+                                            <button type="submit" class="tf-btn w-100 btn-reset radius-4"><span class="text">Calcular</span></button>
+                                            <div class="text-center w-100 text-btn-uppercase tf-mini-cart-tool-close">Cancelar</div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tf-mini-cart-tool-openable add-quote">
+                                <div class="tf-mini-cart-tool-content">
+                                    <div class="tf-mini-cart-tool-text">
+                                        <span class="icon" aria-hidden="true">
+                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M6.667 2.5h4.166L14.167 5.833V16.667c0 .46-.373.833-.834.833H6.667A.833.833 0 0 1 5.833 16.667V3.333c0-.46.373-.833.834-.833Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M10.833 2.5v3.333h3.334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <path d="M7.5 10h5M7.5 13.333h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                                            </svg>
+                                        </span>
+                                        <span class="text-title">Cotización</span>
+                                    </div>
+                                    <div class="tf-mini-cart-tool-wrap minicart-quote-actions">
+                                        <button class="tf-btn w-100 btn-reset radius-4" type="button" data-cart-quote-action="convert">
+                                            <span class="text">Convertir carrito en cotización</span>
+                                            <i class="icon icon-arrowUpRight" aria-hidden="true"></i>
+                                        </button>
+                                        <button class="tf-btn w-100 btn-reset btn-white has-border radius-4" type="button" data-cart-quote-action="download">
+                                            <span class="text">Descargar cotización</span>
+                                        </button>
+                                        <div class="tf-cart-tool-btns">
+                                            <div class="text-center w-100 text-btn-uppercase tf-mini-cart-tool-close">Cancelar</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
